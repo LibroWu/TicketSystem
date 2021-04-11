@@ -1,6 +1,6 @@
 ## TicketSystem
 
-
+The project is developed by Libro and Mziii!
 
 ## 小组分工
 
