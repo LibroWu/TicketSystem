@@ -1,0 +1,7 @@
+* binary
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.h text eol=lf
+*.md text
+*.txt text
+*.exe binary

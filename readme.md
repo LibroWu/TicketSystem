@@ -1,10 +1,10 @@
 ## TicketSystem
 
-The project is developed by Libro and Mziii!
+CS147 group assignment, ACM Honors Class, SJTU
 
-## 小组分工
+## Team's division of work
 
-|姓名|负责模块|
+|Contributor|Responsible for|
 |---|---|
-|吴叶鑫||
-|陶沐孜||
+|[Libro](https://github.com/LibroWu)||
+|[Mzi](https://github.com/Mziiii)||
