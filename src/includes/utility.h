@@ -4,7 +4,7 @@
 
 #ifndef TICKETSYSTEM_UTILITY_H
 #define TICKETSYSTEM_UTILITY_H
-namespace LM{
+namespace LeMetropole{
 
     template<class T1, class T2>
     class pair {

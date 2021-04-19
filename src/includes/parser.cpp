@@ -3,3 +3,67 @@
 //
 
 #include "parser.h"
+namespace LeMetropole {
+    void parser::PaperCup::push_back(char keyType, const string *argument) {
+        arg[arv] = argument;
+        key[arv++] = keyType;
+    }
+
+    parser::PaperCup::~PaperCup() {
+        for (char i = 0; i < arv; ++i) delete arg[i];
+    }
+
+    parser::PaperCup::PaperCup() : arv(0) {}
+
+    string *parser::tokenScanner::nextToken() {
+        while (pos < len && isSpace(s->operator[](pos))) ++pos;
+        int pre = pos;
+        while (pos < len && !isSpace(s->operator[](pos))) ++pos;
+        return (new string(*s, pre, pos - pre));
+    }
+
+    bool parser::tokenScanner::isSpace(char ch) {
+        return (ch == ' ' || ch == '\r' || ch == '\n');
+    }
+
+    parser::tokenScanner::tokenScanner(string *s_ptr) : s(s_ptr), pos(0), len(s_ptr->length()) {}
+
+    inline bool parser::tokenScanner::hasNextToken() {
+        while (pos < len && isSpace(s->operator[](pos))) ++pos;
+        return (pos < len);
+    }
+
+    void parser::tokenScanner::set_ptr(string *s_ptr) {
+        s = s_ptr;
+        pos = 0;
+        len = s->length();
+    }
+
+    PaperCup *parser::listen() {
+        string s, *sKey, *sArg;
+        PaperCup *tmp = new PaperCup;
+        bool flag = getline(cin, s);
+        if (!flag) {
+            tmp->keyType = EXIT;
+            return tmp;
+        }
+        tokenScanner tS(&s);
+        sKey = tS.nextToken();
+        int i;
+        for (i = 0; i < 16; ++i) if (commandSet[i] == *sKey) break;
+        tmp->keyType = setToType[i];
+        delete sKey;
+        while (tS.hasNextToken()) {
+            sKey = tS.nextToken();
+            if (!tS.hasNextToken()) {
+                delete sKey;
+                return tmp;
+                //todo error
+            }
+            sArg = tS.nextToken();
+            tmp->push_back(sKey->operator[](1), sArg);
+            delete sKey;
+        }
+        return tmp;
+    }
+}

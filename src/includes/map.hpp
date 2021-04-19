@@ -10,7 +10,7 @@
 #include "utility.h"
 #include "exceptions.h"
 
-namespace sjtu {
+namespace LeMetropole {
 
     template<
             class Key,
@@ -18,7 +18,7 @@ namespace sjtu {
             class Compare = std::less<Key>
     >
     class map {
-    public:
+    private:
 
         enum COLOR {
             red, black
