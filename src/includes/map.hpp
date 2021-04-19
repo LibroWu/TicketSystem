@@ -10,7 +10,7 @@
 #include "utility.h"
 #include "exceptions.h"
 
-namespace LeMetropole {
+namespace LaMetropole {
 
     template<
             class Key,

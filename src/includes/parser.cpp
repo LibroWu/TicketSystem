@@ -3,7 +3,7 @@
 //
 
 #include "parser.h"
-namespace LeMetropole {
+namespace LaMetropole {
     void parser::PaperCup::push_back(char keyType, const string *argument) {
         arg[arv] = argument;
         key[arv++] = keyType;

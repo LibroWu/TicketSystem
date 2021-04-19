@@ -7,7 +7,7 @@
 
 #include <string>
 #include <iostream>
-namespace LeMetropole {
+namespace LaMetropole {
     using std::string;
     using std::getline;
 

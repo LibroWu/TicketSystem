@@ -9,17 +9,18 @@
 #include "utility.h"
 #include "exceptions.h"
 
-namespace LeMetropole {
+namespace LaMetropole {
+    const int sizeSet[] = {97, 197, 397, 797, 1597, 3203, 6421, 12853, 25717, 51437,
+                           102877, 205759, 411527, 823117, 1646237, 3292489, 6584983, 13169977,
+                           26339969,
+                           52679969, 105359939, 210719881, 421439783, 842879579, 1685759167};
 
     template<class Key, class T>
     class unordered_map {
     public:
         typedef pair<const Key, T> value_type;
     private:
-        constexpr const static int sizeSet[] = {97, 197, 397, 797, 1597, 3203, 6421, 12853, 25717, 51437,
-                                                102877, 205759, 411527, 823117, 1646237, 3292489, 6584983, 13169977,
-                                                26339969,
-                                                52679969, 105359939, 210719881, 421439783, 842879579, 1685759167};
+
 
         class hash_table {
         private:
@@ -67,6 +68,7 @@ namespace LeMetropole {
                 memset(table, 0, sizeof(Node * ) * P);
                 occupyChain oldChain;
                 oldChain.head = chain.head;
+                chain.head = nullptr;
                 int pos;
                 while (!oldChain.empty()) {
                     pos = oldChain.front();
@@ -82,10 +84,13 @@ namespace LeMetropole {
             }
 
         public:
+
             class Node {
             public:
                 value_type v;
                 Node *next;
+
+                Node() = default;
 
                 Node(const value_type &v, Node *ptr = nullptr) : v(v), next(ptr) {}
             } **table;
@@ -112,13 +117,11 @@ namespace LeMetropole {
                     }
                     table[pos] = nullptr;
                 }
+                delete[] table;
+                table = nullptr;
             }
 
-            hash_table &operator=(const hash_table &other) {
-                clear();
-                //todo
-                return *this;
-            }
+            hash_table &operator=(const hash_table &other) = delete;
 
             bool erase(const Key &key) {
                 int pos = HashFunc(key) % P;
@@ -134,7 +137,7 @@ namespace LeMetropole {
                 return false;
             }
 
-            Node *find(const Key &key) {
+            Node *find(const Key &key) const {
                 int pos = HashFunc(key) % P;
                 if (table[pos])
                     for (Node *ptr = table[pos]; ptr; ptr = ptr->next)
@@ -142,7 +145,15 @@ namespace LeMetropole {
                 return nullptr;
             }
 
-            pointer *insert(const value_type &v) {
+            bool empty() const {
+                return Size == 0;
+            }
+
+            int count() const {
+                return Size;
+            }
+
+            pointer insert(const value_type &v) {
                 if (Size == P) doubleSpace();
                 int pos = HashFunc(v.first) % P;
                 if (table[pos]) {
@@ -165,65 +176,59 @@ namespace LeMetropole {
 
         unordered_map() {}
 
-        unordered_map(const unordered_map &other) : Nebula(other.Nebula) {}
+        unordered_map(int ((*hashFunc)(const Key &)) = nullptr) : Nebula(hashFunc) {}
 
-        unordered_map &operator=(unordered_map &other) {
-            Nebula = other.Nebula;
-            return *this;
-        }
+        unordered_map(const unordered_map &other) = delete;
+
+        unordered_map &operator=(unordered_map &other) = delete;
 
         ~unordered_map() {}
 
         T &at(const Key &key) {
-            pointer ptr = Nebula.get(key);
-            if (ptr.second)
-                return ptr.first->record.second;
-            else throw index_out_of_bound();
+            typename hash_table::Node *tmp = Nebula.find(key);
+            if (tmp) return tmp->v.second;
+            else throw -1;
+            //todo exceptions
         }
 
         const T &at(const Key &key) const {
-            pointer ptr = Nebula.get(key);
-            if (ptr.second)
-                return ptr.first->record.second;
-            else throw index_out_of_bound();
+            typename hash_table::Node *tmp = Nebula.find(key);
+            if (tmp) return tmp->v.second;
+            else throw -1;
+            //todo exceptions
         }
 
         T &operator[](const Key &key) {
-            pointer ptr = Nebula.get(key);
-            if (ptr.second)
-                return ptr.first->record.second;
+            typename hash_table::Node *tmp = Nebula.find(key);
+            if (tmp) return tmp->v.second;
             else {
-                pointer ptrr = Nebula.insert(key);
-                return ptrr.first->record.second;
+                return Nebula.insert(value_type(key, T())).first->v.second;
             }
         }
 
         const T &operator[](const Key &key) const {
-            pointer ptr = Nebula.get(key);
-            if (ptr.second)
-                return ptr.first->record.second;
-            else throw index_out_of_bound();
+            typename hash_table::Node *tmp = Nebula.find(key);
+            if (tmp) return tmp->v.second;
+            else throw -1;
+            //todo exceptions
         }
 
         bool empty() const {
-            return (Nebula.head == nullptr);
+            return Nebula.empty();
         }
 
         size_t size() const {
-            return Nebula.count;
+            return Nebula.count();
         }
 
         void clear() {
-            Nebula.Clear();
+            Nebula.clear();
         }
 
-        void erase(iterator pos) {
-            if (&Nebula != pos.source || pos == end()) throw invalid_iterator();
-            Nebula.Delete(pos.ptr->record.first);
-        }
 
-        size_t count(const Key &key) const {
-            return Nebula.get(key).second;
+        int count(const Key &key) const {
+            if (Nebula.find(key) == nullptr) return 0;
+            return 1;
         }
     };
 }

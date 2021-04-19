@@ -4,7 +4,7 @@
 
 #ifndef TICKETSYSTEM_UTILITY_H
 #define TICKETSYSTEM_UTILITY_H
-namespace LeMetropole{
+namespace LaMetropole{
 
     template<class T1, class T2>
     class pair {
@@ -12,8 +12,6 @@ namespace LeMetropole{
         T1 first;
         T2 second;
         constexpr pair() : first(), second() {}
-        pair(const pair &other) = default;
-        pair(pair &&other) = default;
         pair(const T1 &x, const T2 &y) : first(x), second(y) {}
         template<class U1, class U2>
         pair(U1 &&x, U2 &&y) : first(x), second(y) {}

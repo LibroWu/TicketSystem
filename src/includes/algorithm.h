@@ -4,7 +4,7 @@
 
 #ifndef TICKETSYSTEM_ALGORITHM_H
 #define TICKETSYSTEM_ALGORITHM_H
-namespace LM{
+namespace LaMetropole{
     template<class T>
     T* lower_bound(T* st,T* ed,T);
 

@@ -6,24 +6,18 @@
 #include "includes/unordered_map.hpp"
 using namespace std;
 
-bool is_prime(int x){
-    for (int i = 2; i*i<=x; ++i) {
-        if (x%i==0) return false;
-    }
-    return true;
+int f(const int& t){
+    return t;
 }
 
-int get_next_prime(int n){
-    n*=2;
-    while (!is_prime(n)) ++n;
-    return n;
-}
+LaMetropole::unordered_map<int,int> u_map(f);
 
 int main(){
-    int n=48;
-    for (int i = 0; i < 25; ++i)
-        cout<<(n= get_next_prime(n))<<','<<((i%10==9)?'\n':' ');
-    /*for (int i = 0; i < s.length(); ++i) {
-        cout<<s[i];
-    }*/
+    int n=10000;
+    for (int i = 0; i < n; ++i) {
+        u_map[i]=n-i;
+    }
+    for (int i = 0; i < n; i+=2) {
+        cout<<u_map[i]<<' ';
+    }
 }
