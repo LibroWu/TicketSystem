@@ -1,4 +1,4 @@
-## TicketSystem
+## TicketSystem:LaMétropole
 
 CS147 group assignment, ACM Honors Class, SJTU
 
@@ -6,5 +6,5 @@ CS147 group assignment, ACM Honors Class, SJTU
 
 |Contributor|Responsible for|
 |---|---|
-|[Libro](https://github.com/LibroWu)||
-|[Mzi](https://github.com/Mziiii)||
+|[Libro](https://github.com/LibroWu)|Backend logic and bonus|
+|[Mzi](https://github.com/Mziiii)|Backend database(BPlusTree)|

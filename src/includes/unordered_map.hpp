@@ -125,6 +125,7 @@ namespace LaMetropole {
 
             bool erase(const Key &key) {
                 int pos = HashFunc(key) % P;
+                if (pos<0) pos+=P;
                 if (table[pos])
                     for (Node *ptr = table[pos], *pre = nullptr; ptr; pre = ptr, ptr = ptr->next)
                         if (ptr->v.first == key) {
@@ -139,6 +140,7 @@ namespace LaMetropole {
 
             Node *find(const Key &key) const {
                 int pos = HashFunc(key) % P;
+                if (pos<0) pos+=P;
                 if (table[pos])
                     for (Node *ptr = table[pos]; ptr; ptr = ptr->next)
                         if (ptr->v.first == key) return ptr;
@@ -156,6 +158,7 @@ namespace LaMetropole {
             pointer insert(const value_type &v) {
                 if (Size == P) doubleSpace();
                 int pos = HashFunc(v.first) % P;
+                if (pos<0) pos+=P;
                 if (table[pos]) {
                     Node *ptr;
                     for (ptr = table[pos]; ptr->next; ptr = ptr->next)

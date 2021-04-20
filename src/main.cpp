@@ -4,20 +4,54 @@
 
 #include <iostream>
 #include "includes/unordered_map.hpp"
-using namespace std;
+#include "includes/parser.h"
 
-int f(const int& t){
-    return t;
+LaMetropole::parser Apollo;
+
+void addUser(LaMetropole::parser::PaperCup *cup);
+
+void login(LaMetropole::parser::PaperCup *cup);
+
+void logout(LaMetropole::parser::PaperCup *cup);
+
+void queryProfile(LaMetropole::parser::PaperCup *cup);
+
+void modifyProfile(LaMetropole::parser::PaperCup *cup);
+
+void addTrain(LaMetropole::parser::PaperCup *cup);
+
+void releaseTrain(LaMetropole::parser::PaperCup *cup);
+
+void queryTrain(LaMetropole::parser::PaperCup *cup);
+
+void deleteTrain(LaMetropole::parser::PaperCup *cup);
+
+void queryTicket(LaMetropole::parser::PaperCup *cup);
+
+void queryTransfer(LaMetropole::parser::PaperCup *cup);
+
+void buyTicket(LaMetropole::parser::PaperCup *cup);
+
+void queryOrder(LaMetropole::parser::PaperCup *cup);
+
+void refundTicket(LaMetropole::parser::PaperCup *cup);
+
+void Clean(LaMetropole::parser::PaperCup *cup);
+
+void Exit(LaMetropole::parser::PaperCup *cup){
+    exit(0);
 }
 
-LaMetropole::unordered_map<int,int> u_map(f);
+void (*commandMap[])(LaMetropole::parser::PaperCup *) ={
+        addUser, login, logout, queryProfile, modifyProfile, addTrain,
+        releaseTrain,queryTrain, deleteTrain, queryTicket, queryTransfer,
+        buyTicket, queryOrder,refundTicket, Clean, Exit
+};
 
-int main(){
-    int n=10000;
-    for (int i = 0; i < n; ++i) {
-        u_map[i]=n-i;
-    }
-    for (int i = 0; i < n; i+=2) {
-        cout<<u_map[i]<<' ';
+int main() {
+    while (1) {
+        LaMetropole::parser::PaperCup* cup=Apollo.listen();
+        commandMap[cup->keyType](cup);
+        delete cup;
     }
 }
