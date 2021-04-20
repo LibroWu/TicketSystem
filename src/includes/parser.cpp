@@ -5,12 +5,11 @@
 #include "parser.h"
 namespace LaMetropole {
     void parser::PaperCup::push_back(char keyType, const string *argument) {
-        arg[arv] = argument;
-        key[arv++] = keyType;
+        arg[(key[arv++] = keyType)-'a']=argument;
     }
 
     parser::PaperCup::~PaperCup() {
-        for (char i = 0; i < arv; ++i) delete arg[i];
+        for (char i = 0; i < arv; ++i) delete arg[key[i]-'a'];
     }
 
     parser::PaperCup::PaperCup() : arv(0) {}
@@ -23,10 +22,10 @@ namespace LaMetropole {
     }
 
     bool parser::tokenScanner::isSpace(char ch) {
-        return (ch == ' ' || ch == '\r' || ch == '\n');
+        return (ch == division || ch == '\r' || ch == '\n');
     }
 
-    parser::tokenScanner::tokenScanner(string *s_ptr) : s(s_ptr), pos(0), len(s_ptr->length()) {}
+    parser::tokenScanner::tokenScanner(string *s_ptr,char DIVISION) : s(s_ptr), pos(0), len(s_ptr->length()),division(DIVISION) {}
 
     inline bool parser::tokenScanner::hasNextToken() {
         while (pos < len && isSpace(s->operator[](pos))) ++pos;

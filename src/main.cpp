@@ -5,6 +5,7 @@
 #include <iostream>
 #include "includes/unordered_map.hpp"
 #include "includes/parser.h"
+#include "includes/BPT.hpp"
 
 LaMetropole::parser Apollo;
 

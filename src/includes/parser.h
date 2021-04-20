@@ -19,12 +19,12 @@ namespace LaMetropole {
             BUY_TICKET, QUERY_ORDER, REFUND_TICKET, CLEAN, EXIT, NONE
         };
 
-        const string commandSet[] = {"query_profile", "query_ticket", "buy_ticket", "login", "logout",
+        const string commandSet[17] = {"query_profile", "query_ticket", "buy_ticket", "login", "logout",
                                      "modify_profile", "query_order", "add_user", "add_train", "release_train",
                                      "query_train", "Delete_train", "query_transfer", "refund_ticket", "exit", "clean",
                                      "N"
         };
-        const commandType setToType = {QUERY_PROFILE, QUERY_TICKET, BUY_TICKET, LOGIN, LOGOUT,
+        const commandType setToType[17] = {QUERY_PROFILE, QUERY_TICKET, BUY_TICKET, LOGIN, LOGOUT,
                                        MODIFY_PROFILE, QUERY_ORDER, ADD_USER, ADD_TRAIN, RELEASE_TRAIN,
                                        QUERY_TRAIN, DELETE_TRAIN, QUERY_TRANSFER, REFUND_TICKET, EXIT, CLEAN, NONE
         };
@@ -34,8 +34,9 @@ namespace LaMetropole {
         public:
             string *s;
             int pos, len;
+            char division;
 
-            tokenScanner(string *s_ptr);
+            tokenScanner(string *s_ptr,char DIVISION=' ');
 
             void set_ptr(string *s_ptr);
 

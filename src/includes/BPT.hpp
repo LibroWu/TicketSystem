@@ -446,6 +446,10 @@ public:
         return 0;
     }
 
+    void Clear(){
+        crystalMemory.initialise();
+        indexMemory.initialise();
+    }
 #ifdef debugs
 
     void print() {
