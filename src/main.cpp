@@ -7,47 +7,7 @@
 #include "includes/parser.h"
 #include "includes/BPT.hpp"
 #include "includes/ticketSystem.h"
-LaMetropole::parser Apollo;
-
-void addUser(LaMetropole::parser::PaperCup *cup);
-
-void login(LaMetropole::parser::PaperCup *cup);
-
-void logout(LaMetropole::parser::PaperCup *cup);
-
-void queryProfile(LaMetropole::parser::PaperCup *cup);
-
-void modifyProfile(LaMetropole::parser::PaperCup *cup);
-
-void addTrain(LaMetropole::parser::PaperCup *cup);
-
-void releaseTrain(LaMetropole::parser::PaperCup *cup);
-
-void queryTrain(LaMetropole::parser::PaperCup *cup);
-
-void deleteTrain(LaMetropole::parser::PaperCup *cup);
-
-void queryTicket(LaMetropole::parser::PaperCup *cup);
-
-void queryTransfer(LaMetropole::parser::PaperCup *cup);
-
-void buyTicket(LaMetropole::parser::PaperCup *cup);
-
-void queryOrder(LaMetropole::parser::PaperCup *cup);
-
-void refundTicket(LaMetropole::parser::PaperCup *cup);
-
-void Clean(LaMetropole::parser::PaperCup *cup);
-
-void Exit(LaMetropole::parser::PaperCup *cup){
-    exit(0);
-}
-
-void (*commandMap[])(LaMetropole::parser::PaperCup *) ={
-        addUser, login, logout, queryProfile, modifyProfile, addTrain,
-        releaseTrain,queryTrain, deleteTrain, queryTicket, queryTransfer,
-        buyTicket, queryOrder,refundTicket, Clean, Exit
-};
+LaMetropole::ticketSystem ts;
 
 int main() {
 

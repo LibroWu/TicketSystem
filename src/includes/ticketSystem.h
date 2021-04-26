@@ -5,6 +5,7 @@
 #ifndef TICKETSYSTEM_TICKETSYSTEM_H
 #define TICKETSYSTEM_TICKETSYSTEM_H
 #include "parser.h"
+#include "user.h"
 namespace LaMetropole {
 
     namespace LM{
@@ -46,6 +47,7 @@ namespace LaMetropole {
             LM::releaseTrain,LM::queryTrain, LM::deleteTrain, LM::queryTicket, LM::queryTransfer,
             LM::buyTicket, LM::queryOrder,LM::refundTicket, LM::Clean, LM::Exit, LM::None
     };
+
     class ticketSystem {
     public:
         parser Apollo;
