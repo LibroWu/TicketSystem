@@ -20,6 +20,10 @@ namespace LaMetropole{
     template<class T>
     void sort(T* l,T* r);
 
-    long long Hash(const std::string& input);
+    long long selfHash(const long long & input);
+
+    long long HASH(const std::string& input);
+
+    char toInt(std::string* s);
 }
 #endif //TICKETSYSTEM_ALGORITHM_H

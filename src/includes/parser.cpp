@@ -4,7 +4,7 @@
 
 #include "parser.h"
 namespace LaMetropole {
-    void parser::PaperCup::push_back(char keyType, const string *argument) {
+    void parser::PaperCup::push_back(char keyType, string *argument) {
         arg[(key[arv++] = keyType)-'a']=argument;
     }
 
@@ -38,10 +38,11 @@ namespace LaMetropole {
         len = s->length();
     }
 
-    PaperCup *parser::listen() {
+    parser::PaperCup *parser::listen() {
         string s, *sKey, *sArg;
         PaperCup *tmp = new PaperCup;
-        bool flag = getline(cin, s);
+        bool flag;
+        if ( getline(std::cin, s)) flag= false;
         if (!flag) {
             tmp->keyType = EXIT;
             return tmp;

@@ -57,9 +57,9 @@ namespace LaMetropole {
                 }
             } chain;
 
-            int Size, realSize, P;
+            long long Size, realSize, P;
 
-            int (*HashFunc)(const Key &);
+            long long (*HashFunc)(const Key &);
 
             void doubleSpace() {
                 Node **oldTable = table;
@@ -97,8 +97,9 @@ namespace LaMetropole {
 
             typedef pair<Node *, bool> pointer;
 
-            hash_table(int (*hashFunc)(const Key &) = nullptr) : Size(0), realSize(0), P(sizeSet[0]),
-                                                                 HashFunc(hashFunc), table(new Node *[sizeSet[0]]) {
+            hash_table(long long (*hashFunc)(const Key &) = nullptr) : Size(0), realSize(0), P(sizeSet[0]),
+                                                                       HashFunc(hashFunc),
+                                                                       table(new Node *[sizeSet[0]]) {
                 memset(table, 0, sizeof(Node *) * sizeSet[0]);
             }
 
@@ -107,7 +108,7 @@ namespace LaMetropole {
             }
 
             void clear() {
-                int pos;
+                long long pos;
                 while (!chain.empty()) {
                     pos = chain.front();
                     chain.pop();
@@ -124,8 +125,8 @@ namespace LaMetropole {
             hash_table &operator=(const hash_table &other) = delete;
 
             bool erase(const Key &key) {
-                int pos = HashFunc(key) % P;
-                if (pos<0) pos+=P;
+                long long pos = HashFunc(key) % P;
+                if (pos < 0) pos += P;
                 if (table[pos])
                     for (Node *ptr = table[pos], *pre = nullptr; ptr; pre = ptr, ptr = ptr->next)
                         if (ptr->v.first == key) {
@@ -139,8 +140,8 @@ namespace LaMetropole {
             }
 
             Node *find(const Key &key) const {
-                int pos = HashFunc(key) % P;
-                if (pos<0) pos+=P;
+                long long pos = HashFunc(key) % P;
+                if (pos < 0) pos += P;
                 if (table[pos])
                     for (Node *ptr = table[pos]; ptr; ptr = ptr->next)
                         if (ptr->v.first == key) return ptr;
@@ -157,8 +158,8 @@ namespace LaMetropole {
 
             pointer insert(const value_type &v) {
                 if (Size == P) doubleSpace();
-                int pos = HashFunc(v.first) % P;
-                if (pos<0) pos+=P;
+                long long pos = HashFunc(v.first) % P;
+                if (pos < 0) pos += P;
                 if (table[pos]) {
                     Node *ptr;
                     for (ptr = table[pos]; ptr->next; ptr = ptr->next)
@@ -179,7 +180,7 @@ namespace LaMetropole {
 
         unordered_map() {}
 
-        unordered_map(int ((*hashFunc)(const Key &)) = nullptr) : Nebula(hashFunc) {}
+        unordered_map(long long ((*hashFunc)(const Key &)) = nullptr) : Nebula(hashFunc) {}
 
         unordered_map(const unordered_map &other) = delete;
 
@@ -216,6 +217,10 @@ namespace LaMetropole {
             //todo exceptions
         }
 
+        bool erase(const Key& key){
+            return Nebula.erase(key);
+        }
+
         bool empty() const {
             return Nebula.empty();
         }
@@ -227,7 +232,6 @@ namespace LaMetropole {
         void clear() {
             Nebula.clear();
         }
-
 
         int count(const Key &key) const {
             if (Nebula.find(key) == nullptr) return 0;

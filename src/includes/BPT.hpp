@@ -37,7 +37,7 @@ private:
         bool is_leaf;
         int number;
         T Fence[M + 1];
-        U child[M + 2];
+        int child[M + 2];
 
         crystalNode() : number(0), is_leaf(0) {}
 
@@ -128,7 +128,7 @@ private:
 
     struct Pair {
         T t;
-        U pos;
+        int pos;
     };
 
     Pair *sub_insert(const T &t, const U &index, const int &pos) {
@@ -426,6 +426,34 @@ public:
         }
     }
 
+    bool empty() {
+        int root_pos;
+        crystalMemory.get_info(root_pos, 3);
+        return root_pos == 0;
+    }
+
+    void modify(const T &t, U &u) {
+        int pos, num;
+        crystalMemory.get_info(pos, 3);
+        crystalNode tmp;
+        while (pos > 0) {
+            crystalMemory.read(tmp, pos);
+            num = upper_bound(tmp.Fence, tmp.Fence + tmp.number - 1, t) - tmp.Fence;
+            if (tmp.is_leaf) {
+                indexNode ind;
+                indexMemory.read(ind, tmp.child[num]);
+                int N = lower_bound(ind.v, ind.v + ind.number, t) - ind.v;
+                if (ind.v[N] == t) {
+                    ind.index[N]=u;
+                    indexMemory.update(ind,tmp.child[num]);
+                }
+                //not found
+                return;
+            }
+            pos = tmp.child[num];
+        }
+    }
+
     U Find(const T &t) {
         int pos, num;
         crystalMemory.get_info(pos, 3);
@@ -439,17 +467,18 @@ public:
                 int N = lower_bound(ind.v, ind.v + ind.number, t) - ind.v;
                 if (ind.v[N] == t) return ind.index[N];
                 //not found
-                return 0;
+                return U();
             }
             pos = tmp.child[num];
         }
-        return 0;
+        return U();
     }
 
-    void Clear(){
+    void Clear() {
         crystalMemory.initialise();
         indexMemory.initialise();
     }
+
 #ifdef debugs
 
     void print() {

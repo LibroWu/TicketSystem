@@ -58,15 +58,18 @@
     * `char priviege`
     * `char name[]`
     * `char mailAddr[]`
-
+  * 
+    
   * 构造函数
 
 * **userManager**
 
   * 处理与用户有关的操作
   * 包含成员变量
-    * 用于储存用户信息及提供检索的BPT
-
+    
+* 用于储存用户信息及提供检索的BPT
+    * 用于维护用户登录态的unordered_map
+  
   * 包含成员函数
 
     * `void addUser(LaMetropole::paser::PaperCup*)`
@@ -86,7 +89,7 @@
       查询一名用户的信息
 
     * `void modifyProfile(LaMetropole::paser::PaperCup*)`
-
+  
       修改一名用户的信息
 
 ### Train相关类
@@ -167,6 +170,12 @@
 * **map**
 
   模仿std::map，用红黑树实现
+
+### 其他功能类
+
+* pair
+
+  模仿std::pair
 
 ## 文件设计
 

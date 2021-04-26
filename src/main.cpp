@@ -6,7 +6,7 @@
 #include "includes/unordered_map.hpp"
 #include "includes/parser.h"
 #include "includes/BPT.hpp"
-
+#include "includes/ticketSystem.h"
 LaMetropole::parser Apollo;
 
 void addUser(LaMetropole::parser::PaperCup *cup);
@@ -50,9 +50,5 @@ void (*commandMap[])(LaMetropole::parser::PaperCup *) ={
 };
 
 int main() {
-    while (1) {
-        LaMetropole::parser::PaperCup* cup=Apollo.listen();
-        commandMap[cup->keyType](cup);
-        delete cup;
-    }
+
 }

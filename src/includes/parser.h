@@ -58,7 +58,7 @@ namespace LaMetropole {
 
             ~PaperCup();
 
-            void push_back(char keyType, const string *argument);
+            void push_back(char keyType, string *argument);
 
         };
 

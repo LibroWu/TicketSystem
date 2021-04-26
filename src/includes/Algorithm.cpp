@@ -2,7 +2,7 @@
 // Created by Libro on 2021/4/18.
 //
 
-#include "algorithm.h"
+#include "Algorithm.h"
 
 namespace LaMetropole {
     template<class T>
@@ -11,7 +11,7 @@ namespace LaMetropole {
         a = b, b = c;
     }
 
-    namespace ForSort{
+    namespace ForSort {
 
     }
 
@@ -42,7 +42,9 @@ namespace LaMetropole {
         return l;
     }
 
-    long long Hash(const std::string &input) {
+    long long selfHash(const long long &input) { return input; }
+
+    long long HASH(const std::string &input) {
         unsigned int xor_num[4] = {1073758344, 268960770, 16779332, 268468481};
         int len = input.length();
         long long tmp = 0;
@@ -63,6 +65,13 @@ namespace LaMetropole {
             if (input[i] % 5 == 0) tmp2 >>= 1;
         }
         tmp += tmp2;
+        return tmp;
+    }
+
+    char toInt(std::string *s) {
+        char tmp = 0, len = s->length();
+        for (char i = 0; i < len; ++i)
+            tmp = tmp * 10 + s->operator[](i) - '0';
         return tmp;
     }
 }
