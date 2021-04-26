@@ -4,11 +4,20 @@
 
 #ifndef TICKETSYSTEM_TICKETSYSTEM_H
 #define TICKETSYSTEM_TICKETSYSTEM_H
+
 #include "parser.h"
 #include "user.h"
+
 namespace LaMetropole {
 
-    namespace LM{
+
+    class ticketSystem {
+    public:
+        parser Apollo;
+        userManager Libro;
+
+        ticketSystem();
+
         void addUser(parser::PaperCup *cup);
 
         void login(parser::PaperCup *cup);
@@ -40,20 +49,11 @@ namespace LaMetropole {
         void Clean(parser::PaperCup *cup);
 
         void Exit(parser::PaperCup *cup);
+
         void None(parser::PaperCup *cup);
-    }
-    void (*commandMap[17])(parser::PaperCup *) ={
-            LM::addUser, LM::login, LM::logout, LM::queryProfile, LM::modifyProfile, LM::addTrain,
-            LM::releaseTrain,LM::queryTrain, LM::deleteTrain, LM::queryTicket, LM::queryTransfer,
-            LM::buyTicket, LM::queryOrder,LM::refundTicket, LM::Clean, LM::Exit, LM::None
-    };
-
-    class ticketSystem {
-    public:
-        parser Apollo;
-        ticketSystem();
 
     };
+
 }
 
 #endif //TICKETSYSTEM_TICKETSYSTEM_H

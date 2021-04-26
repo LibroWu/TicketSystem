@@ -3,16 +3,19 @@
 //
 
 #include "parser.h"
+
 namespace LaMetropole {
     void parser::PaperCup::push_back(char keyType, string *argument) {
-        arg[(key[arv++] = keyType)-'a']=argument;
+        arg[(key[arv++] = keyType) - 'a'] = argument;
     }
 
     parser::PaperCup::~PaperCup() {
-        for (char i = 0; i < arv; ++i) delete arg[key[i]-'a'];
+        for (char i = 0; i < arv; ++i) delete arg[key[i] - 'a'];
     }
 
-    parser::PaperCup::PaperCup() : arv(0) {}
+    parser::PaperCup::PaperCup() : arv(0) {
+        memset(arg, 0, sizeof(arg));
+    }
 
     string *parser::tokenScanner::nextToken() {
         while (pos < len && isSpace(s->operator[](pos))) ++pos;
@@ -25,7 +28,8 @@ namespace LaMetropole {
         return (ch == division || ch == '\r' || ch == '\n');
     }
 
-    parser::tokenScanner::tokenScanner(string *s_ptr,char DIVISION) : s(s_ptr), pos(0), len(s_ptr->length()),division(DIVISION) {}
+    parser::tokenScanner::tokenScanner(string *s_ptr, char DIVISION) : s(s_ptr), pos(0), len(s_ptr->length()),
+                                                                       division(DIVISION) {}
 
     inline bool parser::tokenScanner::hasNextToken() {
         while (pos < len && isSpace(s->operator[](pos))) ++pos;
@@ -41,8 +45,8 @@ namespace LaMetropole {
     parser::PaperCup *parser::listen() {
         string s, *sKey, *sArg;
         PaperCup *tmp = new PaperCup;
-        bool flag;
-        if ( getline(std::cin, s)) flag= false;
+        bool flag = false;
+        if (getline(std::cin, s)) flag = true;
         if (!flag) {
             tmp->keyType = EXIT;
             return tmp;

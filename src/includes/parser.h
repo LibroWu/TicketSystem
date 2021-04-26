@@ -6,6 +6,7 @@
 #define TICKETSYSTEM_PARSER_H
 
 #include <string>
+#include <cstring>
 #include <iostream>
 
 namespace LaMetropole {

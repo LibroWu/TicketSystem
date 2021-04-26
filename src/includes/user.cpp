@@ -27,6 +27,7 @@ namespace LaMetropole {
         strcpy(password, other.password);
         strcpy(name, other.name);
         strcpy(mailAddr, other.mailAddr);
+        return *this;
     }
 
     userManager::userManager() : Libro(selfHash), Nebula("user_crystal.file", "user_index.file") {}
@@ -77,7 +78,7 @@ namespace LaMetropole {
         long long Hu = HASH(*cup->arg['u' - 'a']);
         if (Libro.count(Hu) == 0) {
             user tmp = Nebula.Find(Hu);
-            tmp.password[0] = 0, tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
+             tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
             if (tmp.privilege != -1) {
                 if (strcmp(tmp.password, cup->arg['p' - 'a']->c_str()) == 0) {
                     Libro[Hu] = tmp;
@@ -106,7 +107,7 @@ namespace LaMetropole {
                     tmp.privilege= toInt(cup->arg['g' - 'a']);
                 }
                 Nebula.modify(Hu, tmp);
-                cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << tmp.privilege << '\n';
+                cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << int(tmp.privilege) << '\n';
                 return true;
             }
         }
@@ -118,7 +119,7 @@ namespace LaMetropole {
         if (Libro.count(Hc)) {
             user tmp = Nebula.Find(Hu);
             if (tmp.privilege != -1 && (Hu == Hc || Libro[Hc].privilege > tmp.privilege)) {
-                cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << tmp.privilege << '\n';
+                cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << int(tmp.privilege) << '\n';
                 return true;
             }
         }

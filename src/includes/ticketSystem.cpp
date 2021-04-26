@@ -5,45 +5,66 @@
 #include "ticketSystem.h"
 
 namespace LaMetropole{
+    void (ticketSystem::*commandMap[17])(parser::PaperCup *) ={
+            &ticketSystem::addUser, &ticketSystem::login, &ticketSystem::logout, &ticketSystem::queryProfile, &ticketSystem::modifyProfile, &ticketSystem::addTrain,
+            &ticketSystem::releaseTrain, &ticketSystem::queryTrain, &ticketSystem::deleteTrain, &ticketSystem::queryTicket, &ticketSystem::queryTransfer,
+            &ticketSystem::buyTicket, &ticketSystem::queryOrder, &ticketSystem::refundTicket, &ticketSystem::Clean, &ticketSystem::Exit, &ticketSystem::None
+    };
     ticketSystem::ticketSystem() {
+        std::fstream file("user_crystal.file", std::fstream::in);
+        if (!file.is_open()) {
+            Libro.initialise();
+        } else Libro.initialise(true);
         while (1) {
             LaMetropole::parser::PaperCup* cup=Apollo.listen();
-            commandMap[cup->keyType](cup);
+            (this->*commandMap[cup->keyType])(cup);
             delete cup;
         }
     }
-    void LM::addUser(parser::PaperCup *cup) {
+    void ticketSystem::addUser(parser::PaperCup *cup) {
+        cout<<(Libro.add_user(cup)?0:-1)<<'\n';
     }
 
-    void LM::Clean(parser::PaperCup *cup) {}
+    void ticketSystem::Clean(parser::PaperCup *cup) {}
 
-    void LM::Exit(parser::PaperCup *cup) {}
+    void ticketSystem::Exit(parser::PaperCup *cup) {
+        cout<<"bye\n";
+        exit(0);
+    }
 
-    void LM::addTrain(parser::PaperCup *cup) {}
+    void ticketSystem::addTrain(parser::PaperCup *cup) {}
 
-    void LM::buyTicket(parser::PaperCup *cup) {}
+    void ticketSystem::buyTicket(parser::PaperCup *cup) {}
 
-    void LM::deleteTrain(parser::PaperCup *cup) {}
+    void ticketSystem::deleteTrain(parser::PaperCup *cup) {}
 
-    void LM::login(parser::PaperCup *cup) {}
+    void ticketSystem::login(parser::PaperCup *cup) {
+        cout<<(Libro.login(cup)?0:-1)<<'\n';
+    }
 
-    void LM::logout(parser::PaperCup *cup) {}
+    void ticketSystem::logout(parser::PaperCup *cup) {
+        cout<<(Libro.logout(cup)?0:-1)<<'\n';
+    }
 
-    void LM::refundTicket(parser::PaperCup *cup) {}
+    void ticketSystem::refundTicket(parser::PaperCup *cup) {}
 
-    void LM::releaseTrain(parser::PaperCup *cup) {}
+    void ticketSystem::releaseTrain(parser::PaperCup *cup) {}
 
-    void LM::queryTransfer(parser::PaperCup *cup) {}
+    void ticketSystem::queryTransfer(parser::PaperCup *cup) {}
 
-    void LM::queryTrain(parser::PaperCup *cup) {}
+    void ticketSystem::queryTrain(parser::PaperCup *cup) {}
 
-    void LM::queryTicket(parser::PaperCup *cup) {}
+    void ticketSystem::queryTicket(parser::PaperCup *cup) {}
 
-    void LM::queryProfile(parser::PaperCup *cup) {}
+    void ticketSystem::queryProfile(parser::PaperCup *cup) {
+        if (!Libro.query_profile(cup)) cout<<"-1\n";
+    }
 
-    void LM::queryOrder(parser::PaperCup *cup) {}
+    void ticketSystem::queryOrder(parser::PaperCup *cup) {}
 
-    void LM::modifyProfile(parser::PaperCup *cup) {}
+    void ticketSystem::modifyProfile(parser::PaperCup *cup) {
+        if (!Libro.modify(cup)) cout<<"-1\n";
+    }
 
-    void LM::None(parser::PaperCup *cup) {}
+    void ticketSystem::None(parser::PaperCup *cup) {}
 }
