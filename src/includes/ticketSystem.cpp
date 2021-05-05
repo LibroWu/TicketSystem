@@ -25,7 +25,10 @@ namespace LaMetropole{
         cout<<(Libro.add_user(cup)?0:-1)<<'\n';
     }
 
-    void ticketSystem::Clean(parser::PaperCup *cup) {}
+    void ticketSystem::Clean(parser::PaperCup *cup) {
+        Libro.clear();
+        cout<<0<<'\n';
+    }
 
     void ticketSystem::Exit(parser::PaperCup *cup) {
         cout<<"bye\n";

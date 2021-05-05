@@ -45,6 +45,7 @@ namespace LaMetropole {
 
     void userManager::clear() {
         Nebula.initialise();
+        Libro.clear();
         has_user = false;
     }
 
