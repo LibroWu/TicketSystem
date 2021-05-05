@@ -7,6 +7,7 @@
 
 #include "parser.h"
 #include "user.h"
+#include "train.h"
 
 namespace LaMetropole {
 
@@ -15,7 +16,7 @@ namespace LaMetropole {
     public:
         parser Apollo;
         userManager Libro;
-
+        trainManager Nebula;
         ticketSystem();
 
         void addUser(parser::PaperCup *cup);

@@ -8,10 +8,5 @@
 #include "includes/BPT.hpp"
 #include "includes/ticketSystem.h"
 #include "includes/L_time.h"
-//LaMetropole::ticketSystem ts;
-using LaMetropole::L_time;
-int main() {
-    L_time l;
-    l+=30*24*60;
-    cout<<l;
-}
+LaMetropole::ticketSystem ts;
+int main() {}

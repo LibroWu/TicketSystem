@@ -29,7 +29,7 @@ namespace LaMetropole {
     };
 
     class userManager {
-    public:
+    private:
         BPT<long long, user, 288, 32> Nebula;
         unordered_map<long long, user> Libro;
         bool has_user;
