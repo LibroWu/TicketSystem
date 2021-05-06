@@ -1,5 +1,5 @@
 //
-// Created by Libro on 2021/4/17.
+// Created by Leon on 2021/4/17.
 //
 
 #ifndef TICKETSYSTEM_USER_H
@@ -30,8 +30,8 @@ namespace LaMetropole {
 
     class userManager {
     private:
-        BPT<long long, user, 288, 32> Nebula;
-        unordered_map<long long, user> Libro;
+        BPT<long long, user, 288, 32> Mathilda;
+        unordered_map<long long, user> Leon;
         bool has_user;
     public:
         userManager();

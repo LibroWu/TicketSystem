@@ -1,5 +1,5 @@
 //
-// Created by Libro on 2021/4/17.
+// Created by Leon on 2021/4/17.
 //
 
 #include "user.h"
@@ -30,22 +30,22 @@ namespace LaMetropole {
         return *this;
     }
 
-    userManager::userManager() : Libro(selfHash), Nebula("user_crystal.file", "user_index.file") {}
+    userManager::userManager() : Leon(selfHash), Mathilda("user_crystal.file", "user_index.file") {}
 
     userManager::~userManager() {}
 
     void userManager::initialise(bool flag) {
         if (flag) {
-            has_user = Nebula.empty();
+            has_user = Mathilda.empty();
         } else {
-            Nebula.initialise();
+            Mathilda.initialise();
             has_user = false;
         }
     }
 
     void userManager::clear() {
-        Nebula.initialise();
-        Libro.clear();
+        Mathilda.initialise();
+        Leon.clear();
         has_user = false;
     }
 
@@ -53,17 +53,17 @@ namespace LaMetropole {
         if (!has_user) {
             user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                      10);
-            Nebula.insert(HASH(*cup->arg['u' - 'a']), tmp);
+            Mathilda.insert(HASH(*cup->arg['u' - 'a']), tmp);
             return (has_user = true);
         } else {
             long long Hc = HASH(*cup->arg['c' - 'a']), Hu = HASH(*cup->arg['u' - 'a']);
             char level = toInt(cup->arg['g' - 'a']);
-            if (Libro.count(Hc))
-                if (Libro[Hc].privilege > level)
-                    if (Nebula.Find(Hu).privilege == -1) {
+            if (Leon.count(Hc))
+                if (Leon[Hc].privilege > level)
+                    if (Mathilda.Find(Hu).privilege == -1) {
                         user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                                  level);
-                        Nebula.insert(Hu, tmp);
+                        Mathilda.insert(Hu, tmp);
                         return true;
                     }
             return false;
@@ -72,17 +72,17 @@ namespace LaMetropole {
 
     bool userManager::logout(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
-        return Libro.erase(Hu);
+        return Leon.erase(Hu);
     }
 
     bool userManager::login(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
-        if (Libro.count(Hu) == 0) {
-            user tmp = Nebula.Find(Hu);
+        if (Leon.count(Hu) == 0) {
+            user tmp = Mathilda.Find(Hu);
              tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
             if (tmp.privilege != -1) {
                 if (strcmp(tmp.password, cup->arg['p' - 'a']->c_str()) == 0) {
-                    Libro[Hu] = tmp;
+                    Leon[Hu] = tmp;
                     return true;
                 }
             }
@@ -92,9 +92,9 @@ namespace LaMetropole {
 
     bool userManager::modify(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']), Hc = HASH(*cup->arg['c' - 'a']);
-        if (Libro.count(Hc)) {
-            user tmp = Nebula.Find(Hu);
-            if (tmp.privilege != -1 && (Hu == Hc || Libro[Hc].privilege > tmp.privilege)) {
+        if (Leon.count(Hc)) {
+            user tmp = Mathilda.Find(Hu);
+            if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
                 if (cup->arg['p' - 'a'] != nullptr) {
                     strcpy(tmp.password,cup->arg['p' - 'a']->c_str());
                 }
@@ -107,7 +107,7 @@ namespace LaMetropole {
                 if (cup->arg['g' - 'a'] != nullptr) {
                     tmp.privilege= toInt(cup->arg['g' - 'a']);
                 }
-                Nebula.modify(Hu, tmp);
+                Mathilda.modify(Hu, tmp);
                 cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << int(tmp.privilege) << '\n';
                 return true;
             }
@@ -117,9 +117,9 @@ namespace LaMetropole {
 
     bool userManager::query_profile(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']), Hc = HASH(*cup->arg['c' - 'a']);
-        if (Libro.count(Hc)) {
-            user tmp = Nebula.Find(Hu);
-            if (tmp.privilege != -1 && (Hu == Hc || Libro[Hc].privilege > tmp.privilege)) {
+        if (Leon.count(Hc)) {
+            user tmp = Mathilda.Find(Hu);
+            if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
                 cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << int(tmp.privilege) << '\n';
                 return true;
             }

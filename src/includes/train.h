@@ -1,5 +1,5 @@
 //
-// Created by 73109 on 2021/5/5.
+// Created by Leon on 2021/5/5.
 //
 
 #ifndef TICKETSYSTEM_TRAIN_H
@@ -31,22 +31,26 @@ namespace LaMetropole {
         class stationTrain{
 
         };
-        BPT<stationTrain,int,288,288> Libro;
+        BPT<stationTrain,int,288,288> Nancy;
 
         //trainID -> offset of the train
-        BPT<long long, int , 288, 288> Nebula;
+        BPT<long long, int , 288, 288> Jason;
 
-        MemoryRiver<train> trainRecord;
+        MemoryRiver<train> trainRecorder;
 
         //for pending
         //userId + Time -> offset
         class userIdTime{
 
         };
-        BPT<userIdTime,int ,288,288> A;
+        BPT<userIdTime,int ,288,288> Sabine;
 
         //unrolled linked list table for each train's pending list
         //maybe use bpt
+        class trainIDOrder{
+
+        };
+        BPT<userIdTime,int ,288,288> Arya;
     public:
         trainManager();
 
