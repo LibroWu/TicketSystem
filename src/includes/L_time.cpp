@@ -85,11 +85,13 @@ namespace LaMetropole {
         return out;
     }
 
-    orderRecord::orderRecord(int price, int n, int trainOrderNum, char *trainId, char *start, char *target,
+    orderRecord::orderRecord(int price, int n, int trainOrderNum, int dayN, int sStation, int arStation, char *trainId,
+                             char *start, char *target,
                              const L_time &st,
                              const L_time &arv) : price(price), n(n),
                                                   startTime(st),
-                                                  arrivalTime(arv), pendingNum(trainOrderNum) {
+                                                  arrivalTime(arv), pendingNum(trainOrderNum), st(sStation),
+                                                  arv(arStation), dayN(dayN) {
         strcpy(trainID, trainId);
         strcpy(startStation, start);
         strcpy(targetStation, target);
@@ -109,7 +111,9 @@ namespace LaMetropole {
         strcpy(targetStation, other.targetStation);
     }
 
-    pendingRecord::pendingRecord(int price, int n, int pendingNum, int st, int arv) : price(price), n(n),
-                                                                                      pendingNum(pendingNum), st(st),
-                                                                                      arv(arv) {}
+    pendingRecord::pendingRecord(int price, int n, int pendingNum, int dayN, char st, char arv, int orderNum,
+                                 long long hashUserId)
+            : price(price), n(n),
+              pendingNum(pendingNum), st(st),
+              arv(arv), orderNum(orderNum), hashUserId(hashUserId), dayN(dayN) {}
 }

@@ -44,10 +44,11 @@ namespace LaMetropole {
         char status;
         char trainID[22], startStation[35], targetStation[35];
         //price means the single ticket
-        int price, n, pendingNum;
+        int price, n, pendingNum,dayN;
+        char st, arv;
         L_time startTime, arrivalTime;
 
-        orderRecord(int price, int n, int trainOrderNum, char *trainId, char *start, char *target, const L_time &st,
+        orderRecord(int price, int n, int trainOrderNum,int dayN,int sStation,int arStation, char *trainId, char *start, char *target, const L_time &st,
                     const L_time &arv);
 
         orderRecord();
@@ -56,11 +57,13 @@ namespace LaMetropole {
     };
 
     struct pendingRecord {
-        int price, n, pendingNum,st,arv;
+        int price, n, pendingNum,  orderNum,dayN;
+        char st, arv;
+        long long hashUserId;
 
-        pendingRecord(int price, int n, int pendingNum,int st,int arv);
+        pendingRecord(int price, int n, int pendingNum,int dayN, char st, char arv, int orderNum, long long hashUserId);
 
-        pendingRecord()=default;
+        pendingRecord() = default;
     };
 }
 

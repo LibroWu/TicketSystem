@@ -186,9 +186,56 @@ namespace LaMetropole {
         return false;
     }
 
-    bool trainManager::queryTransfer(parser::PaperCup *cup) {}
+    bool trainManager::queryTransfer(parser::PaperCup *cup) {
 
-    bool trainManager::refundTicket(parser::PaperCup *cup) {}
+    }
+
+    bool trainManager::refundTicket(parser::PaperCup *cup) {
+        long long Hu = HASH(*cup->arg['u' - 'a']);
+        if (!Libro->Leon.count(Hu)) return false;
+        int n;
+        if (cup->arv == 1) n = 1;
+        else n = toLong(cup->arg['n' - 'a']);
+        user userTmp = Libro->Mathilda.Find(Hu);
+        userManager::userIdTime refundKey(Hu, userTmp.orderNum - n);
+        if (n > userTmp.orderNum) return false;
+        orderRecord orderTmp = Libro->Sabine.Find(refundKey),orderGet;
+        if (orderTmp.status == 'r') return false;
+        if (orderTmp.status == 'p') {
+            orderTmp.status = 'r';
+            Libro->Sabine.modify(refundKey, orderTmp);
+        }
+        if (orderTmp.status == 's') {
+            orderTmp.status = 'r';
+            long long hashTrainID = HASH(orderTmp.trainID);
+            offsetFlag offsetTmp = Jason.Find(hashTrainID);
+            Libro->Sabine.modify(refundKey, orderTmp);
+            train trainTmp;
+            trainRecorder.read(trainTmp, offsetTmp.offset);
+            for (char i = orderTmp.st; i < orderTmp.arv; ++i)
+                trainTmp.seatNum[orderTmp.dayN][i]+=orderTmp.n;
+            vector<pendingRecord> *vec_ptr = Arya.multipleFind(trainIDOrder(hashTrainID));
+            for (int i = 1; i < vec_ptr->size(); ++i) {
+                pendingRecord& pr=vec_ptr->operator[](i);
+                //todo make it better
+                //todo search exact day's train
+                if (pr.dayN!=orderTmp.dayN) continue;
+                int seatNum=trainTmp.maxSeatNum;
+                for (char j = pr.st; j < pr.arv; ++j) seatNum= min(seatNum,trainTmp.seatNum[pr.dayN][j]);
+                if (seatNum>=pr.n) {
+                    Arya.Delete(trainIDOrder(hashTrainID,pr.orderNum));
+                    for (char j = pr.st; j < pr.arv; ++j) trainTmp.seatNum[pr.dayN][j]-=pr.n;
+                    //todo optimise
+                    orderGet=Libro->Sabine.Find(userManager::userIdTime(pr.hashUserId,pr.orderNum));
+                    orderGet.status='r';
+                    Libro->Sabine.modify(userManager::userIdTime(pr.hashUserId,pr.orderNum),orderGet);
+                }
+            }
+            delete vec_ptr;
+            trainRecorder.update(trainTmp,offsetTmp.offset);
+        }
+        return true;
+    }
 
     bool trainManager::releaseTrain(parser::PaperCup *cup) {
         long long HashID = HASH(*cup->arg['i' - 'a']);
@@ -233,33 +280,39 @@ namespace LaMetropole {
         if ((trainTmp.beginMonth > Month || trainTmp.beginMonth == Month && trainTmp.beginDay > Day) ||
             (trainTmp.endMonth < Month || trainTmp.endMonth == Month && trainTmp.endDay < Day))
             return 'f';
+        //beyond the train capacity
+        int Need = toLong(cup->arg['n' - 'a']);
+        if (Need > trainTmp.maxSeatNum) return false;
         int dayN = (Month - 6) * 31 + Day;
         user userTmp = Libro->Mathilda.Find(Hu);
-        int st = -1;
+        char st = -1;
         int seatNum = trainTmp.maxSeatNum, sumPrice = 0;
         L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), stTime;
         for (char i = 0; i < trainTmp.stationNum; ++i) {
             if (strcmp(cup->arg['t' - 'a']->c_str(), trainTmp.stations[i]) == 0) {
                 if (st == -1) return 'f';
-                int Need = toLong(cup->arg['n' - 'a']);
                 if (seatNum > Need)
                     if (cup->arv == 6 || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
-                orderRecord orderTmp(sumPrice, Need, tmp.pendingNum, trainTmp.ID, trainTmp.stations[st],
+                orderRecord orderTmp(sumPrice, Need, tmp.pendingNum,dayN, st, i, trainTmp.ID, trainTmp.stations[st],
                                      trainTmp.stations[i], stTime,
                                      timeTmp);
                 if (seatNum > Need) {
                     orderTmp.status = 'p';
                     Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
+                    Arya.insert(trainIDOrder(hashTrainId, tmp.pendingNum),
+                                pendingRecord(sumPrice, seatNum, tmp.pendingNum,dayN, st, i, userTmp.orderNum, Hu));
                     ++userTmp.orderNum;
                     Libro->Mathilda.modify(Hu, userTmp);
-                    Arya.insert(trainIDOrder(hashTrainId, tmp.pendingNum),
-                                pendingRecord(sumPrice, seatNum, tmp.pendingNum, st, i));
                     ++tmp.pendingNum;
                     Jason.modify(hashTrainId, tmp);
                     return 'p';
                 }
                 orderTmp.status = 's';
                 Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
+                for (char j = st; j < i; ++j) {
+                    trainTmp.seatNum[dayN][j] -= Need;
+                }
+                trainRecorder.update(trainTmp, tmp.offset);
                 ++userTmp.orderNum;
                 Libro->Mathilda.modify(Hu, userTmp);
                 cout << orderTmp.price * orderTmp.n << '\n';
