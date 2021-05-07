@@ -20,28 +20,6 @@ namespace LaMetropole {
 
     }
 
-    template<class T>
-    T *lower_bound(T *l, T *r, T t) {
-        T *mid;
-        while (l < r) {
-            mid = (l + r) >> 1;
-            if (*mid < t) l = mid + 1;
-            else r = mid;
-        }
-        return l;
-    }
-
-    template<class T>
-    T *upper_bound(T *l, T *r, T t) {
-        T *mid;
-        while (l < r) {
-            mid = (l + r) >> 1;
-            if (*mid <= t) l = mid + 1;
-            else r = mid;
-        }
-        return l;
-    }
-
     long long selfHash(const long long &input) { return input; }
 
     long long HASH(const std::string &input) {
