@@ -7,18 +7,13 @@
 
 #include <cstring>
 #include <string>
-#include "L_time.h"
 #include "user.h"
-#include "Algorithm.h"
-#include "unordered_map.hpp"
-#include "BPT.hpp"
-#include "parser.h"
 
 namespace LaMetropole {
     class train {
     public:
         char ID[22], stationNum, stations[101][35];
-        int seatNum[101], prices[101], start_hour, start_minute, maxSeatNum;
+        int seatNum[94][101], prices[101], start_hour, start_minute, maxSeatNum;
         int travelTimes[101], stopoverTimes[101];
         char beginDay, beginMonth, endDay, endMonth, Type;
 
@@ -55,12 +50,13 @@ namespace LaMetropole {
 
         BPT<stationTrain, int, 288, 288> Nancy;
 
-        //trainID -> offset & released or not of the train
+        //trainID -> offset & released or not of the train & pendingNum
         struct offsetFlag {
-            int offset;
+            int offset, pendingNum;
             bool flag;
 
-            offsetFlag(int offset = -1, bool flag = false) : offset(-1), flag(flag) {}
+            offsetFlag(int offset = -1, bool flag = false, int pendingNum = 0) : offset(-1), flag(flag),
+                                                                                 pendingNum(pendingNum) {}
         };
 
         BPT<long long, offsetFlag, 288, 288> Jason;
@@ -68,21 +64,30 @@ namespace LaMetropole {
         //information of each train
         MemoryRiver<train> trainRecorder;
 
-        //pending list of each user
-        //userId + Time -> offset
-        class userIdTime {
-
-        };
-
-        BPT<userIdTime, int, 288, 288> Sabine;
-
         //pending list of each train
-        //
-        class trainIDOrder {
+        struct trainIDOrder {
+            long long key;
+            int pendingNum;
 
+            trainIDOrder(long long trainIdHash = 0, long long orderNum = -1) : key(trainIdHash),
+                                                                               pendingNum(orderNum) {}
+
+            bool operator<(const trainIDOrder &other) const {
+                if (key < other.key) return true;
+                if (key > other.key) return false;
+                return (pendingNum < other.pendingNum);
+            }
+
+            bool operator<=(const trainIDOrder &other) const {
+                return (key < other.key || key == other.key && pendingNum <= other.pendingNum);
+            }
+
+            bool operator==(const trainIDOrder &other) const {
+                return ((key == other.key && pendingNum == other.pendingNum));
+            }
         };
 
-        BPT<userIdTime, int, 288, 288> Arya;
+        BPT<trainIDOrder, pendingRecord, 288, 288> Arya;
     public:
         trainManager(userManager *libro);
 

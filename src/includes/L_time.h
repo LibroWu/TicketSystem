@@ -6,6 +6,7 @@
 #define TICKETSYSTEM_L_TIME_H
 
 #include <ostream>
+#include "cstring"
 
 namespace LaMetropole {
 
@@ -38,6 +39,29 @@ namespace LaMetropole {
     };
 
     std::ostream &operator<<(std::ostream &out, const L_time &obj);
+
+    struct orderRecord {
+        char status;
+        char trainID[22], startStation[35], targetStation[35];
+        //price means the single ticket
+        int price, n, pendingNum;
+        L_time startTime, arrivalTime;
+
+        orderRecord(int price, int n, int trainOrderNum, char *trainId, char *start, char *target, const L_time &st,
+                    const L_time &arv);
+
+        orderRecord();
+
+        orderRecord(const orderRecord &other);
+    };
+
+    struct pendingRecord {
+        int price, n, pendingNum,st,arv;
+
+        pendingRecord(int price, int n, int pendingNum,int st,int arv);
+
+        pendingRecord()=default;
+    };
 }
 
 #endif //TICKETSYSTEM_L_TIME_H

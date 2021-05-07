@@ -5,19 +5,15 @@
 #include "Algorithm.h"
 
 namespace LaMetropole {
-    template<class T>
-    void swap(T &a, T &b) {
-        T c = a;
-        a = b, b = c;
-    }
 
-    namespace ForSort {
 
-    }
-
-    template<class T>
-    void sort(T *l, T *r) {
-
+    int forSort::getLog2(int x) {
+        int tmp = -1;
+        while (x) {
+            ++tmp;
+            x >>= 1;
+        }
+        return tmp;
     }
 
     long long selfHashInt(const int &input) { return input; }

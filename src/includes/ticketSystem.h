@@ -17,6 +17,7 @@ namespace LaMetropole {
         parser Apollo;
         userManager Libro;
         trainManager Nebula;
+
         ticketSystem();
 
         void addUser(parser::PaperCup *cup);

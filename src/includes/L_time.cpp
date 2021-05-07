@@ -84,4 +84,32 @@ namespace LaMetropole {
                 << obj.hour << ((obj.hour < 10) ? ":0" : ":") << obj.minute;
         return out;
     }
+
+    orderRecord::orderRecord(int price, int n, int trainOrderNum, char *trainId, char *start, char *target,
+                             const L_time &st,
+                             const L_time &arv) : price(price), n(n),
+                                                  startTime(st),
+                                                  arrivalTime(arv), pendingNum(trainOrderNum) {
+        strcpy(trainID, trainId);
+        strcpy(startStation, start);
+        strcpy(targetStation, target);
+    }
+
+    orderRecord::orderRecord() {
+        trainID[0] = 0;
+        startStation[0] = 0;
+        targetStation[0] = 0;
+    }
+
+    orderRecord::orderRecord(const orderRecord &other) : price(other.price), n(other.n),
+                                                         startTime(other.startTime),
+                                                         arrivalTime(other.arrivalTime) {
+        strcpy(trainID, other.trainID);
+        strcpy(startStation, other.startStation);
+        strcpy(targetStation, other.targetStation);
+    }
+
+    pendingRecord::pendingRecord(int price, int n, int pendingNum, int st, int arv) : price(price), n(n),
+                                                                                      pendingNum(pendingNum), st(st),
+                                                                                      arv(arv) {}
 }

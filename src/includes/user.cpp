@@ -7,14 +7,14 @@
 namespace LaMetropole {
 
     user::user(const string &userName, const string &pswd, const string &Name, const string &mail, char privilege)
-            : privilege(privilege) {
+            : privilege(privilege), orderNum(0) {
         strcpy(username, userName.c_str());
         strcpy(password, pswd.c_str());
         strcpy(name, Name.c_str());
         strcpy(mailAddr, mail.c_str());
     }
 
-    user::user() : privilege(-1) {
+    user::user() : privilege(-1), orderNum(0) {
         username[0] = '\0';
         password[0] = '\0';
         name[0] = '\0';
@@ -30,7 +30,8 @@ namespace LaMetropole {
         return *this;
     }
 
-    userManager::userManager() : Leon(selfHash), Mathilda("user_crystal.file", "user_index.file") {}
+    userManager::userManager() : Leon(selfHash), Mathilda("user_crystal.file", "user_index.file"),
+                                 Sabine("Sabine_crystal.file", "Sabine_index.file") {}
 
     userManager::~userManager() {}
 
@@ -38,6 +39,7 @@ namespace LaMetropole {
         if (flag) {
             has_user = Mathilda.empty();
         } else {
+            Sabine.initialise();
             Mathilda.initialise();
             has_user = false;
         }
@@ -45,6 +47,7 @@ namespace LaMetropole {
 
     void userManager::clear() {
         Mathilda.initialise();
+        Sabine.initialise();
         Leon.clear();
         has_user = false;
     }
@@ -54,6 +57,7 @@ namespace LaMetropole {
             user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                      10);
             Mathilda.insert(HASH(*cup->arg['u' - 'a']), tmp);
+            Sabine.insert(userIdTime(HASH(*cup->arg['u'-'a']),-1),orderRecord());
             return (has_user = true);
         } else {
             long long Hc = HASH(*cup->arg['c' - 'a']), Hu = HASH(*cup->arg['u' - 'a']);
@@ -64,6 +68,7 @@ namespace LaMetropole {
                         user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                                  level);
                         Mathilda.insert(Hu, tmp);
+                        Sabine.insert(userIdTime(Hu,-1),orderRecord());
                         return true;
                     }
             return false;
