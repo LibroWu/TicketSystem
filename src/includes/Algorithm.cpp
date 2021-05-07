@@ -20,6 +20,8 @@ namespace LaMetropole {
 
     }
 
+    long long selfHashInt(const int &input) { return input; }
+
     long long selfHash(const long long &input) { return input; }
 
     long long HASH(const std::string &input) {
@@ -46,7 +48,7 @@ namespace LaMetropole {
         return tmp;
     }
 
-    char toInt(std::string *s,bool label) {
+    char toInt(std::string *s, bool label) {
         char tmp = 0, len = s->length();
         for (char i = 0; i < len; ++i)
             tmp = tmp * 10 + s->operator[](i) - '0';
@@ -54,7 +56,7 @@ namespace LaMetropole {
         return tmp;
     }
 
-    int toLong(std::string *s,bool label) {
+    int toLong(std::string *s, bool label) {
         int tmp = 0, len = s->length();
         for (int i = 0; i < len; ++i)
             tmp = tmp * 10 + s->operator[](i) - '0';

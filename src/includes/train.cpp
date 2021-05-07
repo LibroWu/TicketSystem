@@ -86,7 +86,25 @@ namespace LaMetropole {
 
     bool trainManager::queryOrder(parser::PaperCup *cup) {}
 
-    bool trainManager::queryTicket(parser::PaperCup *cup) {}
+    bool trainManager::queryTicket(parser::PaperCup *cup) {
+        long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
+        parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
+        char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
+        vector<int> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
+        vector<int> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
+        vector<int> same_vec(0);
+        unordered_map<int,bool> mapTable(selfHashInt);
+        int len=start_vec->size();
+        for (int i = 0; i < len; ++i) {
+            mapTable[start_vec->operator[](i)]= true;
+        }
+        len=end_vec->size();
+        for (int i = 0; i < len; ++i) {
+            if (mapTable.count(end_vec->operator[](i)))
+                same_vec.push_back(end_vec->operator[](i));
+        }
+        
+    }
 
     bool trainManager::queryTrain(parser::PaperCup *cup) {
         long long HashID = HASH(*cup->arg['i' - 'a']);
@@ -128,8 +146,10 @@ namespace LaMetropole {
         Jason.modify(HashID, offsetFlag(tmp.offset, true));
         long long HashTrainId = HASH(trainTmp.ID), HashStation;
         for (char i = 0; i < trainTmp.stationNum; ++i) {
-            Nancy.insert(stationTrain(HASH(trainTmp.stations[i]), HashTrainId), tmp.offset);
+            Nancy.insert(stationTrain(HASH(trainTmp.stations[i])), -1);
+            Nancy.insert(stationTrain(HASH(trainTmp.stations[i]), tmp.offset), tmp.offset);
         }
+        return true;
     }
 
     bool trainManager::deleteTrain(parser::PaperCup *cup) {

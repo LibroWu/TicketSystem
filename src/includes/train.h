@@ -31,24 +31,25 @@ namespace LaMetropole {
     private:
         userManager *Libro;
 
-        //station+trainID -> offset of the train
+        //station+trainOffset -> offset of the train
         struct stationTrain {
-            long long stationHash, ID_Hash;
-            bool flag;
-            stationTrain(long long stationHash = 0, long long ID_Hash = 0, bool flag = false) : stationHash(stationHash),
-                                                                                                ID_Hash(ID_Hash),
-                                                                                                flag(flag) {}
+            long long key, trainOffset;
+
+            stationTrain(long long stationHash = 0, long long trainOffset = -1) : key(stationHash),
+                                                                                  trainOffset(trainOffset) {}
 
             bool operator<(const stationTrain &other) const {
-                if (stationHash < other.stationHash) return true;
-                if (stationHash > other.stationHash) return false;
-                if (flag) return true;
-                if (other.flag) return true;
-                return (ID_Hash < other.ID_Hash);
+                if (key < other.key) return true;
+                if (key > other.key) return false;
+                return (trainOffset < other.trainOffset);
+            }
+
+            bool operator<=(const stationTrain &other) const {
+                return (key < other.key || key == other.key && trainOffset <= other.trainOffset);
             }
 
             bool operator==(const stationTrain &other) const {
-                return ((stationHash == other.stationHash && ID_Hash == other.ID_Hash && flag == other.flag));
+                return ((key == other.key && trainOffset == other.trainOffset));
             }
         };
 

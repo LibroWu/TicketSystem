@@ -16,7 +16,7 @@ namespace LaMetropole {
     T *lower_bound(T *l, T *r, T t) {
         T *mid;
         while (l < r) {
-            mid = (l + r) >> 1;
+            mid = l + (r - l) /2;
             if (*mid < t) l = mid + 1;
             else r = mid;
         }
@@ -27,16 +27,19 @@ namespace LaMetropole {
     T *upper_bound(T *l, T *r, T t) {
         T *mid;
         while (l < r) {
-            mid = (l + r) >> 1;
+            mid = l + (r - l)/2;
             if (*mid <= t) l = mid + 1;
             else r = mid;
         }
         return l;
     }
+
     template<class T>
     void sort(T *l, T *r);
 
     long long selfHash(const long long &input);
+
+    long long selfHashInt(const int &input);
 
     long long HASH(const std::string &input);
 
