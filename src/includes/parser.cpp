@@ -36,6 +36,10 @@ namespace LaMetropole {
         return (pos < len);
     }
 
+    void parser::tokenScanner::set_division(char Division) {
+        division=Division;
+    }
+
     void parser::tokenScanner::set_ptr(string *s_ptr) {
         s = s_ptr;
         pos = 0;

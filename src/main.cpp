@@ -7,6 +7,7 @@
 #include "includes/parser.h"
 #include "includes/BPT.hpp"
 #include "includes/ticketSystem.h"
-#include "includes/L_time.h"
+
 LaMetropole::ticketSystem ts;
+
 int main() {}

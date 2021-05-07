@@ -8,7 +8,8 @@ namespace LaMetropole {
 
     const int Month[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    L_time::L_time(char mm, char dd, char hour, char minute) : month(mm), day(dd), hour(hour), minute(minute) {}
+    L_time::L_time(char mm, char dd, char hour, char minute, bool flag) : month(mm), day(dd), hour(hour),
+                                                                          minute(minute), flag(flag) {}
 
     //the base is 06-01
     L_time::L_time(int t) {
@@ -77,7 +78,10 @@ namespace LaMetropole {
     }
 
     std::ostream &operator<<(std::ostream &out, const L_time &obj) {
-        out << obj.month << ' ' << obj.day << ' ' << obj.hour << ' ' << obj.minute;
+        if (obj.flag) out << "xx-xx xx:xx";
+        else
+            out << '0' << obj.month << ((obj.day < 10) ? "-0" : "-") << obj.day << ((obj.hour < 10) ? " 0" : " ")
+                << obj.hour << ((obj.hour < 10) ? ":0" : ":") << obj.minute;
         return out;
     }
 }

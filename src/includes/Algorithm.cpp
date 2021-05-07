@@ -68,10 +68,19 @@ namespace LaMetropole {
         return tmp;
     }
 
-    char toInt(std::string *s) {
+    char toInt(std::string *s,bool label) {
         char tmp = 0, len = s->length();
         for (char i = 0; i < len; ++i)
             tmp = tmp * 10 + s->operator[](i) - '0';
+        if (label) delete s;
+        return tmp;
+    }
+
+    int toLong(std::string *s,bool label) {
+        int tmp = 0, len = s->length();
+        for (int i = 0; i < len; ++i)
+            tmp = tmp * 10 + s->operator[](i) - '0';
+        if (label) delete s;
         return tmp;
     }
 }

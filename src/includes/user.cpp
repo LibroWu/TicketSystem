@@ -60,7 +60,7 @@ namespace LaMetropole {
             char level = toInt(cup->arg['g' - 'a']);
             if (Leon.count(Hc))
                 if (Leon[Hc].privilege > level)
-                    if (Mathilda.Find(Hu).privilege == -1) {
+                    if (!Mathilda.count(Hu)) {
                         user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                                  level);
                         Mathilda.insert(Hu, tmp);
@@ -79,7 +79,7 @@ namespace LaMetropole {
         long long Hu = HASH(*cup->arg['u' - 'a']);
         if (Leon.count(Hu) == 0) {
             user tmp = Mathilda.Find(Hu);
-             tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
+            tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
             if (tmp.privilege != -1) {
                 if (strcmp(tmp.password, cup->arg['p' - 'a']->c_str()) == 0) {
                     Leon[Hu] = tmp;
@@ -96,16 +96,16 @@ namespace LaMetropole {
             user tmp = Mathilda.Find(Hu);
             if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
                 if (cup->arg['p' - 'a'] != nullptr) {
-                    strcpy(tmp.password,cup->arg['p' - 'a']->c_str());
+                    strcpy(tmp.password, cup->arg['p' - 'a']->c_str());
                 }
                 if (cup->arg['n' - 'a'] != nullptr) {
-                    strcpy(tmp.name,cup->arg['n' - 'a']->c_str());
+                    strcpy(tmp.name, cup->arg['n' - 'a']->c_str());
                 }
                 if (cup->arg['m' - 'a'] != nullptr) {
-                    strcpy(tmp.mailAddr,cup->arg['m' - 'a']->c_str());
+                    strcpy(tmp.mailAddr, cup->arg['m' - 'a']->c_str());
                 }
                 if (cup->arg['g' - 'a'] != nullptr) {
-                    tmp.privilege= toInt(cup->arg['g' - 'a']);
+                    tmp.privilege = toInt(cup->arg['g' - 'a']);
                 }
                 Mathilda.modify(Hu, tmp);
                 cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << int(tmp.privilege) << '\n';

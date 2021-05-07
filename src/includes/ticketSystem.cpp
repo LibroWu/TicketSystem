@@ -14,14 +14,14 @@ namespace LaMetropole {
             &ticketSystem::Exit, &ticketSystem::None
     };
 
-    ticketSystem::ticketSystem() {
+    ticketSystem::ticketSystem(): Nebula(&Libro) {
         std::fstream file("user_crystal.file", std::fstream::in);
         if (!file.is_open()) {
             Libro.initialise();
             Nebula.initialise();
         } else {
             Libro.initialise(true);
-            Nebula.initialise(true);
+            //Nebula.initialise(true);
         }
         while (1) {
             LaMetropole::parser::PaperCup *cup = Apollo.listen();

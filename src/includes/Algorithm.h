@@ -6,24 +6,27 @@
 #define TICKETSYSTEM_ALGORITHM_H
 
 #include <string>
-namespace LaMetropole{
+
+namespace LaMetropole {
 
     template<class T>
-    void swap(T& a,T& b);
+    void swap(T &a, T &b);
 
     template<class T>
-    T* lower_bound(T* l,T* r,T t);
+    T *lower_bound(T *l, T *r, T t);
 
     template<class T>
-    T* upper_bound(T* l,T* r,T t);
+    T *upper_bound(T *l, T *r, T t);
 
     template<class T>
-    void sort(T* l,T* r);
+    void sort(T *l, T *r);
 
-    long long selfHash(const long long & input);
+    long long selfHash(const long long &input);
 
-    long long HASH(const std::string& input);
+    long long HASH(const std::string &input);
 
-    char toInt(std::string* s);
+    char toInt(std::string *s, bool label = false);
+
+    int toLong(std::string *s, bool label = false);
 }
 #endif //TICKETSYSTEM_ALGORITHM_H

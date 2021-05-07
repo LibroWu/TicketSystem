@@ -434,7 +434,7 @@ public:
         return root_pos == 0;
     }
 
-    void modify(const T &t, U &u) {
+    void modify(const T &t,const U &u) {
         int pos, num;
         crystalMemory.get_info(pos, 3);
         crystalNode tmp;
@@ -475,7 +475,25 @@ public:
         }
         return U();
     }
-
+    bool count(const T &t) {
+        int pos, num;
+        crystalMemory.get_info(pos, 3);
+        crystalNode tmp;
+        while (pos > 0) {
+            crystalMemory.read(tmp, pos);
+            num = upper_bound(tmp.Fence, tmp.Fence + tmp.number - 1, t) - tmp.Fence;
+            if (tmp.is_leaf) {
+                indexNode ind;
+                indexMemory.read(ind, tmp.child[num]);
+                int N = lower_bound(ind.v, ind.v + ind.number, t) - ind.v;
+                if (N<ind.number && ind.v[N] == t) return true;
+                //not found
+                return false;
+            }
+            pos = tmp.child[num];
+        }
+        return false;
+    }
     vector<U>* multipleFind(const T& t) {
         int pos, num;
         crystalMemory.get_info(pos, 3);

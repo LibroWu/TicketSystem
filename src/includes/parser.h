@@ -42,6 +42,8 @@ namespace LaMetropole {
 
             void set_ptr(string *s_ptr);
 
+            void set_division(char Division);
+
             inline bool isSpace(char ch);
 
             string *nextToken();
