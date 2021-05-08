@@ -8,13 +8,15 @@
 #include <cstring>
 #include <string>
 #include "user.h"
+using std::sort;
 
 namespace LaMetropole {
     class train {
     public:
         char ID[22], stationNum, stations[101][35];
-        int seatNum[94][101], prices[101], start_hour, start_minute, maxSeatNum;
-        int travelTimes[101], stopoverTimes[101];
+
+        int seatNum[94][101], pricePrefixSum[101], start_hour, start_minute, maxSeatNum;
+        int leavingTime[101], stopoverTimes[101];
         char beginDay, beginMonth, endDay, endMonth, Type;
 
         train(std::string Id, char station_num, char type);
@@ -26,7 +28,7 @@ namespace LaMetropole {
     private:
         userManager *Libro;
 
-        //station+trainOffset -> offset of the train
+        //station+trainOffset -> offset of the train and the number of the station within the train
         struct stationTrain {
             long long key, trainOffset;
 
@@ -48,7 +50,15 @@ namespace LaMetropole {
             }
         };
 
-        BPT<stationTrain, int, 288, 288> Nancy;
+        struct offsetNum {
+            int offset;
+            char num;
+
+            offsetNum(int offset = 0, char num = 0) : offset(offset), num(num) {}
+        };
+
+        //todo take down the station's number of the train can optimise the program
+        BPT<stationTrain, offsetNum, 288, 288> Nancy;
 
         //trainID -> offset & released or not of the train & pendingNum
         struct offsetFlag {
@@ -66,11 +76,36 @@ namespace LaMetropole {
 
         //pending list of each train
         struct trainIDOrder {
-            long long key;
+            //todo trainId + day
+            struct IdDay {
+                long long Id;
+                int day;
+
+                IdDay() = default;
+
+                IdDay(long long Id, int day) : Id(Id), day(day) {}
+
+                bool operator<(const IdDay &other) const {
+                    if (Id < other.Id) return true;
+                    if (Id > other.Id) return false;
+                    return day < other.day;
+                }
+
+                bool operator>(const IdDay &other) const {
+                    if (Id > other.Id) return true;
+                    if (Id < other.Id) return false;
+                    return day > other.day;
+                }
+
+                bool operator==(const IdDay &other) const {
+                    return (Id == other.Id && day == other.day);
+                }
+            } key;
+
             int pendingNum;
 
-            trainIDOrder(long long trainIdHash = 0, long long orderNum = -1) : key(trainIdHash),
-                                                                               pendingNum(orderNum) {}
+            trainIDOrder(long long trainIdHash = 0, int dayN = 0, long long orderNum = -1) : key(trainIdHash, dayN),
+                                                                                             pendingNum(orderNum) {}
 
             bool operator<(const trainIDOrder &other) const {
                 if (key < other.key) return true;

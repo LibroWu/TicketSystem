@@ -85,19 +85,35 @@ namespace LaMetropole {
         return out;
     }
 
-    orderRecord::orderRecord(int price, int n, int trainOrderNum, int dayN, int sStation, int arStation, char *trainId,
+    orderRecord::orderRecord(int price, int n, int trainOrderNum, int dayN, char sStation, char arStation,
+                             char *trainId,
                              char *start, char *target,
                              const L_time &st,
                              const L_time &arv) : price(price), n(n),
                                                   startTime(st),
                                                   arrivalTime(arv), pendingNum(trainOrderNum), st(sStation),
                                                   arv(arStation), dayN(dayN) {
+        status = 'a';
         strcpy(trainID, trainId);
         strcpy(startStation, start);
         strcpy(targetStation, target);
     }
 
+    void orderRecord::set(int Price, int N, int TrainOrderNum, int DayN, char SStation, char ArStation, char *TrainId,
+                          char *Start, char *Target, const L_time &St, const L_time &Arv) {
+        price = Price, n = N,
+        startTime = St,
+        arrivalTime = Arv, pendingNum = TrainOrderNum, st = SStation,
+        arv = ArStation, dayN = DayN;
+        status = 'a';
+        strcpy(trainID, TrainId);
+        strcpy(startStation, Start);
+        strcpy(targetStation, Target);
+    }
+
     orderRecord::orderRecord() {
+        //e for empty
+        status = 'e';
         trainID[0] = 0;
         startStation[0] = 0;
         targetStation[0] = 0;

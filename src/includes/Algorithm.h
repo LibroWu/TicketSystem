@@ -6,11 +6,11 @@
 #define TICKETSYSTEM_ALGORITHM_H
 
 #include <string>
-
+#include <algorithm>
 namespace LaMetropole {
 
     template<class T>
-    void swap(T &a, T &b) {
+    void Swap(T &a, T &b) {
         T c = a;
         a = b, b = c;
     }
