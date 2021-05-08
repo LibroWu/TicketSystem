@@ -81,7 +81,7 @@ namespace LaMetropole {
         if (obj.flag) out << "xx-xx xx:xx";
         else
             out << '0' << obj.month << ((obj.day < 10) ? "-0" : "-") << obj.day << ((obj.hour < 10) ? " 0" : " ")
-                << obj.hour << ((obj.hour < 10) ? ":0" : ":") << obj.minute;
+                << obj.hour << ((obj.minute < 10) ? ":0" : ":") << obj.minute;
         return out;
     }
 

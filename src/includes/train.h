@@ -65,7 +65,7 @@ namespace LaMetropole {
             int offset, pendingNum;
             bool flag;
 
-            offsetFlag(int offset = -1, bool flag = false, int pendingNum = 0) : offset(-1), flag(flag),
+            offsetFlag(int offset = -1, bool flag = false, int pendingNum = 0) : offset(offset), flag(flag),
                                                                                  pendingNum(pendingNum) {}
         };
 

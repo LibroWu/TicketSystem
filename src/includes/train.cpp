@@ -35,7 +35,7 @@ namespace LaMetropole {
         long long HashID = HASH(*cup->arg['i' - 'a']);
         if (Jason.count(HashID)) return false;
         //ID stationNum TYPE
-        train trainTmp(*cup->arg['i' - 'a'], toInt(cup->arg['m' - 'a']), cup->arg['y' - 'a']->operator[](0));
+        train trainTmp(*cup->arg['i' - 'a'], toInt(cup->arg['n' - 'a']), cup->arg['y' - 'a']->operator[](0));
         parser::tokenScanner prices(cup->arg['p' - 'a'], '|');
         parser::tokenScanner travelTimes(cup->arg['t' - 'a'], '|');
         parser::tokenScanner stopoverTimes(cup->arg['o' - 'a'], '|');
@@ -46,6 +46,7 @@ namespace LaMetropole {
         trainTmp.start_minute = toLong(startTime.nextToken(), true);
         //train interval
         startTime.set_ptr(cup->arg['d' - 'a']);
+        startTime.set_division('|');
         string *s_tmp = startTime.nextToken();
         parser::tokenScanner date(s_tmp, '-');
         trainTmp.beginMonth = toInt(date.nextToken(), true);
@@ -59,7 +60,8 @@ namespace LaMetropole {
         int beginN = (trainTmp.beginMonth - 6) * 31 + trainTmp.beginDay, endN =
                 (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
         //stations and leavingTime and pricePrefixSum and stopoverTimes
-        int seatNum = toLong(cup->arg['n' - 'a']);
+        int seatNum = toLong(cup->arg['m' - 'a']);
+        trainTmp.maxSeatNum=seatNum;
         trainTmp.pricePrefixSum[0] = 0;
         trainTmp.leavingTime[0] = 0;
         for (char i = 0; i < trainTmp.stationNum - 2; ++i) {
@@ -117,7 +119,9 @@ namespace LaMetropole {
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
+        if (!start_vec) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
+        if (!end_vec) return false;
         vector<pair<int, int>> same_vec(0);
         vector<orderRecord> result(0);
         vector<sortStruct> resultSort(0);
@@ -196,7 +200,7 @@ namespace LaMetropole {
             if (trainTmp.endMonth > Month || trainTmp.endMonth == Month && trainTmp.endDay >= Day) {
                 cout << trainTmp.ID << ' ' << trainTmp.Type << '\n';
                 L_time Lt(Month, Day, trainTmp.start_hour, trainTmp.start_minute);
-                cout << trainTmp.stations[0] << " xx-xx xx:xx -> " << Lt << " 0 " << trainTmp.seatNum[0] << '\n';
+                cout << trainTmp.stations[0] << " xx-xx xx:xx -> " << Lt << " 0 " << trainTmp.seatNum[dayN][0] << '\n';
                 int i;
                 for (i = 1; i < trainTmp.stationNum - 1; ++i) {
                     cout << trainTmp.stations[i] << ' '
