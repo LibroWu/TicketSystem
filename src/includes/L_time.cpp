@@ -37,9 +37,9 @@ namespace LaMetropole {
     }
 
     L_time::operator int() const {
-        int mon = 6, day = 1, sum = 0;
-        while (mon < month) sum += Month[mon++];
-        sum += day;
+        int mm = 6, sum = 0;
+        while (mm < month) sum += Month[mm++];
+        sum += day - 1;
         return (sum * 1440 + hour * 60 + minute);
     }
 
