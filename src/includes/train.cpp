@@ -61,7 +61,7 @@ namespace LaMetropole {
                 (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
         //stations and leavingTime and pricePrefixSum and stopoverTimes
         int seatNum = toLong(cup->arg['m' - 'a']);
-        trainTmp.maxSeatNum=seatNum;
+        trainTmp.maxSeatNum = seatNum;
         trainTmp.pricePrefixSum[0] = 0;
         trainTmp.leavingTime[0] = 0;
         for (char i = 0; i < trainTmp.stationNum - 2; ++i) {
@@ -248,7 +248,7 @@ namespace LaMetropole {
                 for (char k = secondArvStation - 1; k > -1; --k)
                     //find the cross node of the two routine
                     if (mapTableOfStation.count(HASH(train_arv.stations[k]))) {
-                        int firstDayN,secondDayN;
+                        int firstDayN, secondDayN;
                         char firstArvStation = mapTableOfStation[HASH(train_arv.stations[k])];
                         L_time firstStTime(6, 1, train_st.start_hour, train_st.start_minute), checkTime, firstArvTime;
                         firstStTime += train_st.leavingTime[firstStartStation], firstStTime.month = Month, firstStTime.day = Day;
@@ -261,7 +261,7 @@ namespace LaMetropole {
                             train_st.endMonth < checkTime.month ||
                             train_st.endMonth == checkTime.month && train_st.endDay < checkTime.day)
                             break;
-                        firstDayN=(checkTime.month-6)*31+checkTime.day;
+                        firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(6, 1, train_arv.start_hour, train_arv.start_minute), secondArvTime;
                         secondStTime += train_arv.leavingTime[k];
                         secondStTime.month = firstArvTime.month, secondStTime.day = firstArvTime.day;
@@ -278,35 +278,53 @@ namespace LaMetropole {
                             train_arv.endMonth < checkTime.month ||
                             train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
                             break;
-                        secondDayN=(checkTime.month-6)*31+checkTime.day;
+                        secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         //todo add record
                         int timeConsume = secondArvTime - firstStTime;
-                        int firstPrice=train_st.pricePrefixSum[firstArvStation]-train_st.pricePrefixSum[firstStartStation];
-                        int secondPrice=train_arv.pricePrefixSum[secondArvStation]-train_arv.pricePrefixSum[k];
+                        int firstPrice =
+                                train_st.pricePrefixSum[firstArvStation] - train_st.pricePrefixSum[firstStartStation];
+                        int secondPrice = train_arv.pricePrefixSum[secondArvStation] - train_arv.pricePrefixSum[k];
                         int firstSeatNum = train_st.maxSeatNum, secondSeatNum = train_arv.maxSeatNum;
-                        for (char l = firstStartStation; l < firstArvStation; ++l) firstSeatNum= min(firstSeatNum,train_st.seatNum[firstDayN][l]);
-                        for (char l = k; l < secondArvStation; ++l) secondSeatNum= min(secondSeatNum,train_arv.seatNum[secondDayN][l]);
+                        for (char l = firstStartStation; l < firstArvStation; ++l)
+                            firstSeatNum = min(firstSeatNum, train_st.seatNum[firstDayN][l]);
+                        for (char l = k; l < secondArvStation; ++l)
+                            secondSeatNum = min(secondSeatNum, train_arv.seatNum[secondDayN][l]);
                         if (startResult.st == 'e') {
-                            startResult.set(firstPrice,firstSeatNum,0,firstDayN,firstStartStation,firstArvStation,train_st.ID,train_st.stations[firstStartStation],train_st.stations[firstArvStation],firstStTime,firstArvTime);
-                            arvResult.set(secondPrice,secondSeatNum,0,secondDayN,k,secondArvStation,train_arv.ID,train_arv.stations[k],train_arv.stations[secondArvStation],secondStTime,secondArvTime);
-                            forCMP.keyTime=timeConsume,forCMP.keyPrice=firstPrice+secondPrice;
+                            startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation, firstArvStation,
+                                            train_st.ID, train_st.stations[firstStartStation],
+                                            train_st.stations[firstArvStation], firstStTime, firstArvTime);
+                            arvResult.set(secondPrice, secondSeatNum, 0, secondDayN, k, secondArvStation, train_arv.ID,
+                                          train_arv.stations[k], train_arv.stations[secondArvStation], secondStTime,
+                                          secondArvTime);
+                            forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
                         } else {
-                            if (compareFlag && ((firstPrice+secondPrice<forCMP.keyPrice) || (firstPrice+secondPrice==forCMP.keyPrice && firstPrice<startResult.price))) {
-                                startResult.set(firstPrice,firstSeatNum,0,firstDayN,firstStartStation,firstArvStation,train_st.ID,train_st.stations[firstStartStation],train_st.stations[firstArvStation],firstStTime,firstArvTime);
-                                arvResult.set(secondPrice,secondSeatNum,0,secondDayN,k,secondArvStation,train_arv.ID,train_arv.stations[k],train_arv.stations[secondArvStation],secondStTime,secondArvTime);
-                                forCMP.keyTime=timeConsume,forCMP.keyPrice=firstPrice+secondPrice;
+                            if (compareFlag && ((firstPrice + secondPrice < forCMP.keyPrice) ||
+                                                (firstPrice + secondPrice == forCMP.keyPrice &&
+                                                 firstPrice < startResult.price))) {
+                                startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation,
+                                                firstArvStation, train_st.ID, train_st.stations[firstStartStation],
+                                                train_st.stations[firstArvStation], firstStTime, firstArvTime);
+                                arvResult.set(secondPrice, secondSeatNum, 0, secondDayN, k, secondArvStation,
+                                              train_arv.ID, train_arv.stations[k], train_arv.stations[secondArvStation],
+                                              secondStTime, secondArvTime);
+                                forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
                             }
-                            if (!compareFlag && ((timeConsume<forCMP.keyTime) || (timeConsume==forCMP.keyTime && firstPrice<startResult.price))) {
-                                startResult.set(firstPrice,firstSeatNum,0,firstDayN,firstStartStation,firstArvStation,train_st.ID,train_st.stations[firstStartStation],train_st.stations[firstArvStation],firstStTime,firstArvTime);
-                                arvResult.set(secondPrice,secondSeatNum,0,secondDayN,k,secondArvStation,train_arv.ID,train_arv.stations[k],train_arv.stations[secondArvStation],secondStTime,secondArvTime);
-                                forCMP.keyTime=timeConsume,forCMP.keyPrice=firstPrice+secondPrice;
+                            if (!compareFlag && ((timeConsume < forCMP.keyTime) ||
+                                                 (timeConsume == forCMP.keyTime && firstPrice < startResult.price))) {
+                                startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation,
+                                                firstArvStation, train_st.ID, train_st.stations[firstStartStation],
+                                                train_st.stations[firstArvStation], firstStTime, firstArvTime);
+                                arvResult.set(secondPrice, secondSeatNum, 0, secondDayN, k, secondArvStation,
+                                              train_arv.ID, train_arv.stations[k], train_arv.stations[secondArvStation],
+                                              secondStTime, secondArvTime);
+                                forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
                             }
                         }
                         break;
                     }
             }
         }
-        if (startResult.status=='e') cout<<"0\n";
+        if (startResult.status == 'e') cout << "0\n";
         else {
             cout << startResult.trainID << ' ' << startResult.startStation << ' ' << startResult.startTime << " -> "
                  << startResult.targetStation << ' '
@@ -401,7 +419,7 @@ namespace LaMetropole {
         long long hashTrainId = HASH(*cup->arg['i' - 'a']);
         offsetFlag tmp = Jason.Find(hashTrainId);
         //not find the train
-        if (tmp.offset == -1) return 'f';
+        if (tmp.offset == -1 || !tmp.flag) return 'f';
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         train trainTmp;
@@ -431,14 +449,14 @@ namespace LaMetropole {
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
-                if (seatNum > Need)
+                if (seatNum < Need)
                     if (cup->arv == 6 || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
                 orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, tmp.pendingNum,
                                      dayN, st, i, trainTmp.ID, trainTmp.stations[st],
                                      trainTmp.stations[i], timeTmp,
                                      timeTmp + (trainTmp.leavingTime[i] - trainTmp.stopoverTimes[i - 1] -
                                                 trainTmp.leavingTime[st]));
-                if (seatNum > Need) {
+                if (seatNum < Need) {
                     orderTmp.status = 'p';
                     Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
                     Arya.insert(trainIDOrder(hashTrainId, tmp.pendingNum),

@@ -31,6 +31,8 @@ namespace LaMetropole {
                                        QUERY_TRAIN, DELETE_TRAIN, QUERY_TRANSFER, REFUND_TICKET, EXIT, CLEAN, NONE
         };
 
+        int commandNumber=0;
+
         //simple tokenScanner with none robust
         class tokenScanner {
         public:

@@ -7,7 +7,21 @@
 #include "includes/parser.h"
 #include "includes/BPT.hpp"
 #include "includes/ticketSystem.h"
+//LaMetropole::ticketSystem ts;
 
-LaMetropole::ticketSystem ts;
+using namespace std;
+using LaMetropole::L_time;
 
-int main() {}
+int main() {
+    L_time tmp(6,26,18,0);
+    cout<<tmp<<'\n';
+    tmp-=600;
+    cout<<tmp<<'\n';
+    tmp-=600;
+    cout<<tmp<<'\n';
+    tmp-=600;
+    cout<<tmp<<'\n';
+    tmp-=600;
+    cout<<tmp<<'\n';
+    return 0;
+}

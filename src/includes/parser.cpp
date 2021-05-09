@@ -72,6 +72,8 @@ namespace LaMetropole {
             tmp->push_back(sKey->operator[](1), sArg);
             delete sKey;
         }
+//        std::cout<<++commandNumber<<std::endl;
+        std::cout.flush();
         return tmp;
     }
 }
