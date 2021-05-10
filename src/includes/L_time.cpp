@@ -121,7 +121,9 @@ namespace LaMetropole {
 
     orderRecord::orderRecord(const orderRecord &other) : price(other.price), n(other.n),
                                                          startTime(other.startTime),
-                                                         arrivalTime(other.arrivalTime),status(other.status) {
+                                                         arrivalTime(other.arrivalTime), status(other.status),
+                                                         st(other.st), arv(other.arv), pendingNum(other.pendingNum),
+                                                         dayN(other.dayN) {
         strcpy(trainID, other.trainID);
         strcpy(startStation, other.startStation);
         strcpy(targetStation, other.targetStation);

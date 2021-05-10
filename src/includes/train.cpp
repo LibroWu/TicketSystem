@@ -357,21 +357,23 @@ namespace LaMetropole {
             for (char i = orderTmp.st; i < orderTmp.arv; ++i)
                 trainTmp.seatNum[orderTmp.dayN][i] += orderTmp.n;
             vector<pendingRecord> *vec_ptr = Arya.multipleFind(trainIDOrder(hashTrainID, orderTmp.dayN));
-            for (int i = 1; i < vec_ptr->size(); ++i) {
-                pendingRecord &pr = vec_ptr->operator[](i);
-                //todo search exact day's train
-                int seatNum = trainTmp.maxSeatNum;
-                for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, trainTmp.seatNum[pr.dayN][j]);
-                if (seatNum >= pr.n) {
-                    Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.orderNum));
-                    for (char j = pr.st; j < pr.arv; ++j) trainTmp.seatNum[pr.dayN][j] -= pr.n;
-                    //todo optimise
-                    orderGet = Libro->Sabine.Find(userManager::userIdTime(pr.hashUserId, pr.orderNum));
-                    orderGet.status = 'r';
-                    Libro->Sabine.modify(userManager::userIdTime(pr.hashUserId, pr.orderNum), orderGet);
+            if (vec_ptr) {
+                for (int i = 1; i < vec_ptr->size(); ++i) {
+                    pendingRecord &pr = vec_ptr->operator[](i);
+                    //todo search exact day's train
+                    int seatNum = trainTmp.maxSeatNum;
+                    for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, trainTmp.seatNum[pr.dayN][j]);
+                    if (seatNum >= pr.n) {
+                        Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.orderNum));
+                        for (char j = pr.st; j < pr.arv; ++j) trainTmp.seatNum[pr.dayN][j] -= pr.n;
+                        //todo optimise
+                        orderGet = Libro->Sabine.Find(userManager::userIdTime(pr.hashUserId, pr.orderNum));
+                        orderGet.status = 'r';
+                        Libro->Sabine.modify(userManager::userIdTime(pr.hashUserId, pr.orderNum), orderGet);
+                    }
                 }
+                delete vec_ptr;
             }
-            delete vec_ptr;
             trainRecorder.update(trainTmp, offsetTmp.offset);
         }
         return true;
@@ -420,7 +422,6 @@ namespace LaMetropole {
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         train trainTmp;
         trainRecorder.read(trainTmp, tmp.offset);
-
         //beyond the train capacity
         int Need = toLong(cup->arg['n' - 'a']);
         if (Need > trainTmp.maxSeatNum) return false;

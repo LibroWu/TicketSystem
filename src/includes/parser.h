@@ -23,7 +23,7 @@ namespace LaMetropole {
 
         const string commandSet[17] = {"query_profile", "query_ticket", "buy_ticket", "login", "logout",
                                      "modify_profile", "query_order", "add_user", "add_train", "release_train",
-                                     "query_train", "Delete_train", "query_transfer", "refund_ticket", "exit", "clean",
+                                     "query_train", "delete_train", "query_transfer", "refund_ticket", "exit", "clean",
                                      "N"
         };
         const commandType setToType[17] = {QUERY_PROFILE, QUERY_TICKET, BUY_TICKET, LOGIN, LOGOUT,
