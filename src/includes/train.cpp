@@ -79,7 +79,7 @@ namespace LaMetropole {
             strcpy(trainTmp.stations[i], s_tmp->c_str());
             delete s_tmp;
         }
-        trainTmp.stopoverTimes[trainTmp.stationNum - 1] = 0;
+        trainTmp.stopoverTimes[trainTmp.stationNum - 2] = 0;
         trainTmp.pricePrefixSum[trainTmp.stationNum - 1] =
                 trainTmp.pricePrefixSum[trainTmp.stationNum - 2] + toLong(prices.nextToken(), true);
         trainTmp.leavingTime[trainTmp.stationNum - 1] =
@@ -205,11 +205,11 @@ namespace LaMetropole {
                     cout << trainTmp.stations[i] << ' '
                          << Lt + (trainTmp.leavingTime[i] - trainTmp.stopoverTimes[i - 1]) << " -> ";
                     cout << Lt + trainTmp.leavingTime[i] << ' '
-                         << trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[i - 1] << ' '
+                         << trainTmp.pricePrefixSum[i]  << ' '
                          << trainTmp.seatNum[dayN][i] << '\n';
                 }
                 cout << trainTmp.stations[i] << ' ' << Lt + trainTmp.leavingTime[i] << " -> xx-xx xx:xx "
-                     << trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[i - 1]
+                     << trainTmp.pricePrefixSum[i]
                      << " x\n";
                 return true;
             }
