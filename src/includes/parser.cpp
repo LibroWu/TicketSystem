@@ -75,7 +75,7 @@ namespace LaMetropole {
             delete sKey;
         }
 //        std::cout<<++commandNumber<<std::endl;
-        ++commandNumber;
+//        ++commandNumber;
         std::cout.flush();
         return tmp;
     }

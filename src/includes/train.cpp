@@ -135,11 +135,6 @@ namespace LaMetropole {
             if (mapTable.count(end_vec->operator[](i).offset))
                 same_vec.push_back(pair<int, int>(mapTable[end_vec->operator[](i).offset], i));
         }
-        if (same_vec.empty()) {
-            delete start_vec;
-            delete end_vec;
-            return false;
-        }
         len = same_vec.size();
         train trainTmp;
         int sumPrice, seatNum, dayN;
@@ -153,7 +148,7 @@ namespace LaMetropole {
             trainRecorder.read(trainTmp, start_vec->operator[](same_vec[i].first).offset);
             int keyTime = trainTmp.leavingTime[arvC] - trainTmp.stopoverTimes[arvC - 1] -
                           trainTmp.leavingTime[startC];
-            sumPrice = trainTmp.pricePrefixSum[arvC] - trainTmp.pricePrefixSum[startC], seatNum=trainTmp.maxSeatNum;
+            sumPrice = trainTmp.pricePrefixSum[arvC] - trainTmp.pricePrefixSum[startC], seatNum = trainTmp.maxSeatNum;
             L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_time;
             timeTmp += trainTmp.leavingTime[startC];
             timeTmp.month = Month, timeTmp.day = Day;
@@ -172,14 +167,16 @@ namespace LaMetropole {
                                        trainTmp.ID));
                 }
         }
-        if (result.empty()) return false;
-        sort(resultSort.begin(), resultSort.end());
-        int Len = resultSort.size();
-        cout << Len << '\n';
-        for (int i = 0; i < Len; ++i) {
-            orderRecord &R = result[resultSort[i].num];
-            cout << R.trainID << ' ' << R.startStation << ' ' << R.startTime << " -> " << R.targetStation << ' '
-                 << R.arrivalTime << ' ' << R.price << ' ' << R.n << '\n';
+        if (result.empty()) cout << "0\n";
+        else {
+            sort(resultSort.begin(), resultSort.end());
+            int Len = resultSort.size();
+            cout << Len << '\n';
+            for (int i = 0; i < Len; ++i) {
+                orderRecord &R = result[resultSort[i].num];
+                cout << R.trainID << ' ' << R.startStation << ' ' << R.startTime << " -> " << R.targetStation << ' '
+                     << R.arrivalTime << ' ' << R.price << ' ' << R.n << '\n';
+            }
         }
         delete start_vec;
         delete end_vec;
@@ -205,7 +202,7 @@ namespace LaMetropole {
                     cout << trainTmp.stations[i] << ' '
                          << Lt + (trainTmp.leavingTime[i] - trainTmp.stopoverTimes[i - 1]) << " -> ";
                     cout << Lt + trainTmp.leavingTime[i] << ' '
-                         << trainTmp.pricePrefixSum[i]  << ' '
+                         << trainTmp.pricePrefixSum[i] << ' '
                          << trainTmp.seatNum[dayN][i] << '\n';
                 }
                 cout << trainTmp.stations[i] << ' ' << Lt + trainTmp.leavingTime[i] << " -> xx-xx xx:xx "
