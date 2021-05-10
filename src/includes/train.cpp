@@ -84,7 +84,7 @@ namespace LaMetropole {
                 trainTmp.pricePrefixSum[trainTmp.stationNum - 2] + toLong(prices.nextToken(), true);
         trainTmp.leavingTime[trainTmp.stationNum - 1] =
                 trainTmp.leavingTime[trainTmp.stationNum - 2] + toLong(travelTimes.nextToken(), true);
-        for (int j = beginN; j <= endN; ++j) trainTmp.seatNum[j][trainTmp.stationNum - 1] = seatNum;
+        for (int j = beginN; j <= endN; ++j) trainTmp.seatNum[j][trainTmp.stationNum - 2] = seatNum;
         int offset = trainRecorder.write(trainTmp);
         Jason.insert(HashID, offsetFlag(offset, false));
         return true;
@@ -95,7 +95,7 @@ namespace LaMetropole {
         if (!Libro->Leon.count(Hu)) return false;
         vector<orderRecord> *tmp = Libro->Sabine.multipleFind(userManager::userIdTime(Hu));
         cout << tmp->size() - 1 << '\n';
-        for (int i = tmp->size() - 1; i > 0; ++i) {
+        for (int i = tmp->size() - 1; i > 0; --i) {
             orderRecord &t = tmp->operator[](i);
             switch (t.status) {
                 case 's':
@@ -163,7 +163,7 @@ namespace LaMetropole {
                 trainTmp.beginMonth == st_time.month && trainTmp.beginDay <= st_time.day)
                 if (trainTmp.endMonth > st_time.month ||
                     trainTmp.endMonth == st_time.month && trainTmp.endDay >= st_time.day) {
-                    dayN = (timeTmp.month - 6) * 31 + timeTmp.day;
+                    dayN = (st_time.month - 6) * 31 + st_time.day;
                     for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
                     result.push_back(orderRecord(sumPrice, seatNum, -1, dayN, startC, arvC, trainTmp.ID,
                                                  trainTmp.stations[startC], trainTmp.stations[arvC],
