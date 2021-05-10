@@ -153,8 +153,7 @@ namespace LaMetropole {
             trainRecorder.read(trainTmp, start_vec->operator[](same_vec[i].first).offset);
             int keyTime = trainTmp.leavingTime[arvC] - trainTmp.stopoverTimes[arvC - 1] -
                           trainTmp.leavingTime[startC];
-            sumPrice = trainTmp.pricePrefixSum[arvC] - trainTmp.pricePrefixSum[startC], seatNum ==
-                                                                                        trainTmp.maxSeatNum;
+            sumPrice = trainTmp.pricePrefixSum[arvC] - trainTmp.pricePrefixSum[startC], seatNum=trainTmp.maxSeatNum;
             L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_time;
             timeTmp += trainTmp.leavingTime[startC];
             timeTmp.month = Month, timeTmp.day = Day;
