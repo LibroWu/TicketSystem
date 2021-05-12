@@ -164,14 +164,6 @@ namespace LaMetropole {
                 if (Size == P) doubleSpace();
                 long long pos = HashFunc(v.first) % P;
                 if (pos < 0) pos += P;
-#ifndef debugs
-#define debugs
-#ifdef debugs
-                std::cout << pos << " ";
-                std::cout.flush();
-#endif
-#endif
-#undef debugs
                 if (table[pos]) {
                     Node *ptr;
                     for (ptr = table[pos]; ptr->next; ptr = ptr->next)
@@ -215,23 +207,8 @@ namespace LaMetropole {
         }
 
         T &operator[](const Key &key) {
-#ifndef debugs
-#define debugs
-#ifdef debugs
-            std::cout << "#####\n";
-            std::cout.flush();
-#endif
-#endif
-#undef debugs
+
             typename hash_table::Node *tmp = Nebula.find(key);
-#ifndef debugs
-#define debugs
-#ifdef debugs
-            std::cout << "------\n";
-            std::cout.flush();
-#endif
-#endif
-#undef debugs
             if (tmp) return tmp->v.second;
             else {
                 return Nebula.insert(value_type(key, T())).first->v.second;

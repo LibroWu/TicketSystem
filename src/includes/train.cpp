@@ -156,7 +156,7 @@ namespace LaMetropole {
         int sumPrice, seatNum, dayN;
         //if compareFlag then sort by cost
         bool compareFlag = false;
-        if (cup->arv == 4 && cup->arg['p' - 'a']->operator[](0) == 't') compareFlag = true;
+        if (cup->arv == 4 && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
         for (int i = 0; i < len; ++i) {
             char startC = start_vec->operator[](same_vec[i].first).num;
             char arvC = end_vec->operator[](same_vec[i].second).num;

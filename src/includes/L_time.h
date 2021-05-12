@@ -87,7 +87,7 @@ namespace LaMetropole {
                 if (keyPrice<other.keyPrice) return true;
                 if (keyPrice>other.keyPrice) return false;
             } else {
-                if (keyTime<other.keyPrice) return true;
+                if (keyTime<other.keyTime) return true;
                 if (keyTime>other.keyTime) return false;
             }
             return (strcmp(trainID,other.trainID)<0);
