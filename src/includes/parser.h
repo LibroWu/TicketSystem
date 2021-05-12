@@ -9,7 +9,7 @@
 #include <cstring>
 #include <iostream>
 
-//#define debugs
+//#define debugs3
 
 namespace LaMetropole {
     using std::string;

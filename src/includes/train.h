@@ -8,6 +8,9 @@
 #include <cstring>
 #include <string>
 #include "user.h"
+
+//#define debugs1
+
 using std::sort;
 
 namespace LaMetropole {

@@ -255,9 +255,9 @@ namespace LaMetropole {
 #endif
         //todo may have bugs here
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
-        if (!start_vec || start_vec->size()==1) return false;
+        if (!start_vec || start_vec->size() == 1) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
-        if (!end_vec || end_vec->size()==1) return false;
+        if (!end_vec || end_vec->size() == 1) return false;
         vector<pair<int, int>> same_vec(0);
         unordered_map<long long, char> mapTableOfStation(selfHash);
         int l1 = start_vec->size(), l2 = end_vec->size();
@@ -384,6 +384,13 @@ namespace LaMetropole {
         if (n > userTmp.orderNum) return false;
         orderRecord orderTmp = Libro->Sabine.Find(refundKey), orderGet;
         if (orderTmp.status == 'r') return false;
+#ifdef debugs3
+
+        cout << "||^||" << *cup->arg['u' - 'a'] << ' ' << Hu << '\n' << orderTmp.status << ' ' << orderTmp.trainID
+             << ' '
+             << orderTmp.startStation << ' ' << orderTmp.targetStation << "||^||\n";
+
+#endif
         if (orderTmp.status == 'p') {
             orderTmp.status = 'r';
             Libro->Sabine.modify(refundKey, orderTmp);
@@ -397,6 +404,17 @@ namespace LaMetropole {
             trainRecorder.read(trainTmp, offsetTmp.offset);
             for (char i = orderTmp.st; i < orderTmp.arv; ++i)
                 trainTmp.seatNum[orderTmp.dayN][i] += orderTmp.n;
+#ifdef debugs1
+            if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && orderTmp.dayN == 28) {
+                cout<<int(orderTmp.st)<<' '<<int(orderTmp.arv)<<' '<<orderTmp.n<<'\n';
+                cout<<orderTmp.startStation<<' '<<orderTmp.targetStation<<' '<<*cup->arg['u'-'a']<<'\n';
+                cout<<"$$$$\n";
+                for (char j = 10; j < 16; ++j) {
+                    cout << trainTmp.seatNum[orderTmp.dayN][j] << ' ';
+                }
+                cout << "*|*|*|*\n";
+            }
+#endif
             vector<pendingRecord> *vec_ptr = Arya.multipleFind(trainIDOrder(hashTrainID, orderTmp.dayN));
             if (vec_ptr) {
                 for (int i = 1; i < vec_ptr->size(); ++i) {
@@ -404,12 +422,23 @@ namespace LaMetropole {
                     //todo search exact day's train
                     int seatNum = trainTmp.maxSeatNum;
                     for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, trainTmp.seatNum[pr.dayN][j]);
+#ifdef debugs1
+                    cout<<int(pr.st)<<' '<<int(pr.arv)<<"^^^^\n";
+#endif
                     if (seatNum >= pr.n) {
                         Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.orderNum));
                         for (char j = pr.st; j < pr.arv; ++j) trainTmp.seatNum[pr.dayN][j] -= pr.n;
+#ifdef debugs1
+                        if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && pr.dayN == 28) {
+                            for (char j = 10; j < 16; ++j) {
+                                cout << trainTmp.seatNum[pr.dayN][j] << ' ';
+                            }
+                            cout << "*|*|*|*\n";
+                        }
+#endif
                         //todo optimise
                         orderGet = Libro->Sabine.Find(userManager::userIdTime(pr.hashUserId, pr.orderNum));
-                        orderGet.status = 'r';
+                        orderGet.status = 's';
                         Libro->Sabine.modify(userManager::userIdTime(pr.hashUserId, pr.orderNum), orderGet);
                     }
                 }
@@ -444,6 +473,14 @@ namespace LaMetropole {
                 (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
         for (int i = beginN; i <= endN; ++i)
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());
+#ifdef debugs1
+        if (strcmp(trainTmp.ID, "LeavesofGrass") == 0) {
+            for (char j = 10; j < 16; ++j) {
+                cout << trainTmp.seatNum[28][j] << ' ';
+            }
+            cout << "*|*|*|*\n";
+        }
+#endif
         return true;
     }
 
@@ -505,6 +542,18 @@ namespace LaMetropole {
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
+
+#ifdef debugs1
+                if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && dayN == 28) {
+                    for (char j = 10; j < 16; ++j) {
+                        cout << trainTmp.seatNum[dayN][j] << ' ';
+                    }
+                    cout << "*|*|*|*\n";
+                    cout << int(st) << ' ' << int(i) << '\n';
+                    cout << seatNum << ' ' << Need << '\n';
+                }
+#endif
+
 #ifdef debugs
                 cout<<dayN<<' '<<seatNum<<'\n';
 #endif
@@ -518,7 +567,7 @@ namespace LaMetropole {
                 if (seatNum < Need) {
                     orderTmp.status = 'p';
                     Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
-                    Arya.insert(trainIDOrder(hashTrainId, tmp.pendingNum),
+                    Arya.insert(trainIDOrder(hashTrainId, dayN, tmp.pendingNum),
                                 pendingRecord(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], seatNum,
                                               tmp.pendingNum, dayN, st, i, userTmp.orderNum, Hu));
                     ++userTmp.orderNum;
@@ -532,6 +581,16 @@ namespace LaMetropole {
                 for (char j = st; j < i; ++j) {
                     trainTmp.seatNum[dayN][j] -= Need;
                 }
+#ifdef debugs1
+                if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && dayN == 28) {
+                    for (char j = 10; j < 16; ++j) {
+                        cout << trainTmp.seatNum[dayN][j] << ' ';
+                    }
+                    cout << "*|*|*|*\n";
+                    cout << int(st) << ' ' << int(i) << '\n';
+                    cout << seatNum << ' ' << Need << ' ' << orderTmp.n << '\n';
+                }
+#endif
                 trainRecorder.update(trainTmp, tmp.offset);
                 ++userTmp.orderNum;
                 Libro->Mathilda.modify(Hu, userTmp);
