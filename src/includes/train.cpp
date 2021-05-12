@@ -235,6 +235,10 @@ namespace LaMetropole {
     }
 
     bool trainManager::queryTransfer(parser::PaperCup *cup) {
+#ifdef debugs
+        cout << "*** 1\n";
+        cout.flush();
+#endif
         //todo target: O(N^3)
         //use unorderedMap to find the cross Node of two train
         //if compareFlag then sort by cost
@@ -251,9 +255,9 @@ namespace LaMetropole {
 #endif
         //todo may have bugs here
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
-        if (!start_vec) return false;
+        if (!start_vec || start_vec->size()==1) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
-        if (!end_vec) return false;
+        if (!end_vec || end_vec->size()==1) return false;
         vector<pair<int, int>> same_vec(0);
         unordered_map<long long, char> mapTableOfStation(selfHash);
         int l1 = start_vec->size(), l2 = end_vec->size();
@@ -266,10 +270,12 @@ namespace LaMetropole {
             for (int j = 1; j < l2; ++j) {
                 //todo cache this
                 trainRecorder.read(train_arv, end_vec->operator[](j).offset);
-                char secondArvStation = end_vec->operator[](i).num;
+
+                char secondArvStation = end_vec->operator[](j).num;
                 mapTableOfStation.clear();
-                for (char k = firstStartStation + 1; k < train_st.stationNum; ++k)
+                for (char k = firstStartStation + 1; k < train_st.stationNum; ++k) {
                     mapTableOfStation[HASH(train_st.stations[k])] = k;
+                }
                 for (char k = secondArvStation - 1; k > -1; --k)
                     //find the cross node of the two routine
                     if (mapTableOfStation.count(HASH(train_arv.stations[k]))) {
@@ -499,6 +505,9 @@ namespace LaMetropole {
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
+#ifdef debugs
+                cout<<dayN<<' '<<seatNum<<'\n';
+#endif
                 if (seatNum < Need)
                     if (cup->arv == 6 || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
                 orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, tmp.pendingNum,

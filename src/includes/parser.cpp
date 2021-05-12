@@ -60,6 +60,7 @@ namespace LaMetropole {
             return tmp;
         }
 #ifdef debugs
+        std::cout<<s<<'\n';
         tmp->origin=s;
 #endif
         tokenScanner tS(&s);
@@ -79,6 +80,8 @@ namespace LaMetropole {
             tmp->push_back(sKey->operator[](1), sArg);
             delete sKey;
         }
+        std::cout<<++commandNumber<<std::endl;
+        if (commandNumber==486) std::cout<<"%%^^\n";
 #ifdef debugs
 //        std::cout<<++commandNumber<<std::endl;
 //        ++commandNumber;

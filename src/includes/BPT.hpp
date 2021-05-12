@@ -10,9 +10,6 @@
 
 using std::cin;
 using std::cout;
-#ifdef debugs
-
-#endif
 
 #include "MemoryRiver.hpp"
 #include <cstring>

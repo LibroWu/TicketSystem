@@ -8,6 +8,7 @@
 #include <cstring>
 #include "utility.h"
 #include "exceptions.h"
+#include <iostream>
 
 namespace LaMetropole {
     const int sizeSet[] = {97, 197, 397, 797, 1597, 3203, 6421, 12853, 25717, 51437,
@@ -107,7 +108,7 @@ namespace LaMetropole {
                 clear();
             }
 
-            void clear() {
+            void clear(bool flag = false) {
                 long long pos;
                 while (!chain.empty()) {
                     pos = chain.front();
@@ -119,7 +120,10 @@ namespace LaMetropole {
                     table[pos] = nullptr;
                 }
                 delete[] table;
-                table = nullptr;
+                if (flag) {
+                    table = new Node *[sizeSet[0]];
+                    memset(table, 0, sizeof(Node *) * sizeSet[0]);
+                } else table = nullptr;
             }
 
             hash_table &operator=(const hash_table &other) = delete;
@@ -160,6 +164,14 @@ namespace LaMetropole {
                 if (Size == P) doubleSpace();
                 long long pos = HashFunc(v.first) % P;
                 if (pos < 0) pos += P;
+#ifndef debugs
+#define debugs
+#ifdef debugs
+                std::cout << pos << " ";
+                std::cout.flush();
+#endif
+#endif
+#undef debugs
                 if (table[pos]) {
                     Node *ptr;
                     for (ptr = table[pos]; ptr->next; ptr = ptr->next)
@@ -203,7 +215,23 @@ namespace LaMetropole {
         }
 
         T &operator[](const Key &key) {
+#ifndef debugs
+#define debugs
+#ifdef debugs
+            std::cout << "#####\n";
+            std::cout.flush();
+#endif
+#endif
+#undef debugs
             typename hash_table::Node *tmp = Nebula.find(key);
+#ifndef debugs
+#define debugs
+#ifdef debugs
+            std::cout << "------\n";
+            std::cout.flush();
+#endif
+#endif
+#undef debugs
             if (tmp) return tmp->v.second;
             else {
                 return Nebula.insert(value_type(key, T())).first->v.second;
@@ -217,7 +245,7 @@ namespace LaMetropole {
             //todo exceptions
         }
 
-        bool erase(const Key& key){
+        bool erase(const Key &key) {
             return Nebula.erase(key);
         }
 
@@ -230,7 +258,7 @@ namespace LaMetropole {
         }
 
         void clear() {
-            Nebula.clear();
+            Nebula.clear(true);
         }
 
         int count(const Key &key) const {
