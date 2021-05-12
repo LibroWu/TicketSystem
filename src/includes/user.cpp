@@ -5,6 +5,15 @@
 #include "user.h"
 
 namespace LaMetropole {
+#ifdef debugs
+
+    std::ostream &operator<<(std::ostream &out, const user &obj) {
+        out << obj.username << ' ' << obj.password << '\n' << obj.privilege << ' ' << obj.orderNum << ' ' << obj.name
+            << '\n';
+        return out;
+    }
+
+#endif
 
     user::user(const string &userName, const string &pswd, const string &Name, const string &mail, char privilege)
             : privilege(privilege), orderNum(0) {

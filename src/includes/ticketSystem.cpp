@@ -42,6 +42,7 @@ namespace LaMetropole {
 
     void ticketSystem::Exit(parser::PaperCup *cup) {
         cout << "bye\n";
+        Libro.Mathilda.printChain();
         exit(0);
     }
 
@@ -82,8 +83,8 @@ namespace LaMetropole {
     }
 
     void ticketSystem::queryTransfer(parser::PaperCup *cup) {
-        cout<<"0\n";
-        //    if (!Nebula.queryTransfer(cup)) cout << "0\n";
+        // cout<<"0\n";
+        if (!Nebula.queryTransfer(cup)) cout << "0\n";
     }
 
     void ticketSystem::queryTrain(parser::PaperCup *cup) {

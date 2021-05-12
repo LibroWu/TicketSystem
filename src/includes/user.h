@@ -24,10 +24,19 @@ namespace LaMetropole {
         char name[20];
         char mailAddr[32];
         int orderNum;
+
         user();
+
         user(const string &userName, const string &pswd, const string &Name, const string &mail, char privilege);
-        user& operator=(const user& other);
+
+        user &operator=(const user &other);
     };
+
+#ifdef debugs
+
+    std::ostream &operator<<(std::ostream &out, const user &obj);
+
+#endif
 
     class userManager {
     private:
@@ -60,6 +69,7 @@ namespace LaMetropole {
                 return ((key == other.key && orderNum == other.orderNum));
             }
         };
+
         BPT<userIdTime, orderRecord, 288, 288> Sabine;
 
         userManager();

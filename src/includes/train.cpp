@@ -224,7 +224,9 @@ namespace LaMetropole {
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         //todo may have bugs here
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
+        if (!start_vec) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
+        if (!end_vec) return false;
         vector<pair<int, int>> same_vec(0);
         unordered_map<long long, char> mapTableOfStation(selfHash);
         int l1 = start_vec->size(), l2 = end_vec->size();
