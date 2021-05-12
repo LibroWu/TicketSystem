@@ -9,6 +9,8 @@
 #include <cstring>
 #include <iostream>
 
+//#define debugs
+
 namespace LaMetropole {
     using std::string;
     using std::getline;
@@ -31,7 +33,7 @@ namespace LaMetropole {
                                        QUERY_TRAIN, DELETE_TRAIN, QUERY_TRANSFER, REFUND_TICKET, EXIT, CLEAN, NONE
         };
 
-        int commandNumber=0;
+        int commandNumber;
 
         //simple tokenScanner with none robust
         class tokenScanner {
@@ -57,6 +59,9 @@ namespace LaMetropole {
         public:
             commandType keyType;
             string *arg[26];
+#ifdef debugs
+            string origin;
+#endif
             char key[26];
             char arv;
 

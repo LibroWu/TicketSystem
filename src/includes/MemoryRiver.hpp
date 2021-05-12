@@ -41,6 +41,9 @@ public:
         file.open(file_name);
         file.seekg(sizeof(int) * (n - 1));
         file.read(reinterpret_cast<char *>(&tmp), sizeof(int));
+#ifdef debugs
+        cout<<"$#@!"<<n<<' '<<tmp<<'\n';
+#endif
         file.close();
     }
 

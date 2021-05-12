@@ -4,14 +4,14 @@
 
 #ifndef BPT_BPT_HPP
 #define BPT_BPT_HPP
-#define debugs
-
-#ifdef debugs
+//#define debugs
 
 #include <iostream>
 
 using std::cin;
 using std::cout;
+#ifdef debugs
+
 #endif
 
 #include "MemoryRiver.hpp"

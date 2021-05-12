@@ -33,6 +33,11 @@ namespace LaMetropole {
 
     bool trainManager::addTrain(parser::PaperCup *cup) {
         long long HashID = HASH(*cup->arg['i' - 'a']);
+#ifdef debugs
+        cout << "command add train:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of train ID:" << HashID << '\n';
+#endif
         if (Jason.count(HashID)) return false;
         //ID stationNum TYPE
         train trainTmp(*cup->arg['i' - 'a'], toInt(cup->arg['n' - 'a']), cup->arg['y' - 'a']->operator[](0));
@@ -92,6 +97,11 @@ namespace LaMetropole {
 
     bool trainManager::queryOrder(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
+#ifdef debugs
+        cout << "command  query order:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of user ID:" << Hu << '\n';
+#endif
         if (!Libro->Leon.count(Hu)) return false;
         vector<orderRecord> *tmp = Libro->Sabine.multipleFind(userManager::userIdTime(Hu));
         cout << tmp->size() - 1 << '\n';
@@ -119,6 +129,12 @@ namespace LaMetropole {
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
+#ifdef debugs
+        cout << "command  query ticket:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of start station:" << HashStart << '\n';
+        cout << "Hash of arrival station:" << HashEnd << '\n';
+#endif
         if (!start_vec) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
         if (!end_vec) return false;
@@ -188,6 +204,11 @@ namespace LaMetropole {
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         offsetFlag tmp = Jason.Find(HashID);
+#ifdef debugs
+        cout << "command  query train:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of train ID:" << HashID << '\n';
+#endif
         if (tmp.offset == -1) return false;
         train trainTmp;
         trainRecorder.read(trainTmp, tmp.offset);
@@ -222,6 +243,12 @@ namespace LaMetropole {
         long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
+#ifdef debugs
+        cout << "command  query transfer:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of start station:" << HashStart << '\n';
+        cout << "Hash of arrival station:" << HashEnd << '\n';
+#endif
         //todo may have bugs here
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
         if (!start_vec) return false;
@@ -340,6 +367,12 @@ namespace LaMetropole {
         int n;
         if (cup->arv == 1) n = 1;
         else n = toLong(cup->arg['n' - 'a']);
+#ifdef debugs
+        cout << "command  refund ticket:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of user ID:" << Hu << '\n';
+        cout << "refund number:" << n << '\n';
+#endif
         user userTmp = Libro->Mathilda.Find(Hu);
         userManager::userIdTime refundKey(Hu, userTmp.orderNum - n);
         if (n > userTmp.orderNum) return false;
@@ -389,8 +422,15 @@ namespace LaMetropole {
         trainRecorder.read(trainTmp, tmp.offset);
         tmp.flag = true;
         Jason.modify(HashID, tmp);
-        long long HashTrainId = HASH(trainTmp.ID), HashStation;
+#ifdef debugs
+        cout << "command  release train:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of train ID:" << HashID << '\n';
+#endif
         for (char i = 0; i < trainTmp.stationNum; ++i) {
+#ifdef debugs
+            cout<<trainTmp.stations[i]<<' '<<HASH(trainTmp.stations[i])<<'\n';
+#endif
             Nancy.insert(stationTrain(HASH(trainTmp.stations[i])), -1);
             Nancy.insert(stationTrain(HASH(trainTmp.stations[i]), tmp.offset), offsetNum(tmp.offset, i));
         }
@@ -404,6 +444,11 @@ namespace LaMetropole {
     bool trainManager::deleteTrain(parser::PaperCup *cup) {
         long long HashID = HASH(*cup->arg['i' - 'a']);
         offsetFlag tmp = Jason.Find(HashID);
+#ifdef debugs
+        cout << "command delete train:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of train ID:" << HashID << '\n';
+#endif
         if (tmp.offset != -1 && !tmp.flag) {
             trainRecorder.Delete(tmp.offset);
             Jason.Delete(HashID);
@@ -430,6 +475,12 @@ namespace LaMetropole {
         int dayN;
         user userTmp = Libro->Mathilda.Find(Hu);
         char st = -1;
+#ifdef debugs
+        cout << "command buyTicket:\n";
+        cout << cup->origin << '\n';
+        cout << "Hash Of user ID:" << Hu << '\n';
+        cout << "Hash Of train ID:" << hashTrainId << '\n';
+#endif
         int seatNum = trainTmp.maxSeatNum;
         L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_Time;
         for (char i = 0; i < trainTmp.stationNum; ++i) {

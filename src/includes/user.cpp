@@ -47,7 +47,10 @@ namespace LaMetropole {
 
     void userManager::initialise(bool flag) {
         if (flag) {
-            has_user = Mathilda.empty();
+            has_user = !Mathilda.empty();
+#ifdef debugs
+            cout<<"!@#$"<<has_user<<'\n';
+#endif
         } else {
             Sabine.initialise();
             Mathilda.initialise();
@@ -68,10 +71,20 @@ namespace LaMetropole {
                      10);
             Mathilda.insert(HASH(*cup->arg['u' - 'a']), tmp);
             Sabine.insert(userIdTime(HASH(*cup->arg['u' - 'a']), -1), orderRecord());
+#ifdef debugs
+            cout << cup->origin << '\n';
+            cout << "first user\n";
+            cout << "Hash of user id:" << HASH(*cup->arg['u' - 'a']) << '\n';
+#endif
             return (has_user = true);
         } else {
             long long Hc = HASH(*cup->arg['c' - 'a']), Hu = HASH(*cup->arg['u' - 'a']);
             char level = toInt(cup->arg['g' - 'a']);
+#ifdef debugs
+            cout << cup->origin << '\n';
+            cout << "Hash of cur user id:" << Hc << '\n';
+            cout << "Hash of user id:" << Hu << '\n';
+#endif
             if (Leon.count(Hc))
                 if (Leon[Hc].privilege > level)
                     if (!Mathilda.count(Hu)) {
@@ -87,11 +100,19 @@ namespace LaMetropole {
 
     bool userManager::logout(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
+#ifdef debugs
+        cout << cup->origin << '\n';
+        cout << "Hash of user id:" << Hu << '\n';
+#endif
         return Leon.erase(Hu);
     }
 
     bool userManager::login(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
+#ifdef debugs
+        cout << cup->origin << '\n';
+        cout << "Hash of user id:" << Hu << '\n';
+#endif
         if (Leon.count(Hu) == 0) {
             user tmp = Mathilda.Find(Hu);
             tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
@@ -107,6 +128,11 @@ namespace LaMetropole {
 
     bool userManager::modify(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']), Hc = HASH(*cup->arg['c' - 'a']);
+#ifdef debugs
+        cout << cup->origin << '\n';
+        cout << "Hash of cur user id:" << Hc << '\n';
+        cout << "Hash of user id:" << Hu << '\n';
+#endif
         if (Leon.count(Hc)) {
             user tmp = Mathilda.Find(Hu);
             if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
@@ -132,6 +158,11 @@ namespace LaMetropole {
 
     bool userManager::query_profile(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']), Hc = HASH(*cup->arg['c' - 'a']);
+#ifdef debugs
+        cout << cup->origin << '\n';
+        cout << "Hash of cur user id:" << Hc << '\n';
+        cout << "Hash of user id:" << Hu << '\n';
+#endif
         if (Leon.count(Hc)) {
             user tmp = Mathilda.Find(Hu);
             if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
