@@ -45,7 +45,7 @@ namespace LaMetropole {
             if (input[i] % 7 == 0) tmp2 ^= tmp2 >> 16;
             tmp2 ^= tmp2 << 16;
         }
-        tmp += tmp2;
+        tmp ^= tmp2;
         return tmp;
     }
 

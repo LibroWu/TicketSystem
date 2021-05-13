@@ -25,61 +25,23 @@ namespace LaMetropole {
 
         class hash_table {
         private:
-            class occupyChain {
-            public:
-                class Node {
-                public:
-                    int pos;
-                    Node *next;
 
-                    Node(int p, Node *ptr = nullptr) : pos(p), next(ptr) {}
-                } *head;
-
-                occupyChain() : head(nullptr) {}
-
-                bool empty() {
-                    return (head == nullptr);
-                }
-
-                void push(int pos) {
-                    head = new Node(pos, head);
-                }
-
-                inline int front() {
-                    return head->pos;
-                }
-
-                void pop() {
-                    if (head) {
-                        Node *tmp = head;
-                        head = head->next;
-                        delete tmp;
-                    }
-                }
-            } chain;
-
-            long long Size, realSize, P;
+            int Size, realSize, P;
 
             long long (*HashFunc)(const Key &);
 
             void doubleSpace() {
                 Node **oldTable = table;
+                int old_P = P;
                 P = sizeSet[++realSize];
                 table = new Node *[P];
                 memset(table, 0, sizeof(Node * ) * P);
-                occupyChain oldChain;
-                oldChain.head = chain.head;
-                chain.head = nullptr;
-                int pos;
-                while (!oldChain.empty()) {
-                    pos = oldChain.front();
-                    oldChain.pop();
+                for (int pos = 0; pos < old_P ;++pos) {
                     for (Node *i = oldTable[pos], *j; i; i = j) {
                         j = i->next;
                         insert(i->v);
                         delete i;
                     }
-                    oldTable[pos] = nullptr;
                 }
                 delete[] oldTable;
             }
@@ -109,19 +71,15 @@ namespace LaMetropole {
             }
 
             void clear(bool flag = false) {
-                long long pos;
-                while (!chain.empty()) {
-                    pos = chain.front();
-                    chain.pop();
+                for (int pos = 0; pos < P; ++pos) {
                     for (Node *i = table[pos], *j; i; i = j) {
                         j = i->next;
                         delete i;
                     }
-                    table[pos] = nullptr;
                 }
                 delete[] table;
                 if (flag) {
-                    P=sizeSet[realSize=0];
+                    P = sizeSet[realSize = 0];
                     table = new Node *[P];
                     memset(table, 0, sizeof(Node *) * P);
                 } else table = nullptr;
@@ -174,7 +132,6 @@ namespace LaMetropole {
                     return pointer(ptr->next = new Node(v), true);
                 } else {
                     ++Size;
-                    chain.push(pos);
                     return pointer(table[pos] = new Node(v), true);
                 }
             }
