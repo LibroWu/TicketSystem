@@ -224,7 +224,6 @@ namespace LaMetropole {
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         if (Month < 6 || Month > 8) return false;
-        //todo may have bugs here
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
         if (!start_vec || start_vec->size() == 1) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
@@ -289,7 +288,6 @@ namespace LaMetropole {
                             train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
                             break;
                         secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
-                        //todo add record
                         int timeConsume = secondArvTime - firstStTime, firstTimeConsume = firstArvTime - firstStTime;
                         int preFirstTimeConsume;
                         int firstPrice =
