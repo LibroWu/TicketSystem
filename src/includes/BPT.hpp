@@ -7,6 +7,7 @@
 //#define debugs1
 //#define debugs3
 //#define debug_transfer
+#define debug_query_ticket
 #include <iostream>
 
 using std::cin;

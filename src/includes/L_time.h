@@ -17,7 +17,7 @@ namespace LaMetropole {
         int month, day, hour, minute;
         bool flag;
     public:
-        L_time(char mm = 6, char dd = 1, char hour = 0, char minute = 0, bool flag = false);
+        L_time(char mm = 5, char dd = 1, char hour = 0, char minute = 0, bool flag = false);
 
         L_time(int t);
 

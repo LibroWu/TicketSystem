@@ -40,7 +40,7 @@ namespace LaMetropole {
             tmp2 ^= xor_num[3 - abs(input[i]) % 4];
             if (input[i] % 2 == 0) tmp2 <<= 1;
             if (input[i] % 5 == 0) tmp2 >>= 1;
-            if (input[i] % 7 == 0) tmp ^= tmp >> 16;
+            if (input[i] % 7 == 0) tmp2 ^= tmp2 >> 16;
         }
         tmp += tmp2;
         return tmp;
