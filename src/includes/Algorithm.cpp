@@ -21,7 +21,7 @@ namespace LaMetropole {
     long long selfHash(const long long &input) { return input; }
 
     long long HASH(const std::string &input) {
-#define debug_transfer
+//#define debug_transfer
 #ifdef debug_transfer
         std::cout << "#debug_transfer @2\n";
                 std::cout.flush();

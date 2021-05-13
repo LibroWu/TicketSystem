@@ -6,7 +6,7 @@
 #define BPT_BPT_HPP
 //#define debugs1
 //#define debugs3
-#define debug_transfer
+//#define debug_transfer
 #include <iostream>
 
 using std::cin;

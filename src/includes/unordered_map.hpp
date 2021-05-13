@@ -121,8 +121,9 @@ namespace LaMetropole {
                 }
                 delete[] table;
                 if (flag) {
-                    table = new Node *[sizeSet[0]];
-                    memset(table, 0, sizeof(Node *) * sizeSet[0]);
+                    P=sizeSet[realSize=0];
+                    table = new Node *[P];
+                    memset(table, 0, sizeof(Node *) * P);
                 } else table = nullptr;
             }
 
@@ -207,7 +208,6 @@ namespace LaMetropole {
         }
 
         T &operator[](const Key &key) {
-#define debug_transfer
 #ifdef debug_transfer
             std::cout << "#debug_transfer @7\n";
             std::cout.flush();

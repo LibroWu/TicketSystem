@@ -128,7 +128,7 @@ namespace LaMetropole {
         long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
-        if (Month<6 || Month>8) return false;
+        if (Month < 6 || Month > 8) return false;
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
 #ifdef debugs
         cout << "command  query ticket:\n";
@@ -244,11 +244,11 @@ namespace LaMetropole {
         //use unorderedMap to find the cross Node of two train
         //if compareFlag then sort by cost
         bool compareFlag = false;
-        if (cup->arv == 4 && cup->arg['p' - 'a']->operator[](0) == 't') compareFlag = true;
+        if (cup->arv == 4 && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
         long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
-        if (Month<6 || Month>8) return false;
+        if (Month < 6 || Month > 8) return false;
 #ifdef debugs
         cout << "command  query transfer:\n";
         cout << cup->origin << '\n';
@@ -283,7 +283,7 @@ namespace LaMetropole {
             cout.flush();
 #endif
             for (int j = 1; j < l2; ++j) {
-                if (start_vec->operator[](i).offset==end_vec->operator[](j).offset) continue;
+                if (start_vec->operator[](i).offset == end_vec->operator[](j).offset) continue;
                 //todo cache this
                 trainRecorder.read(train_arv, end_vec->operator[](j).offset);
 #ifdef debug_transfer
@@ -310,7 +310,6 @@ namespace LaMetropole {
                 for (char k = firstStartStation + 1; k < train_st.stationNum; ++k) {
                     mapTableOfStation[HASH(train_st.stations[k])] = k;
                 }
-
 #ifdef debug_transfer
                 cout << "#debug_transfer @1\n";
                 cout.flush();
@@ -350,9 +349,9 @@ namespace LaMetropole {
                             firstArvTime.month == train_arv.beginMonth && firstArvTime.day < train_arv.beginDay) {
                             secondStTime.month = train_arv.beginMonth;
                             secondStTime.day = train_arv.beginDay;
-                        }else {
-                            secondStTime.month=firstArvTime.month;
-                            secondStTime.day=firstArvTime.day;
+                        } else {
+                            secondStTime.month = firstArvTime.month;
+                            secondStTime.day = firstArvTime.day;
                         }
 #ifdef debug_transfer
                         cout << "#debug_transfer -***-\n";
@@ -360,7 +359,7 @@ namespace LaMetropole {
                         cout.flush();
 #endif
                         //wait whole day
-                        if (!(firstArvTime<secondStTime))
+                        if (!(firstArvTime < secondStTime))
                             secondStTime += 1440;
                         checkTime = secondStTime - train_arv.leavingTime[k];
                         secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
@@ -377,13 +376,10 @@ namespace LaMetropole {
                             train_arv.endMonth < checkTime.month ||
                             train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
                             break;
-#ifdef debug_transfer
-                        cout << "#debug_transfer ==-==\n";
-                        cout.flush();
-#endif
                         secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         //todo add record
-                        int timeConsume = secondArvTime - firstStTime;
+                        int timeConsume = secondArvTime - firstStTime, firstTimeConsume = firstArvTime - firstStTime;
+                        int preFirstTimeConsume;
                         int firstPrice =
                                 train_st.pricePrefixSum[firstArvStation] - train_st.pricePrefixSum[firstStartStation];
                         int secondPrice = train_arv.pricePrefixSum[secondArvStation] - train_arv.pricePrefixSum[k];
@@ -397,7 +393,7 @@ namespace LaMetropole {
                             cout << "#debug_transfer ww\n";
                             cout.flush();
 #endif
-                            startResult.status='a';
+                            startResult.status = 'a';
                             startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation, firstArvStation,
                                             train_st.ID, train_st.stations[firstStartStation],
                                             train_st.stations[firstArvStation], firstStTime, firstArvTime);
@@ -405,6 +401,7 @@ namespace LaMetropole {
                                           train_arv.stations[k], train_arv.stations[secondArvStation], secondStTime,
                                           secondArvTime);
                             forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
+                            preFirstTimeConsume = firstTimeConsume;
                         } else {
 #ifdef debug_transfer
                             cout << "#debug_transfer qwq\n";
@@ -412,7 +409,7 @@ namespace LaMetropole {
 #endif
                             if (compareFlag && ((firstPrice + secondPrice < forCMP.keyPrice) ||
                                                 (firstPrice + secondPrice == forCMP.keyPrice &&
-                                                 firstPrice < startResult.price))) {
+                                                 firstTimeConsume < preFirstTimeConsume))) {
                                 startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation,
                                                 firstArvStation, train_st.ID, train_st.stations[firstStartStation],
                                                 train_st.stations[firstArvStation], firstStTime, firstArvTime);
@@ -420,9 +417,24 @@ namespace LaMetropole {
                                               train_arv.ID, train_arv.stations[k], train_arv.stations[secondArvStation],
                                               secondStTime, secondArvTime);
                                 forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
+                                preFirstTimeConsume = firstTimeConsume;
+#ifdef debug_transfer
+                                cout<<"\n------------------------------------------------\n";
+                                if (startResult.status == 'e') cout << "0\n";
+                                else {
+                                    cout << startResult.trainID << ' ' << startResult.startStation << ' ' << startResult.startTime << " -> "
+                                         << startResult.targetStation << ' '
+                                         << startResult.arrivalTime << ' ' << startResult.price << ' ' << startResult.n << '\n';
+                                    cout << arvResult.trainID << ' ' << arvResult.startStation << ' ' << arvResult.startTime << " -> "
+                                         << arvResult.targetStation << ' '
+                                         << arvResult.arrivalTime << ' ' << arvResult.price << ' ' << arvResult.n << '\n';
+                                }
+                                cout<<"\n------------------------------------------------\n";
+#endif
                             }
                             if (!compareFlag && ((timeConsume < forCMP.keyTime) ||
-                                                 (timeConsume == forCMP.keyTime && firstPrice < startResult.price))) {
+                                                 (timeConsume == forCMP.keyTime &&
+                                                  firstTimeConsume < preFirstTimeConsume))) {
                                 startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation,
                                                 firstArvStation, train_st.ID, train_st.stations[firstStartStation],
                                                 train_st.stations[firstArvStation], firstStTime, firstArvTime);
@@ -430,9 +442,22 @@ namespace LaMetropole {
                                               train_arv.ID, train_arv.stations[k], train_arv.stations[secondArvStation],
                                               secondStTime, secondArvTime);
                                 forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
+                                preFirstTimeConsume = firstTimeConsume;
+#ifdef debug_transfer
+                                cout<<"\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n";
+                                if (startResult.status == 'e') cout << "0\n";
+                                else {
+                                    cout << startResult.trainID << ' ' << startResult.startStation << ' ' << startResult.startTime << " -> "
+                                         << startResult.targetStation << ' '
+                                         << startResult.arrivalTime << ' ' << startResult.price << ' ' << startResult.n << '\n';
+                                    cout << arvResult.trainID << ' ' << arvResult.startStation << ' ' << arvResult.startTime << " -> "
+                                         << arvResult.targetStation << ' '
+                                         << arvResult.arrivalTime << ' ' << arvResult.price << ' ' << arvResult.n << '\n';
+                                }
+                                cout<<"\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n";
+#endif
                             }
                         }
-                        break;
                     }
             }
         }
@@ -466,11 +491,9 @@ namespace LaMetropole {
         orderRecord orderTmp = Libro->Sabine.Find(refundKey), orderGet;
         if (orderTmp.status == 'r') return false;
 #ifdef debugs3
-
         cout << "||^||" << *cup->arg['u' - 'a'] << ' ' << Hu << '\n' << orderTmp.status << ' ' << orderTmp.trainID
              << ' '
              << orderTmp.startStation << ' ' << orderTmp.targetStation << "||^||\n";
-
 #endif
         if (orderTmp.status == 'p') {
             orderTmp.status = 'r';
@@ -660,7 +683,6 @@ namespace LaMetropole {
                 orderTmp.status = 's';
                 Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
                 for (char j = st; j < i; ++j) trainTmp.seatNum[dayN][j] -= Need;
-
 #ifdef debugs1
                 if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && dayN == 28) {
                     for (char j = 11; j < 13; ++j) {
