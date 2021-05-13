@@ -294,26 +294,14 @@ namespace LaMetropole {
                 }
                 cout << '\n';
                 cout<<int(train_arv.beginMonth)<<' '<<int(train_arv.beginDay)<<' '<<int(train_arv.endMonth)<<' '<<int(train_arv.endDay)<<'\n';
+                cout<<train_arv.start_hour<<' '<<train_arv.start_minute<<'\n';
                 cout.flush();
 #endif
                 char secondArvStation = end_vec->operator[](j).num;
-#ifdef debug_transfer
-                cout << "#debug_transfer @4\n";
-                cout.flush();
-#endif
                 mapTableOfStation.clear();
-#ifdef debug_transfer
-                cout << "#debug_transfer @3\n";
-                cout<<int(firstStartStation)<<' '<<int(train_st.stationNum)<<'\n';
-                cout.flush();
-#endif
                 for (char k = firstStartStation + 1; k < train_st.stationNum; ++k) {
                     mapTableOfStation[HASH(train_st.stations[k])] = k;
                 }
-#ifdef debug_transfer
-                cout << "#debug_transfer @1\n";
-                cout.flush();
-#endif
                 for (char k = secondArvStation - 1; k > -1; --k)
                     //find the cross node of the two routine
                     if (mapTableOfStation.count(HASH(train_arv.stations[k]))) {
@@ -343,12 +331,12 @@ namespace LaMetropole {
                         firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(6, 1, train_arv.start_hour, train_arv.start_minute), secondArvTime;
                         secondStTime += train_arv.leavingTime[k];
-                        //todo bugs here
-                        //secondStTime.month = max(char(firstArvTime.month),train_arv.beginMonth), secondStTime.day = max(char(firstArvTime.day),train_arv.beginDay);
                         if (firstArvTime.month < train_arv.beginMonth ||
                             firstArvTime.month == train_arv.beginMonth && firstArvTime.day < train_arv.beginDay) {
                             secondStTime.month = train_arv.beginMonth;
                             secondStTime.day = train_arv.beginDay;
+                            if (secondStTime.hour<train_arv.start_hour || secondStTime.hour==train_arv.start_hour && secondStTime.minute==train_arv.start_minute)
+                                secondStTime.day+=1;
                         } else {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
@@ -360,7 +348,7 @@ namespace LaMetropole {
 #endif
                         //wait whole day
                         if (!(firstArvTime < secondStTime))
-                            secondStTime += 1440;
+                            secondStTime.day += 1;
                         checkTime = secondStTime - train_arv.leavingTime[k];
                         secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
                                                         train_arv.leavingTime[k] -
