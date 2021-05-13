@@ -21,11 +21,6 @@ namespace LaMetropole {
     long long selfHash(const long long &input) { return input; }
 
     long long HASH(const std::string &input) {
-//#define debug_transfer
-#ifdef debug_transfer
-        std::cout << "#debug_transfer @2\n";
-                std::cout.flush();
-#endif
         unsigned int xor_num[4] = {1073758344, 268960770, 16779332, 268468481};
         int len = input.length();
         long long tmp = 0;

@@ -48,9 +48,6 @@ namespace LaMetropole {
     void userManager::initialise(bool flag) {
         if (flag) {
             has_user = !Mathilda.empty();
-#ifdef debugs
-            cout<<"!@#$"<<has_user<<'\n';
-#endif
         } else {
             Sabine.initialise();
             Mathilda.initialise();

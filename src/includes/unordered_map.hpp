@@ -208,15 +208,7 @@ namespace LaMetropole {
         }
 
         T &operator[](const Key &key) {
-#ifdef debug_transfer
-            std::cout << "#debug_transfer @7\n";
-            std::cout.flush();
-#endif
             typename hash_table::Node *tmp = Nebula.find(key);
-#ifdef debug_transfer
-            std::cout << "#debug_transfer @8\n";
-            std::cout.flush();
-#endif
             if (tmp) return tmp->v.second;
             else {
                 return Nebula.insert(value_type(key, T())).first->v.second;
