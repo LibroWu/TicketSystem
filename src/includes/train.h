@@ -61,7 +61,7 @@ namespace LaMetropole {
         };
 
         //todo take down the station's number of the train can optimise the program
-        BPT<stationTrain, offsetNum, 288, 288> Nancy;
+        BPT<stationTrain, offsetNum, 300, 400> Nancy;
 
         //trainID -> offset & released or not of the train & pendingNum
         struct offsetFlag {
@@ -72,7 +72,7 @@ namespace LaMetropole {
                                                                                  pendingNum(pendingNum) {}
         };
 
-        BPT<long long, offsetFlag, 288, 288> Jason;
+        BPT<long long, offsetFlag, 300, 400> Jason;
 
         //information of each train
         MemoryRiver<train> trainRecorder;

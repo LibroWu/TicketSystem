@@ -85,7 +85,6 @@ namespace LaMetropole {
     }
 
     void ticketSystem::queryTransfer(parser::PaperCup *cup) {
-        //cout<<"0\n";
         if (!Nebula.queryTransfer(cup)) cout << "0\n";
     }
 
