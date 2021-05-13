@@ -76,6 +76,9 @@ namespace LaMetropole {
             cout << "first user\n";
             cout << "Hash of user id:" << HASH(*cup->arg['u' - 'a']) << '\n';
 #endif
+#ifdef debugs3
+            cout<<*cup->arg['u'-'a']<<' '<<HASH(*cup->arg['u'-'a'])<<"@@@@\n";
+#endif
             return (has_user = true);
         } else {
             long long Hc = HASH(*cup->arg['c' - 'a']), Hu = HASH(*cup->arg['u' - 'a']);
@@ -92,6 +95,9 @@ namespace LaMetropole {
                                  level);
                         Mathilda.insert(Hu, tmp);
                         Sabine.insert(userIdTime(Hu, -1), orderRecord());
+#ifdef debugs3
+                        cout<<*cup->arg['u'-'a']<<' '<<HASH(*cup->arg['u'-'a'])<<"@@@@\n";
+#endif
                         return true;
                     }
             return false;

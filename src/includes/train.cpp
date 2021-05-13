@@ -380,8 +380,8 @@ namespace LaMetropole {
         cout << "refund number:" << n << '\n';
 #endif
         user userTmp = Libro->Mathilda.Find(Hu);
-        userManager::userIdTime refundKey(Hu, userTmp.orderNum - n);
         if (n > userTmp.orderNum) return false;
+        userManager::userIdTime refundKey(Hu, userTmp.orderNum - n);
         orderRecord orderTmp = Libro->Sabine.Find(refundKey), orderGet;
         if (orderTmp.status == 'r') return false;
 #ifdef debugs3
@@ -394,6 +394,7 @@ namespace LaMetropole {
         if (orderTmp.status == 'p') {
             orderTmp.status = 'r';
             Libro->Sabine.modify(refundKey, orderTmp);
+            Arya.Delete(trainIDOrder(HASH(orderTmp.trainID),orderTmp.dayN,orderTmp.pendingNum));
         }
         if (orderTmp.status == 's') {
             orderTmp.status = 'r';
@@ -409,7 +410,7 @@ namespace LaMetropole {
                 cout<<int(orderTmp.st)<<' '<<int(orderTmp.arv)<<' '<<orderTmp.n<<'\n';
                 cout<<orderTmp.startStation<<' '<<orderTmp.targetStation<<' '<<*cup->arg['u'-'a']<<'\n';
                 cout<<"$$$$\n";
-                for (char j = 10; j < 16; ++j) {
+                for (char j = 11; j < 13; ++j) {
                     cout << trainTmp.seatNum[orderTmp.dayN][j] << ' ';
                 }
                 cout << "*|*|*|*\n";
@@ -426,11 +427,11 @@ namespace LaMetropole {
                     cout<<int(pr.st)<<' '<<int(pr.arv)<<"^^^^\n";
 #endif
                     if (seatNum >= pr.n) {
-                        Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.orderNum));
+                        Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.pendingNum));
                         for (char j = pr.st; j < pr.arv; ++j) trainTmp.seatNum[pr.dayN][j] -= pr.n;
 #ifdef debugs1
                         if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && pr.dayN == 28) {
-                            for (char j = 10; j < 16; ++j) {
+                            for (char j = 11; j < 13; ++j) {
                                 cout << trainTmp.seatNum[pr.dayN][j] << ' ';
                             }
                             cout << "*|*|*|*\n";
@@ -440,6 +441,9 @@ namespace LaMetropole {
                         orderGet = Libro->Sabine.Find(userManager::userIdTime(pr.hashUserId, pr.orderNum));
                         orderGet.status = 's';
                         Libro->Sabine.modify(userManager::userIdTime(pr.hashUserId, pr.orderNum), orderGet);
+#ifdef debugs3
+                        cout << pr.hashUserId << ' ' << int(pr.st) << ' ' << int(pr.arv) <<' '<<pr.n << '\n';
+#endif
                     }
                 }
                 delete vec_ptr;
@@ -475,7 +479,7 @@ namespace LaMetropole {
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());
 #ifdef debugs1
         if (strcmp(trainTmp.ID, "LeavesofGrass") == 0) {
-            for (char j = 10; j < 16; ++j) {
+            for (char j = 11; j < 13; ++j) {
                 cout << trainTmp.seatNum[28][j] << ' ';
             }
             cout << "*|*|*|*\n";
@@ -527,12 +531,10 @@ namespace LaMetropole {
         int seatNum = trainTmp.maxSeatNum;
         L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_Time;
         for (char i = 0; i < trainTmp.stationNum; ++i) {
-            if (strcmp(cup->arg['f' - 'a']->c_str(), trainTmp.stations[i]) == 0) st = i;
-            //if (st != -1) seatNum = min(seatNum, trainTmp.seatNum[dayN][i]);
-            if (strcmp(cup->arg['t' - 'a']->c_str(), trainTmp.stations[i]) == 0) {
+            if (st==-1 && strcmp(cup->arg['f' - 'a']->c_str(), trainTmp.stations[i]) == 0) st = i;
+            else if (strcmp(cup->arg['t' - 'a']->c_str(), trainTmp.stations[i]) == 0) {
                 if (st == -1) return 'f';
-                timeTmp += trainTmp.leavingTime[st];
-                timeTmp.day = Day, timeTmp.month = Month;
+                timeTmp += trainTmp.leavingTime[st],timeTmp.day = Day, timeTmp.month = Month;
                 st_Time = timeTmp - trainTmp.leavingTime[st];
                 //not in the date interval
                 if ((trainTmp.beginMonth > st_Time.month ||
@@ -542,10 +544,9 @@ namespace LaMetropole {
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
-
 #ifdef debugs1
                 if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && dayN == 28) {
-                    for (char j = 10; j < 16; ++j) {
+                    for (char j = 11; j < 13; ++j) {
                         cout << trainTmp.seatNum[dayN][j] << ' ';
                     }
                     cout << "*|*|*|*\n";
@@ -553,7 +554,6 @@ namespace LaMetropole {
                     cout << seatNum << ' ' << Need << '\n';
                 }
 #endif
-
 #ifdef debugs
                 cout<<dayN<<' '<<seatNum<<'\n';
 #endif
@@ -568,7 +568,7 @@ namespace LaMetropole {
                     orderTmp.status = 'p';
                     Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
                     Arya.insert(trainIDOrder(hashTrainId, dayN, tmp.pendingNum),
-                                pendingRecord(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], seatNum,
+                                pendingRecord(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need,
                                               tmp.pendingNum, dayN, st, i, userTmp.orderNum, Hu));
                     ++userTmp.orderNum;
                     Libro->Mathilda.modify(Hu, userTmp);
@@ -578,12 +578,11 @@ namespace LaMetropole {
                 }
                 orderTmp.status = 's';
                 Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
-                for (char j = st; j < i; ++j) {
-                    trainTmp.seatNum[dayN][j] -= Need;
-                }
+                for (char j = st; j < i; ++j) trainTmp.seatNum[dayN][j] -= Need;
+
 #ifdef debugs1
                 if (strcmp(trainTmp.ID, "LeavesofGrass") == 0 && dayN == 28) {
-                    for (char j = 10; j < 16; ++j) {
+                    for (char j = 11; j < 13; ++j) {
                         cout << trainTmp.seatNum[dayN][j] << ' ';
                     }
                     cout << "*|*|*|*\n";

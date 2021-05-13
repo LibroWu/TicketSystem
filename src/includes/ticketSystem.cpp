@@ -94,7 +94,7 @@ namespace LaMetropole {
     }
 
     void ticketSystem::queryTicket(parser::PaperCup *cup) {
-        if (!Nebula.queryTicket(cup)) cout << "-1\n";
+        if (!Nebula.queryTicket(cup)) cout << "0\n";
     }
 
     void ticketSystem::queryProfile(parser::PaperCup *cup) {

@@ -107,7 +107,7 @@ namespace LaMetropole {
 
             int pendingNum;
 
-            trainIDOrder(long long trainIdHash = 0, int dayN = 0, long long orderNum = -1) : key(trainIdHash, dayN),
+            trainIDOrder(long long trainIdHash = 0, int dayN = 0, int orderNum = -1) : key(trainIdHash, dayN),
                                                                                              pendingNum(orderNum) {}
 
             bool operator<(const trainIDOrder &other) const {
