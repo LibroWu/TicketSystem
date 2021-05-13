@@ -267,10 +267,26 @@ namespace LaMetropole {
         for (int i = 1; i < l1; ++i) {
             trainRecorder.read(train_st, start_vec->operator[](i).offset);
             char firstStartStation = start_vec->operator[](i).num;
+#ifdef debug_transfer
+            cout << "#debug_transfer i:" << i << "\n";
+            cout << train_st.ID << '\n';
+            for (char w = 0; w < train_st.stationNum; ++w) {
+                cout << train_st.stations[w] << ' ';
+            }
+            cout << '\n';
+#endif
             for (int j = 1; j < l2; ++j) {
                 //todo cache this
                 trainRecorder.read(train_arv, end_vec->operator[](j).offset);
-
+#ifdef debug_transfer
+                cout << "#debug_transfer j:" << j << "\n";
+                cout << train_arv.ID << '\n';
+                for (char w = 0; w < train_arv.stationNum; ++w) {
+                    cout << train_arv.stations[w] << ' ';
+                }
+                cout << '\n';
+                cout<<train_arv.beginMonth<<' '<<train_arv.beginDay<<' '<<train_arv.endMonth<<' '<<train_arv.endDay<<'\n';
+#endif
                 char secondArvStation = end_vec->operator[](j).num;
                 mapTableOfStation.clear();
                 for (char k = firstStartStation + 1; k < train_st.stationNum; ++k) {
@@ -279,6 +295,11 @@ namespace LaMetropole {
                 for (char k = secondArvStation - 1; k > -1; --k)
                     //find the cross node of the two routine
                     if (mapTableOfStation.count(HASH(train_arv.stations[k]))) {
+#ifdef debug_transfer
+                        cout << "#debug_transfer ***\n";
+                        cout << int(k) << ' ' << int(mapTableOfStation.count(HASH(train_arv.stations[k]))) << '\n';
+                        cout << train_arv.stations[k] << '\n';
+#endif
                         int firstDayN, secondDayN;
                         char firstArvStation = mapTableOfStation[HASH(train_arv.stations[k])];
                         L_time firstStTime(6, 1, train_st.start_hour, train_st.start_minute), checkTime, firstArvTime;
@@ -292,23 +313,44 @@ namespace LaMetropole {
                             train_st.endMonth < checkTime.month ||
                             train_st.endMonth == checkTime.month && train_st.endDay < checkTime.day)
                             break;
+#ifdef debug_transfer
+                        cout << "#debug_transfer --=--\n";
+#endif
                         firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(6, 1, train_arv.start_hour, train_arv.start_minute), secondArvTime;
                         secondStTime += train_arv.leavingTime[k];
-                        secondStTime.month = firstArvTime.month, secondStTime.day = firstArvTime.day;
+                        //todo bugs here
+                        //secondStTime.month = max(char(firstArvTime.month),train_arv.beginMonth), secondStTime.day = max(char(firstArvTime.day),train_arv.beginDay);
+                        if (firstArvTime.month < train_arv.beginMonth ||
+                            firstArvTime.month == train_arv.beginMonth && firstArvTime.day < train_arv.beginDay) {
+                            secondStTime.month = train_arv.beginMonth;
+                            secondStTime.day = train_arv.beginDay;
+                        }
+#ifdef debug_transfer
+                        cout << "#debug_transfer -***-\n";
+                        cout << firstStTime << ' ' << firstArvTime << ' ' << secondStTime << '\n';
+#endif
                         //wait whole day
                         if (!(firstArvTime.hour < secondStTime.hour ||
                               firstArvTime.hour == secondStTime.hour && firstArvTime.minute < secondStTime.minute))
                             secondStTime += 1440;
                         checkTime = secondStTime - train_arv.leavingTime[k];
-                        secondArvTime = secondStTime + (train_arv.leavingTime[firstArvStation] -
-                                                        train_arv.leavingTime[firstStartStation] -
-                                                        train_arv.stopoverTimes[firstArvStation - 1]);
+                        secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
+                                                        train_arv.leavingTime[k] -
+                                                        train_arv.stopoverTimes[secondArvStation - 1]);
+#ifdef debug_transfer
+                        cout << "#debug_transfer -*^*-\n";
+                        cout << firstStTime << ' ' << firstArvTime << '\n' << secondStTime << ' ' << secondArvTime
+                             << '\n' << checkTime << '\n';
+#endif
                         if (train_arv.beginMonth > checkTime.month ||
                             train_arv.beginMonth == checkTime.month && train_arv.beginDay > checkTime.day ||
                             train_arv.endMonth < checkTime.month ||
                             train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
                             break;
+#ifdef debug_transfer
+                        cout << "#debug_transfer ==-==\n";
+#endif
                         secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         //todo add record
                         int timeConsume = secondArvTime - firstStTime;
@@ -320,7 +362,12 @@ namespace LaMetropole {
                             firstSeatNum = min(firstSeatNum, train_st.seatNum[firstDayN][l]);
                         for (char l = k; l < secondArvStation; ++l)
                             secondSeatNum = min(secondSeatNum, train_arv.seatNum[secondDayN][l]);
-                        if (startResult.st == 'e') {
+                        if (startResult.status == 'e') {
+
+#ifdef debug_transfer
+                            cout << "#debug_transfer ww\n";
+#endif
+                            startResult.status='a';
                             startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation, firstArvStation,
                                             train_st.ID, train_st.stations[firstStartStation],
                                             train_st.stations[firstArvStation], firstStTime, firstArvTime);
@@ -329,6 +376,10 @@ namespace LaMetropole {
                                           secondArvTime);
                             forCMP.keyTime = timeConsume, forCMP.keyPrice = firstPrice + secondPrice;
                         } else {
+
+#ifdef debug_transfer
+                            cout << "#debug_transfer qwq\n";
+#endif
                             if (compareFlag && ((firstPrice + secondPrice < forCMP.keyPrice) ||
                                                 (firstPrice + secondPrice == forCMP.keyPrice &&
                                                  firstPrice < startResult.price))) {
@@ -394,7 +445,7 @@ namespace LaMetropole {
         if (orderTmp.status == 'p') {
             orderTmp.status = 'r';
             Libro->Sabine.modify(refundKey, orderTmp);
-            Arya.Delete(trainIDOrder(HASH(orderTmp.trainID),orderTmp.dayN,orderTmp.pendingNum));
+            Arya.Delete(trainIDOrder(HASH(orderTmp.trainID), orderTmp.dayN, orderTmp.pendingNum));
         }
         if (orderTmp.status == 's') {
             orderTmp.status = 'r';
@@ -531,10 +582,10 @@ namespace LaMetropole {
         int seatNum = trainTmp.maxSeatNum;
         L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_Time;
         for (char i = 0; i < trainTmp.stationNum; ++i) {
-            if (st==-1 && strcmp(cup->arg['f' - 'a']->c_str(), trainTmp.stations[i]) == 0) st = i;
+            if (st == -1 && strcmp(cup->arg['f' - 'a']->c_str(), trainTmp.stations[i]) == 0) st = i;
             else if (strcmp(cup->arg['t' - 'a']->c_str(), trainTmp.stations[i]) == 0) {
                 if (st == -1) return 'f';
-                timeTmp += trainTmp.leavingTime[st],timeTmp.day = Day, timeTmp.month = Month;
+                timeTmp += trainTmp.leavingTime[st], timeTmp.day = Day, timeTmp.month = Month;
                 st_Time = timeTmp - trainTmp.leavingTime[st];
                 //not in the date interval
                 if ((trainTmp.beginMonth > st_Time.month ||
