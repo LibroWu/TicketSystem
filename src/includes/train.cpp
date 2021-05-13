@@ -266,19 +266,19 @@ namespace LaMetropole {
                         firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(6, 1, train_arv.start_hour, train_arv.start_minute), secondArvTime;
                         secondStTime += train_arv.leavingTime[k];
-                        //todo bugs here
-                        //secondStTime.month = max(char(firstArvTime.month),train_arv.beginMonth), secondStTime.day = max(char(firstArvTime.day),train_arv.beginDay);
                         if (firstArvTime.month < train_arv.beginMonth ||
                             firstArvTime.month == train_arv.beginMonth && firstArvTime.day < train_arv.beginDay) {
                             secondStTime.month = train_arv.beginMonth;
                             secondStTime.day = train_arv.beginDay;
+                            if (secondStTime.hour<train_arv.start_hour || secondStTime.hour==train_arv.start_hour && secondStTime.minute==train_arv.start_minute)
+                                secondStTime.day+=1;
                         } else {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
                         }
                         //wait whole day
                         if (!(firstArvTime < secondStTime))
-                            secondStTime += 1440;
+                            secondStTime.day += 1;
                         checkTime = secondStTime - train_arv.leavingTime[k];
                         secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
                                                         train_arv.leavingTime[k] -
