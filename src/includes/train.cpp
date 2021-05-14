@@ -269,8 +269,10 @@ namespace LaMetropole {
                             firstArvTime.month == train_arv.beginMonth && firstArvTime.day < train_arv.beginDay) {
                             secondStTime.month = train_arv.beginMonth;
                             secondStTime.day = train_arv.beginDay;
-                            if (secondStTime.hour<train_arv.start_hour || secondStTime.hour==train_arv.start_hour && secondStTime.minute==train_arv.start_minute)
-                                secondStTime.day+=1;
+                            if (secondStTime.hour < train_arv.start_hour || secondStTime.hour == train_arv.start_hour &&
+                                                                            secondStTime.minute ==
+                                                                            train_arv.start_minute)
+                                secondStTime.day += 1;
                         } else {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
@@ -409,8 +411,8 @@ namespace LaMetropole {
             Nancy.insert(stationTrain(HASH(trainTmp.stations[i])), -1);
             Nancy.insert(stationTrain(HASH(trainTmp.stations[i]), tmp.offset), offsetNum(tmp.offset, i));
         }
-        int beginN = (trainTmp.beginMonth - 6) * 31 + trainTmp.beginDay, endN =
-                (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
+        int beginN = (trainTmp.beginMonth - 6) * 31 + trainTmp.beginDay,
+                endN = (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
         for (int i = beginN; i <= endN; ++i)
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());
         return true;
@@ -433,7 +435,7 @@ namespace LaMetropole {
         if (!Libro->Leon.count(Hu)) return 'f';
         long long hashTrainId = HASH(*cup->arg['i' - 'a']);
         offsetFlag tmp = Jason.Find(hashTrainId);
-        //not find the train
+        //not find the train or not release
         if (tmp.offset == -1 || !tmp.flag) return 'f';
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);

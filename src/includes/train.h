@@ -60,7 +60,6 @@ namespace LaMetropole {
             offsetNum(int offset = 0, char num = 0) : offset(offset), num(num) {}
         };
 
-        //todo take down the station's number of the train can optimise the program
         BPT<stationTrain, offsetNum, 288, 288> Nancy;
 
         //trainID -> offset & released or not of the train & pendingNum
