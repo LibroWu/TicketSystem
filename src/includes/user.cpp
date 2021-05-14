@@ -94,8 +94,8 @@ namespace LaMetropole {
         long long Hu = HASH(*cup->arg['u' - 'a']);
         if (Leon.count(Hu) == 0) {
             user tmp = Mathilda.Find(Hu);
-            tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
             if (tmp.privilege != -1) {
+                tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
                 if (strcmp(tmp.password, cup->arg['p' - 'a']->c_str()) == 0) {
                     Leon[Hu] = tmp;
                     return true;
