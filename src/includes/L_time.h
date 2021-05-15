@@ -89,7 +89,7 @@ namespace LaMetropole {
         sortStruct(const sortStruct &other) : keyPrice(other.keyPrice),
                                               keyTime(other.keyTime), num(other.num),
                                               flag(other.flag) {
-            strcpy(trainID, other.train);
+            strcpy(trainID, other.trainID);
         }
 
         bool operator<(const sortStruct &other) {
