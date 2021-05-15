@@ -51,9 +51,11 @@ namespace LaMetropole {
         orderRecord(int price, int n, int trainOrderNum, int dayN, char sStation, char arStation, char *trainId,
                     char *start, char *target, const L_time &st,
                     const L_time &arv);
+
         void set(int Price, int N, int TrainOrderNum, int DayN, char SStation, char ArStation, char *TrainId,
                  char *Start, char *Target, const L_time &St,
                  const L_time &Arv);
+
         orderRecord();
 
         orderRecord(const orderRecord &other);
@@ -78,19 +80,26 @@ namespace LaMetropole {
 
         sortStruct() = default;
 
-        sortStruct(int keyPrice, int keyTime, int num, bool flag,const char* train):keyPrice(keyPrice),keyTime(keyTime),num(num),flag(flag) {
-            strcpy(trainID,train);
+        sortStruct(int keyPrice, int keyTime, int num, bool flag, const char *train) : keyPrice(keyPrice),
+                                                                                       keyTime(keyTime), num(num),
+                                                                                       flag(flag) {
+            strcpy(trainID, train);
         }
 
-        bool operator<(const sortStruct& other) {
+        sortStruct(const sortStruct &other) : keyPrice(other.keyPrice),
+                                              keyTime(other.keyTime), num(other.num),
+                                              flag(other.flag) {
+            strcpy(trainID, other.train);
+        }
+
+        bool operator<(const sortStruct &other) {
             if (flag) {
-                if (keyPrice<other.keyPrice) return true;
-                if (keyPrice>other.keyPrice) return false;
+                if (keyPrice == other.keyPrice) return (strcmp(trainID, other.trainID) < 0);
+                return (keyPrice < other.keyPrice);
             } else {
-                if (keyTime<other.keyTime) return true;
-                if (keyTime>other.keyTime) return false;
+                if (keyTime == other.keyTime) return (strcmp(trainID, other.trainID) < 0);
+                return (keyTime < other.keyTime);
             }
-            return (strcmp(trainID,other.trainID)<0);
         }
     };
 }

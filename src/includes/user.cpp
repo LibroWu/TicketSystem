@@ -109,10 +109,10 @@ namespace LaMetropole {
         long long Hu = HASH(*cup->arg['u' - 'a']), Hc = HASH(*cup->arg['c' - 'a']);
         if (Leon.count(Hc)) {
             user tmp = Mathilda.Find(Hu);
-            if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
+            if (tmp.privilege != -1 && (Leon[Hc].privilege > tmp.privilege || Hu == Hc)) {
                 if (cup->arg['g' - 'a'] != nullptr) {
-                    char tmpPrivilege=toInt(cup->arg['g' - 'a']);
-                    if (tmpPrivilege>=Leon[Hc].privilege) return false;
+                    char tmpPrivilege = toInt(cup->arg['g' - 'a']);
+                    if (tmpPrivilege >= Leon[Hc].privilege) return false;
                     tmp.privilege = tmpPrivilege;
                 }
                 if (cup->arg['p' - 'a'] != nullptr) {
@@ -136,7 +136,7 @@ namespace LaMetropole {
         long long Hu = HASH(*cup->arg['u' - 'a']), Hc = HASH(*cup->arg['c' - 'a']);
         if (Leon.count(Hc)) {
             user tmp = Mathilda.Find(Hu);
-            if (tmp.privilege != -1 && (Hu == Hc || Leon[Hc].privilege > tmp.privilege)) {
+            if (tmp.privilege != -1 && (Leon[Hc].privilege > tmp.privilege || Hu == Hc)) {
                 cout << tmp.username << ' ' << tmp.name << ' ' << tmp.mailAddr << ' ' << int(tmp.privilege) << '\n';
                 return true;
             }

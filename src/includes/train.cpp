@@ -243,9 +243,8 @@ namespace LaMetropole {
                 trainRecorder.read(train_arv, end_vec->operator[](j).offset);
                 char secondArvStation = end_vec->operator[](j).num;
                 mapTableOfStation.clear();
-                for (char k = firstStartStation + 1; k < train_st.stationNum; ++k) {
+                for (char k = firstStartStation + 1; k < train_st.stationNum; ++k)
                     mapTableOfStation[HASH(train_st.stations[k])] = k;
-                }
                 for (char k = secondArvStation - 1; k > -1; --k)
                     //find the cross node of the two routine
                     if (mapTableOfStation.count(HASH(train_arv.stations[k]))) {
