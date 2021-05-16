@@ -487,7 +487,7 @@ namespace LaMetropole {
                 trainRecorder.update(trainTmp, tmp.offset);
                 ++userTmp.orderNum;
                 Libro->Mathilda.modify(Hu, userTmp);
-                cout << orderTmp.price * orderTmp.n << '\n';
+                cout << (long long) (orderTmp.price) * orderTmp.n << '\n';
                 return 's';
             }
         }
