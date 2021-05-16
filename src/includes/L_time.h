@@ -42,7 +42,7 @@ namespace LaMetropole {
 
     struct orderRecord {
         char status;
-        char trainID[22], startStation[35], targetStation[35];
+        char trainID[21], startStation[41], targetStation[41];
         //price means the single ticket
         int price, n, pendingNum, dayN;
         char st, arv;

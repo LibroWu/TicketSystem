@@ -48,10 +48,6 @@ namespace LaMetropole {
 
     parser::PaperCup *parser::listen() {
         string s, *sKey, *sArg;
-#ifdef debugs
-        if (commandNumber==1376)
-            s="Libro";
-#endif
         PaperCup *tmp = new PaperCup;
         bool flag = false;
         if (getline(std::cin, s)) flag = true;

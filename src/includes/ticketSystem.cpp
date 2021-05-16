@@ -42,9 +42,6 @@ namespace LaMetropole {
 
     void ticketSystem::Exit(parser::PaperCup *cup) {
         cout << "bye\n";
-#ifdef debugs
-        Libro.Mathilda.printChain();
-#endif
         exit(0);
     }
 
