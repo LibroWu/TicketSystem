@@ -16,10 +16,10 @@ using std::sort;
 namespace LaMetropole {
     class train {
     public:
-        char ID[22], stationNum, stations[101][35];
+        char ID[21], stationNum, stations[101][41];
 
-        int seatNum[94][101], pricePrefixSum[101], start_hour, start_minute, maxSeatNum;
-        int leavingTime[101], stopoverTimes[101];
+        int seatNum[94][100], pricePrefixSum[100], start_hour, start_minute, maxSeatNum;
+        int leavingTime[100], stopoverTimes[100];
         char beginDay, beginMonth, endDay, endMonth, Type;
 
         train(std::string Id, char station_num, char type);

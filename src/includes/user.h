@@ -18,11 +18,11 @@ namespace LaMetropole {
 
     class user {
     public:
-        char username[24];
-        char password[32];
+        char username[21];
+        char password[31];
         char privilege;
         char name[20];
-        char mailAddr[32];
+        char mailAddr[31];
         int orderNum;
 
         user();
