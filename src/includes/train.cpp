@@ -266,8 +266,7 @@ namespace LaMetropole {
                             secondStTime.month = train_arv.beginMonth;
                             secondStTime.day = train_arv.beginDay;
                             if (secondStTime.hour < train_arv.start_hour || secondStTime.hour == train_arv.start_hour &&
-                                                                            secondStTime.minute ==
-                                                                            train_arv.start_minute)
+                                                                            secondStTime.minute <train_arv.start_minute)
                                 secondStTime.day += 1;
                         } else {
                             secondStTime.month = firstArvTime.month;
