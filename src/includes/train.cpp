@@ -168,16 +168,13 @@ namespace LaMetropole {
                                        trainTmp.ID));
                 }
         }
-        if (result.empty()) cout << "0\n";
-        else {
-            sort(resultSort.begin(), resultSort.end());
-            int Len = resultSort.size();
-            cout << Len << '\n';
-            for (int i = 0; i < Len; ++i) {
-                orderRecord &R = result[resultSort[i].num];
-                cout << R.trainID << ' ' << R.startStation << ' ' << R.startTime << " -> " << R.targetStation << ' '
-                     << R.arrivalTime << ' ' << R.price << ' ' << R.n << '\n';
-            }
+        sort(resultSort.begin(), resultSort.end());
+        int Len = resultSort.size();
+        cout << Len << '\n';
+        for (int i = 0; i < Len; ++i) {
+            orderRecord &R = result[resultSort[i].num];
+            cout << R.trainID << ' ' << R.startStation << ' ' << R.startTime << " -> " << R.targetStation << ' '
+                 << R.arrivalTime << ' ' << R.price << ' ' << R.n << '\n';
         }
         delete start_vec;
         delete end_vec;
@@ -275,10 +272,10 @@ namespace LaMetropole {
                         } else {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
+                            //wait whole day
+                            if (!(firstArvTime < secondStTime))
+                                secondStTime.day += 1;
                         }
-                        //wait whole day
-                        if (!(firstArvTime < secondStTime))
-                            secondStTime.day += 1;
                         checkTime = secondStTime - train_arv.leavingTime[k];
                         secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
                                                         train_arv.leavingTime[k] -
