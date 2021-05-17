@@ -235,6 +235,7 @@ namespace LaMetropole {
             trainRecorder.read(train_st, start_vec->operator[](i).offset);
             char firstStartStation = start_vec->operator[](i).num;
             for (int j = 1; j < l2; ++j) {
+                int preFirstTimeConsume;
                 if (start_vec->operator[](i).offset == end_vec->operator[](j).offset) continue;
                 //todo cache this
                 trainRecorder.read(train_arv, end_vec->operator[](j).offset);
@@ -286,7 +287,6 @@ namespace LaMetropole {
                             break;
                         secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         int timeConsume = secondArvTime - firstStTime, firstTimeConsume = firstArvTime - firstStTime;
-                        int preFirstTimeConsume;
                         int firstPrice =
                                 train_st.pricePrefixSum[firstArvStation] - train_st.pricePrefixSum[firstStartStation];
                         int secondPrice = train_arv.pricePrefixSum[secondArvStation] - train_arv.pricePrefixSum[k];
