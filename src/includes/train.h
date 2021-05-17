@@ -60,7 +60,7 @@ namespace LaMetropole {
             offsetNum(int offset = 0, char num = 0) : offset(offset), num(num) {}
         };
 
-        BPT<stationTrain, offsetNum, 288, 1000> Nancy;
+        BPT<stationTrain, offsetNum, 288, 288> Nancy;
 
         //trainID -> offset & released or not of the train & pendingNum
         struct offsetFlag {
@@ -71,7 +71,7 @@ namespace LaMetropole {
                                                                                  pendingNum(pendingNum) {}
         };
 
-        BPT<long long, offsetFlag, 288, 1000> Jason;
+        BPT<long long, offsetFlag, 288, 288> Jason;
 
         //information of each train
         MemoryRiver<train> trainRecorder;
@@ -124,7 +124,7 @@ namespace LaMetropole {
             }
         };
 
-        BPT<trainIDOrder, pendingRecord, 288, 1000> Arya;
+        BPT<trainIDOrder, pendingRecord, 288, 288> Arya;
     public:
         trainManager(userManager *libro);
 
