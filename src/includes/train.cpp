@@ -258,7 +258,7 @@ namespace LaMetropole {
                             train_st.beginMonth == checkTime.month && train_st.beginDay > checkTime.day ||
                             train_st.endMonth < checkTime.month ||
                             train_st.endMonth == checkTime.month && train_st.endDay < checkTime.day)
-                            break;
+                            continue;
                         firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(6, 1, train_arv.start_hour, train_arv.start_minute), secondArvTime;
                         secondStTime += train_arv.leavingTime[k];
@@ -284,7 +284,7 @@ namespace LaMetropole {
                             train_arv.beginMonth == checkTime.month && train_arv.beginDay > checkTime.day ||
                             train_arv.endMonth < checkTime.month ||
                             train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
-                            break;
+                            continue;
                         secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         int timeConsume = secondArvTime - firstStTime, firstTimeConsume = firstArvTime - firstStTime;
                         int firstPrice =
