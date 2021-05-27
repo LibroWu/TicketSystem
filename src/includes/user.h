@@ -52,7 +52,7 @@ namespace LaMetropole {
             long long key;
             int orderNum;
 
-            userIdTime(long long userIdHash = 0, long long orderNum = -1) : key(userIdHash),
+            userIdTime(long long userIdHash = 0, long long orderNum = 0) : key(userIdHash),
                                                                             orderNum(orderNum) {}
 
             bool operator<(const userIdTime &other) const {
