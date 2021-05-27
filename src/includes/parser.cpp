@@ -6,11 +6,11 @@
 
 namespace LaMetropole {
     void parser::PaperCup::push_back(char keyType, string *argument) {
-        arg[(key[arv++] = keyType) - 'a'] = argument;
+        arg[keyType - 'a'] = argument;
     }
 
     parser::PaperCup::~PaperCup() {
-        for (char i = 0; i < arv; ++i) delete arg[key[i] - 'a'];
+        for (char i = 0; i < 26; ++i) delete arg[i];
     }
 
     parser::PaperCup::PaperCup() : arv(0) {

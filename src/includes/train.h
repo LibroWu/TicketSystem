@@ -18,7 +18,7 @@ namespace LaMetropole {
     public:
         char ID[21], stationNum, stations[101][41];
 
-        int seatNum[94][100], pricePrefixSum[100], start_hour, start_minute, maxSeatNum;
+        int pricePrefixSum[100], start_hour, start_minute, maxSeatNum;
         int leavingTime[100], stopoverTimes[100];
         char beginDay, beginMonth, endDay, endMonth, Type;
 
@@ -28,7 +28,7 @@ namespace LaMetropole {
     };
 
     class trainManager {
-    private:
+    public:
         userManager *Libro;
 
         //station+trainOffset -> offset of the train and the number of the station within the train
@@ -93,6 +93,12 @@ namespace LaMetropole {
                     return day < other.day;
                 }
 
+                bool operator<=(const IdDay &other) const {
+                    if (Id < other.Id) return true;
+                    if (Id > other.Id) return false;
+                    return day <= other.day;
+                }
+
                 bool operator>(const IdDay &other) const {
                     if (Id > other.Id) return true;
                     if (Id < other.Id) return false;
@@ -107,7 +113,7 @@ namespace LaMetropole {
             int pendingNum;
 
             trainIDOrder(long long trainIdHash = 0, int dayN = 0, int orderNum = -1) : key(trainIdHash, dayN),
-                                                                                             pendingNum(orderNum) {}
+                                                                                       pendingNum(orderNum) {}
 
             bool operator<(const trainIDOrder &other) const {
                 if (key < other.key) return true;
@@ -123,6 +129,13 @@ namespace LaMetropole {
                 return ((key == other.key && pendingNum == other.pendingNum));
             }
         };
+
+        struct seatStruct {
+            char num;
+            int seat[100];
+        };
+
+        BPT<trainIDOrder::IdDay, seatStruct, 288, 288> Yuki;
 
         BPT<trainIDOrder, pendingRecord, 288, 288> Arya;
     public:
@@ -152,5 +165,9 @@ namespace LaMetropole {
 
         bool queryTransfer(parser::PaperCup *cup);
     };
+
+    std::ostream &operator<<(std::ostream &out, const trainManager::seatStruct &obj);
+
+    std::ostream &operator<<(std::ostream &out, const trainManager::trainIDOrder::IdDay &obj);
 }
 #endif //TICKETSYSTEM_TRAIN_H

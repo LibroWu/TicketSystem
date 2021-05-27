@@ -14,6 +14,7 @@ namespace LaMetropole {
         Jason.initialise();
         Nancy.initialise();
         Arya.initialise();
+        Yuki.initialise();
         trainRecorder.initialise();
     }
 
@@ -21,6 +22,7 @@ namespace LaMetropole {
         Jason.initialise();
         Nancy.initialise();
         Arya.initialise();
+        Yuki.initialise();
         trainRecorder.initialise();
     }
 
@@ -29,7 +31,8 @@ namespace LaMetropole {
     trainManager::trainManager(userManager *libro) : Libro(libro), trainRecorder("train.file"),
                                                      Jason("ID_crystal.file", "ID_index.file"),
                                                      Nancy("stationID_crystal.file", "stationID_index.file"),
-                                                     Arya("Arya_crystal.file", "Arya_index.file") {}
+                                                     Arya("Arya_crystal.file", "Arya_index.file"),
+                                                     Yuki("Yuki_crystal.file", "Yuki_index.file") {}
 
     bool trainManager::addTrain(parser::PaperCup *cup) {
         long long HashID = HASH(*cup->arg['i' - 'a']);
@@ -57,8 +60,6 @@ namespace LaMetropole {
         trainTmp.endMonth = toInt(date.nextToken(), true);
         trainTmp.endDay = toInt(date.nextToken(), true);
         delete s_tmp;
-        int beginN = (trainTmp.beginMonth - 6) * 31 + trainTmp.beginDay, endN =
-                (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
         //stations and leavingTime and pricePrefixSum and stopoverTimes
         int seatNum = toLong(cup->arg['m' - 'a']);
         trainTmp.maxSeatNum = seatNum;
@@ -72,7 +73,6 @@ namespace LaMetropole {
             s_tmp = stations.nextToken();
             strcpy(trainTmp.stations[i], s_tmp->c_str());
             delete s_tmp;
-            for (int j = beginN; j <= endN; ++j)trainTmp.seatNum[j][i] = seatNum;
         }
         for (char i = trainTmp.stationNum - 2; i < trainTmp.stationNum; ++i) {
             s_tmp = stations.nextToken();
@@ -84,7 +84,6 @@ namespace LaMetropole {
                 trainTmp.pricePrefixSum[trainTmp.stationNum - 2] + toLong(prices.nextToken(), true);
         trainTmp.leavingTime[trainTmp.stationNum - 1] =
                 trainTmp.leavingTime[trainTmp.stationNum - 2] + toLong(travelTimes.nextToken(), true);
-        for (int j = beginN; j <= endN; ++j) trainTmp.seatNum[j][trainTmp.stationNum - 2] = seatNum;
         int offset = trainRecorder.write(trainTmp);
         Jason.insert(HashID, offsetFlag(offset, false));
         return true;
@@ -141,7 +140,7 @@ namespace LaMetropole {
         int sumPrice, seatNum, dayN;
         //if compareFlag then sort by cost
         bool compareFlag = false;
-        if (cup->arv == 4 && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
+        if (cup->arg['p' - 'a'] && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
         for (int i = 0; i < len; ++i) {
             char startC = start_vec->operator[](same_vec[i].first).num;
             char arvC = end_vec->operator[](same_vec[i].second).num;
@@ -159,7 +158,8 @@ namespace LaMetropole {
                 if (trainTmp.endMonth > st_time.month ||
                     trainTmp.endMonth == st_time.month && trainTmp.endDay >= st_time.day) {
                     dayN = (st_time.month - 6) * 31 + st_time.day;
-                    for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
+                    seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(HASH(trainTmp.ID), dayN)));
+                    for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, seatArray.seat[j]);
                     result.push_back(orderRecord(sumPrice, seatNum, -1, dayN, startC, arvC, trainTmp.ID,
                                                  trainTmp.stations[startC], trainTmp.stations[arvC],
                                                  timeTmp, timeTmp + keyTime));
@@ -190,18 +190,21 @@ namespace LaMetropole {
         train trainTmp;
         trainRecorder.read(trainTmp, tmp.offset);
         int dayN = (Month - 6) * 31 + Day;
+        seatStruct seatArray;
+        if (tmp.flag) seatArray = Yuki.Find(trainIDOrder::IdDay(HashID, dayN));
         if (trainTmp.beginMonth < Month || trainTmp.beginMonth == Month && trainTmp.beginDay <= Day)
             if (trainTmp.endMonth > Month || trainTmp.endMonth == Month && trainTmp.endDay >= Day) {
                 cout << trainTmp.ID << ' ' << trainTmp.Type << '\n';
                 L_time Lt(Month, Day, trainTmp.start_hour, trainTmp.start_minute);
-                cout << trainTmp.stations[0] << " xx-xx xx:xx -> " << Lt << " 0 " << trainTmp.seatNum[dayN][0] << '\n';
+                cout << trainTmp.stations[0] << " xx-xx xx:xx -> " << Lt << " 0 "
+                     << ((tmp.flag) ? seatArray.seat[0] : trainTmp.maxSeatNum) << '\n';
                 int i;
                 for (i = 1; i < trainTmp.stationNum - 1; ++i) {
                     cout << trainTmp.stations[i] << ' '
                          << Lt + (trainTmp.leavingTime[i] - trainTmp.stopoverTimes[i - 1]) << " -> ";
                     cout << Lt + trainTmp.leavingTime[i] << ' '
                          << trainTmp.pricePrefixSum[i] << ' '
-                         << trainTmp.seatNum[dayN][i] << '\n';
+                         << ((tmp.flag) ? seatArray.seat[i] : trainTmp.maxSeatNum) << '\n';
                 }
                 cout << trainTmp.stations[i] << ' ' << Lt + trainTmp.leavingTime[i] << " -> xx-xx xx:xx "
                      << trainTmp.pricePrefixSum[i]
@@ -216,7 +219,7 @@ namespace LaMetropole {
         //use unorderedMap to find the cross Node of two train
         //if compareFlag then sort by cost
         bool compareFlag = false;
-        if (cup->arv == 4 && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
+        if (cup->arg['p' - 'a'] && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
         long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
@@ -267,7 +270,8 @@ namespace LaMetropole {
                             secondStTime.month = train_arv.beginMonth;
                             secondStTime.day = train_arv.beginDay;
                             if (secondStTime.hour < train_arv.start_hour || secondStTime.hour == train_arv.start_hour &&
-                                                                            secondStTime.minute <train_arv.start_minute)
+                                                                            secondStTime.minute <
+                                                                            train_arv.start_minute)
                                 secondStTime.day += 1;
                         } else {
                             secondStTime.month = firstArvTime.month;
@@ -291,10 +295,12 @@ namespace LaMetropole {
                                 train_st.pricePrefixSum[firstArvStation] - train_st.pricePrefixSum[firstStartStation];
                         int secondPrice = train_arv.pricePrefixSum[secondArvStation] - train_arv.pricePrefixSum[k];
                         int firstSeatNum = train_st.maxSeatNum, secondSeatNum = train_arv.maxSeatNum;
+                        seatStruct stArray(Yuki.Find(trainIDOrder::IdDay(HASH(train_st.ID), firstDayN))),
+                                arvArray(Yuki.Find(trainIDOrder::IdDay(HASH(train_arv.ID), secondDayN)));
                         for (char l = firstStartStation; l < firstArvStation; ++l)
-                            firstSeatNum = min(firstSeatNum, train_st.seatNum[firstDayN][l]);
+                            firstSeatNum = min(firstSeatNum, stArray.seat[l]);
                         for (char l = k; l < secondArvStation; ++l)
-                            secondSeatNum = min(secondSeatNum, train_arv.seatNum[secondDayN][l]);
+                            secondSeatNum = min(secondSeatNum, arvArray.seat[l]);
                         if (startResult.status == 'e') {
                             startResult.status = 'a';
                             startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation, firstArvStation,
@@ -349,9 +355,8 @@ namespace LaMetropole {
     bool trainManager::refundTicket(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
         if (!Libro->Leon.count(Hu)) return false;
-        int n;
-        if (cup->arv == 1) n = 1;
-        else n = toLong(cup->arg['n' - 'a']);
+        int n = 1;
+        if (cup->arg['n' - 'a']) n = toLong(cup->arg['n' - 'a']);
         user userTmp = Libro->Mathilda.Find(Hu);
         if (n > userTmp.orderNum) return false;
         userManager::userIdTime refundKey(Hu, userTmp.orderNum - n);
@@ -369,18 +374,19 @@ namespace LaMetropole {
             Libro->Sabine.modify(refundKey, orderTmp);
             train trainTmp;
             trainRecorder.read(trainTmp, offsetTmp.offset);
+            seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(hashTrainID, orderTmp.dayN)));
             for (char i = orderTmp.st; i < orderTmp.arv; ++i)
-                trainTmp.seatNum[orderTmp.dayN][i] += orderTmp.n;
+                seatArray.seat[i] += orderTmp.n;
             vector<pendingRecord> *vec_ptr = Arya.multipleFind(trainIDOrder(hashTrainID, orderTmp.dayN));
             if (vec_ptr) {
                 for (int i = 1; i < vec_ptr->size(); ++i) {
                     pendingRecord &pr = vec_ptr->operator[](i);
-                    //todo search exact day's train
                     int seatNum = trainTmp.maxSeatNum;
-                    for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, trainTmp.seatNum[pr.dayN][j]);
+                    if (pr.arv <= orderTmp.st || pr.st >= orderTmp.arv) continue;
+                    for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, seatArray.seat[j]);
                     if (seatNum >= pr.n) {
                         Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.pendingNum));
-                        for (char j = pr.st; j < pr.arv; ++j) trainTmp.seatNum[pr.dayN][j] -= pr.n;
+                        for (char j = pr.st; j < pr.arv; ++j) seatArray.seat[j] -= pr.n;
                         //todo optimise
                         orderGet = Libro->Sabine.Find(userManager::userIdTime(pr.hashUserId, pr.orderNum));
                         orderGet.status = 's';
@@ -389,7 +395,7 @@ namespace LaMetropole {
                 }
                 delete vec_ptr;
             }
-            trainRecorder.update(trainTmp, offsetTmp.offset);
+            Yuki.modify(trainIDOrder::IdDay(hashTrainID, orderTmp.dayN), seatArray);
         }
         return true;
     }
@@ -408,8 +414,13 @@ namespace LaMetropole {
         }
         int beginN = (trainTmp.beginMonth - 6) * 31 + trainTmp.beginDay,
                 endN = (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
-        for (int i = beginN; i <= endN; ++i)
+        seatStruct seatArray;
+        seatArray.num = trainTmp.stationNum;
+        for (char i = 0; i < seatArray.num; ++i) seatArray.seat[i] = trainTmp.maxSeatNum;
+        for (int i = beginN; i <= endN; ++i) {
+            Yuki.insert(trainIDOrder::IdDay(HashID, i), seatArray);
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());
+        }
         return true;
     }
 
@@ -457,9 +468,11 @@ namespace LaMetropole {
                      trainTmp.endMonth == st_Time.month && trainTmp.endDay < st_Time.day))
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
-                for (char j = st; j < i; ++j) seatNum = min(seatNum, trainTmp.seatNum[dayN][j]);
+                seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(hashTrainId, dayN)));
+                for (char j = st; j < i; ++j) seatNum = min(seatNum, seatArray.seat[j]);
                 if (seatNum < Need)
-                    if (cup->arv == 6 || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
+                    if (!cup->arg['q' - 'a'] || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
+
                 orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, tmp.pendingNum,
                                      dayN, st, i, trainTmp.ID, trainTmp.stations[st],
                                      trainTmp.stations[i], timeTmp,
@@ -479,8 +492,8 @@ namespace LaMetropole {
                 }
                 orderTmp.status = 's';
                 Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
-                for (char j = st; j < i; ++j) trainTmp.seatNum[dayN][j] -= Need;
-                trainRecorder.update(trainTmp, tmp.offset);
+                for (char j = st; j < i; ++j) seatArray.seat[j] -= Need;
+                Yuki.modify(trainIDOrder::IdDay(hashTrainId, dayN), seatArray);
                 ++userTmp.orderNum;
                 Libro->Mathilda.modify(Hu, userTmp);
                 cout << (long long) (orderTmp.price) * orderTmp.n << '\n';
@@ -489,4 +502,21 @@ namespace LaMetropole {
         }
         return 'f';
     }
+
+#ifdef debugs
+
+    std::ostream &operator<<(std::ostream &out, const trainManager::seatStruct &obj) {
+        out << int(obj.num) << '\n';
+        for (char i = 0; i < obj.num; ++i) {
+            cout << obj.seat[i];
+        }
+        return out;
+    }
+
+    std::ostream &operator<<(std::ostream &out, const trainManager::trainIDOrder::IdDay &obj) {
+        out << obj.Id << ' ' << obj.day << '\n';
+        return out;
+    }
+
+#endif
 }

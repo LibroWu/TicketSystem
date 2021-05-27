@@ -13,7 +13,7 @@ using std::cout;
 #include <cstring>
 #include <vector>
 #include <algorithm>
-
+#define debugs
 using std::lower_bound;
 using std::upper_bound;
 using std::vector;
