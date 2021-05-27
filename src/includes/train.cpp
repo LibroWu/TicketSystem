@@ -92,9 +92,13 @@ namespace LaMetropole {
     bool trainManager::queryOrder(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
         if (!Libro->Leon.count(Hu)) return false;
-        vector<orderRecord> *tmp = Libro->Sabine.multipleFind(userManager::userIdTime(Hu));
-        cout << tmp->size() - 1 << '\n';
-        for (int i = tmp->size() - 1; i > 0; --i) {
+        vector<orderRecord> *tmp = Libro->Sabine.multipleFind(userManager::userIdTime(Hu,0));
+        if (!tmp) {
+            cout<<0<<'\n';
+            return true;
+        }
+        cout << tmp->size()<< '\n';
+        for (int i = tmp->size()-1; i >= 0; --i) {
             orderRecord &t = tmp->operator[](i);
             switch (t.status) {
                 case 's':

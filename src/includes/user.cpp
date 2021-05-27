@@ -67,7 +67,7 @@ namespace LaMetropole {
             user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                      10);
             Mathilda.insert(HASH(*cup->arg['u' - 'a']), tmp);
-            Sabine.insert(userIdTime(HASH(*cup->arg['u' - 'a']), -1), orderRecord());
+            //Sabine.insert(userIdTime(HASH(*cup->arg['u' - 'a']), -1), orderRecord());
             return (has_user = true);
         } else {
             long long Hc = HASH(*cup->arg['c' - 'a']), Hu = HASH(*cup->arg['u' - 'a']);
@@ -78,7 +78,7 @@ namespace LaMetropole {
                         user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                                  level);
                         Mathilda.insert(Hu, tmp);
-                        Sabine.insert(userIdTime(Hu, -1), orderRecord());
+                        //Sabine.insert(userIdTime(Hu, -1), orderRecord());
                         return true;
                     }
             return false;
