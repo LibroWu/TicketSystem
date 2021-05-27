@@ -276,13 +276,13 @@ namespace LaMetropole {
                             if (secondStTime.hour < train_arv.start_hour || secondStTime.hour == train_arv.start_hour &&
                                                                             secondStTime.minute <
                                                                             train_arv.start_minute)
-                                secondStTime.day += 1;
+                                secondStTime += 1440;
                         } else {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
                             //wait whole day
                             if (!(firstArvTime < secondStTime))
-                                secondStTime.day += 1;
+                                secondStTime += 1440;
                         }
                         checkTime = secondStTime - train_arv.leavingTime[k];
                         secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
