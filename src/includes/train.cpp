@@ -143,8 +143,8 @@ namespace LaMetropole {
         train trainTmp;
         int sumPrice, seatNum, dayN;
         //if compareFlag then sort by cost
-        bool compareFlag = false;
-        if (cup->arg['p' - 'a'] && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
+        bool compareFlag = true;
+        if (cup->arg['p' - 'a'] && cup->arg['p' - 'a']->operator[](0) == 't') compareFlag = false;
         for (int i = 0; i < len; ++i) {
             char startC = start_vec->operator[](same_vec[i].first).num;
             char arvC = end_vec->operator[](same_vec[i].second).num;
@@ -222,8 +222,8 @@ namespace LaMetropole {
         //todo target: O(N^3)
         //use unorderedMap to find the cross Node of two train
         //if compareFlag then sort by cost
-        bool compareFlag = false;
-        if (cup->arg['p' - 'a'] && cup->arg['p' - 'a']->operator[](0) == 'c') compareFlag = true;
+        bool compareFlag = true;
+        if (cup->arg['p' - 'a'] && cup->arg['p' - 'a']->operator[](0) == 't') compareFlag = false;
         long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
