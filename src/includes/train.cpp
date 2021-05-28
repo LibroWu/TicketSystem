@@ -92,13 +92,13 @@ namespace LaMetropole {
     bool trainManager::queryOrder(parser::PaperCup *cup) {
         long long Hu = HASH(*cup->arg['u' - 'a']);
         if (!Libro->Leon.count(Hu)) return false;
-        vector<orderRecord> *tmp = Libro->Sabine.multipleFind(userManager::userIdTime(Hu,0));
+        vector<orderRecord> *tmp = Libro->Sabine.multipleFind(userManager::userIdTime(Hu, 0));
         if (!tmp) {
-            cout<<0<<'\n';
+            cout << 0 << '\n';
             return true;
         }
-        cout << tmp->size()<< '\n';
-        for (int i = tmp->size()-1; i >= 0; --i) {
+        cout << tmp->size() << '\n';
+        for (int i = tmp->size() - 1; i >= 0; --i) {
             orderRecord &t = tmp->operator[](i);
             switch (t.status) {
                 case 's':
@@ -125,7 +125,10 @@ namespace LaMetropole {
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
         if (!start_vec) return false;
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
-        if (!end_vec) return false;
+        if (!end_vec) {
+            delete start_vec;
+            return false;
+        }
         vector<pair<int, int>> same_vec(0);
         vector<orderRecord> result(0);
         vector<sortStruct> resultSort(0);
@@ -229,9 +232,16 @@ namespace LaMetropole {
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);
         if (Month < 6) return false;
         vector<offsetNum> *start_vec = Nancy.multipleFind(stationTrain(HashStart));
-        if (!start_vec || start_vec->size() == 1) return false;
+        if (!start_vec || start_vec->size() == 1) {
+            delete start_vec;
+            return false;
+        }
         vector<offsetNum> *end_vec = Nancy.multipleFind(stationTrain(HashEnd));
-        if (!end_vec || end_vec->size() == 1) return false;
+        if (!end_vec || end_vec->size() == 1) {
+            delete start_vec;
+            delete end_vec;
+            return false;
+        }
         vector<pair<int, int>> same_vec(0);
         unordered_map<long long, char> mapTableOfStation(selfHash);
         int l1 = start_vec->size(), l2 = end_vec->size();
@@ -257,15 +267,15 @@ namespace LaMetropole {
                         char firstArvStation = mapTableOfStation[HASH(train_arv.stations[k])];
                         L_time firstStTime(6, 1, train_st.start_hour, train_st.start_minute), checkTime, firstArvTime;
                         firstStTime += train_st.leavingTime[firstStartStation], firstStTime.month = Month, firstStTime.day = Day;
-                        firstArvTime = firstStTime + (train_st.leavingTime[firstArvStation] -
-                                                      train_st.leavingTime[firstStartStation] -
-                                                      train_st.stopoverTimes[firstArvStation - 1]);
                         checkTime = firstStTime - train_st.leavingTime[firstStartStation];
                         if (train_st.beginMonth > checkTime.month ||
                             train_st.beginMonth == checkTime.month && train_st.beginDay > checkTime.day ||
                             train_st.endMonth < checkTime.month ||
                             train_st.endMonth == checkTime.month && train_st.endDay < checkTime.day)
                             continue;
+                        firstArvTime = firstStTime + (train_st.leavingTime[firstArvStation] -
+                                                      train_st.leavingTime[firstStartStation] -
+                                                      train_st.stopoverTimes[firstArvStation - 1]);
                         firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(6, 1, train_arv.start_hour, train_arv.start_minute), secondArvTime;
                         secondStTime += train_arv.leavingTime[k];
@@ -285,14 +295,14 @@ namespace LaMetropole {
                                 secondStTime += 1440;
                         }
                         checkTime = secondStTime - train_arv.leavingTime[k];
-                        secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
-                                                        train_arv.leavingTime[k] -
-                                                        train_arv.stopoverTimes[secondArvStation - 1]);
                         if (train_arv.beginMonth > checkTime.month ||
                             train_arv.beginMonth == checkTime.month && train_arv.beginDay > checkTime.day ||
                             train_arv.endMonth < checkTime.month ||
                             train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
                             continue;
+                        secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
+                                                        train_arv.leavingTime[k] -
+                                                        train_arv.stopoverTimes[secondArvStation - 1]);
                         secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         int timeConsume = secondArvTime - firstStTime, firstTimeConsume = firstArvTime - firstStTime;
                         int firstPrice =
@@ -353,6 +363,8 @@ namespace LaMetropole {
                  << arvResult.targetStation << ' '
                  << arvResult.arrivalTime << ' ' << arvResult.price << ' ' << arvResult.n << '\n';
         }
+        delete start_vec;
+        delete end_vec;
         return true;
     }
 
@@ -420,7 +432,7 @@ namespace LaMetropole {
                 endN = (trainTmp.endMonth - 6) * 31 + trainTmp.endDay;
         seatStruct seatArray;
         seatArray.num = trainTmp.stationNum;
-        for (char i = 0; i < seatArray.num; ++i) seatArray.seat[i] = trainTmp.maxSeatNum;
+        for (char i = 0; i < seatArray.num - 1; ++i) seatArray.seat[i] = trainTmp.maxSeatNum;
         for (int i = beginN; i <= endN; ++i) {
             Yuki.insert(trainIDOrder::IdDay(HashID, i), seatArray);
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());
@@ -476,7 +488,6 @@ namespace LaMetropole {
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, seatArray.seat[j]);
                 if (seatNum < Need)
                     if (!cup->arg['q' - 'a'] || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
-
                 orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, tmp.pendingNum,
                                      dayN, st, i, trainTmp.ID, trainTmp.stations[st],
                                      trainTmp.stations[i], timeTmp,
