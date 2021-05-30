@@ -15,7 +15,7 @@ namespace LaMetropole {
     };
 
     ticketSystem::ticketSystem() : Nebula(&Libro) {
-        //freopen("data/basic_4/2.in", "r", stdin);
+        //freopen("data/basic_6/7.in", "r", stdin);
         //freopen("output.out", "w", stdout);
         std::fstream file("user_crystal.file", std::fstream::in);
         if (!file.is_open()) {
@@ -59,7 +59,6 @@ namespace LaMetropole {
     }
 
     void ticketSystem::buyTicket(parser::PaperCup *cup) {
-//        buy_ticket -u Hoshiguma -i AndtodefineAmeric -d 06-29 -n 5644 -f 浙江省绍兴市 -t 山东省滕州市 -q true
         char t = Nebula.buyTicket(cup);
         switch (t) {
             case 'f':
@@ -100,6 +99,10 @@ namespace LaMetropole {
     }
 
     void ticketSystem::queryTicket(parser::PaperCup *cup) {
+        //query_ticket -s 山西省汾阳市 -t 湖南省浏阳市 -d 08-18 -p time
+/*        if (*cup->arg['s'-'a']=="山西省汾阳市" &&*cup->arg['t'-'a']=="湖南省浏阳市")
+            if (*cup->arg['d'-'a']=="08-18" && *cup->arg['p'-'a']=="time")
+                cout<<"abc\n";*/
         if (!Nebula.queryTicket(cup)) cout << "0\n";
     }
 

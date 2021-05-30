@@ -15,7 +15,7 @@ using std::ofstream;
 
 //the first info is for the head of empty node chain
 //the second info is for the number of empty node in the chain
-template<class T, int info_len = 2, int poolSize = 8>
+template<class T, int info_len = 2, int poolSize = 4>
 class MemoryRiver {
 private:
     fstream file;
@@ -220,8 +220,6 @@ public:
             pos += sizeofT + sizeof(int);
             file.write(reinterpret_cast<char *>(&pos), sizeof(int));
             file.seekp(pos - sizeofT - sizeof(int));
-
-
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
         } else {
@@ -229,7 +227,6 @@ public:
             file.seekp(pos);
             file.read(reinterpret_cast<char *>(&pos), sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
-
             file.seekp(0);
             file.write(reinterpret_cast<char *>(&pos), sizeof(int));
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
@@ -246,11 +243,8 @@ public:
             infoList[0] = pos + sizeofT + 2 * sizeof(int);
             file.seekp(pos);
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
-            file.clear();
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
-            file.clear();
             file.write(reinterpret_cast<char *>(&t), sizeofT);
-            file.clear();
         } else {
             --num;
             file.seekp(pos);
