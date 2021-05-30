@@ -42,9 +42,9 @@ private:
         }
 
         void pop() {
+            delete p[1];
+            p[1] = p[top--];
             if (top) {
-                delete p[1];
-                p[1] = p[top--];
                 p[1]->position = 1;
                 int pos = 1, nxt;
                 while ((pos << 1) <= top) {
@@ -126,13 +126,16 @@ private:
     typedef typename L_heap::heapElement HeapElement;
 #endif
 public:
+
     MemoryRiver() = default;
 
     MemoryRiver(const string &file_name) : file_name(file_name) {}
 
 #ifdef cache
 
-    ~MemoryRiver() {
+    ~
+
+    MemoryRiver() {
         file.open(file_name);
         for (int i = 0; i < info_len; ++i)
             file.write(reinterpret_cast<char *>(&infoList[i]), sizeof(int));
