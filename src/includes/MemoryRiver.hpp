@@ -246,8 +246,11 @@ public:
             infoList[0] = pos + sizeofT + 2 * sizeof(int);
             file.seekp(pos);
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
+            file.clear();
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
+            file.clear();
             file.write(reinterpret_cast<char *>(&t), sizeofT);
+            file.clear();
         } else {
             --num;
             file.seekp(pos);
@@ -278,7 +281,7 @@ public:
             Anna.modify(tmp.joint);
         } else {
             file.open(file_name);
-            file.seekp(index + sizeof(int));
+            file.seekp(index + 2 * sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
             file.close();
         }
@@ -344,15 +347,12 @@ public:
         file.open(file_name);
         file.read(reinterpret_cast<char *>(&a), sizeof(int));
         file.read(reinterpret_cast<char *>(&num), sizeof(int));
-
         ++num;
         file.seekg(index);
         file.write(reinterpret_cast<char *>(&a), sizeof(int));
-
         file.seekp(0);
         file.write(reinterpret_cast<char *>(&index), sizeof(int));
         file.write(reinterpret_cast<char *>(&num), sizeof(int));
-
         file.close();
 #endif
 #ifdef cache
