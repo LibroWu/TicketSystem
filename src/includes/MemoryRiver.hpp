@@ -4,7 +4,7 @@
 
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
-//#define cache
+#define cache
 
 #include <fstream>
 
@@ -37,8 +37,8 @@ private:
         void swap(heapElement *&a, heapElement *&b) {
             heapElement *c = a;
             a = b, b = c;
-            int cc = a->frequency;
-            a->frequency = b->frequency, b->frequency = cc;
+            int cc = a->position;
+            a->position = b->position, b->position = cc;
         }
 
         void pop() {
