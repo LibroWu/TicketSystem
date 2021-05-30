@@ -5,7 +5,7 @@
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
 #define cache
-
+//#define half_cache
 #include <fstream>
 
 using std::string;
@@ -121,9 +121,13 @@ private:
 
     LaMetropole::unordered_map<int, poolElement> Elsa;
 
-    int infoList[info_len];
-
     typedef typename L_heap::heapElement HeapElement;
+
+    int infoList[info_len];
+#endif
+
+#ifdef half_cache
+    int infoList[info_len];
 #endif
 public:
 
@@ -133,9 +137,7 @@ public:
 
 #ifdef cache
 
-    ~
-
-    MemoryRiver() {
+    ~MemoryRiver() {
         file.open(file_name);
         for (int i = 0; i < info_len; ++i)
             file.write(reinterpret_cast<char *>(&infoList[i]), sizeof(int));
@@ -152,6 +154,15 @@ public:
         file.close();
     }
 
+#endif
+
+#ifdef half_cache
+    ~MemoryRiver() {
+        file.open(file_name);
+        for (int i = 0; i < info_len; ++i)
+            file.write(reinterpret_cast<char *>(&infoList[i]), sizeof(int));
+        file.close();
+    }
 #endif
 
     void initialise(string FN = "") {
@@ -217,10 +228,16 @@ public:
         file.read(reinterpret_cast<char *>(&num), sizeof(int));
         //no empty node exists
         if (!num) {
+#ifndef half_cache
             file.seekp(0);
             pos += sizeofT + sizeof(int);
             file.write(reinterpret_cast<char *>(&pos), sizeof(int));
             file.seekp(pos - sizeofT - sizeof(int));
+#endif
+#ifdef half_cache
+            infoList[0] = pos + sizeofT + 2 * sizeof(int);
+            file.seekp(pos);
+#endif
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
         } else {
@@ -228,9 +245,15 @@ public:
             file.seekp(pos);
             file.read(reinterpret_cast<char *>(&pos), sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
+#ifndef half_cache
             file.seekp(0);
             file.write(reinterpret_cast<char *>(&pos), sizeof(int));
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
+#endif
+#ifdef half_cache
+            infoList[0] = pos;
+            infoList[1] = num;
+#endif
         }
         file.close();
         return r_index;
@@ -328,6 +351,7 @@ public:
                     tmp.joint = ptr;
                     tmp.temporary = false;
                     Elsa[index] = tmp;
+                    tmp.temporary = true;
                 }
             }
             file.close();
@@ -339,14 +363,26 @@ public:
 #ifndef cache
         int a, num;
         file.open(file_name);
+#ifndef half_cache
         file.read(reinterpret_cast<char *>(&a), sizeof(int));
         file.read(reinterpret_cast<char *>(&num), sizeof(int));
+#endif
+#ifdef half_cache
+        a=infoList[0];
+        num=infoList[1];
+#endif
         ++num;
         file.seekg(index);
         file.write(reinterpret_cast<char *>(&a), sizeof(int));
+#ifndef half_cache
         file.seekp(0);
         file.write(reinterpret_cast<char *>(&index), sizeof(int));
         file.write(reinterpret_cast<char *>(&num), sizeof(int));
+#endif
+#ifdef half_cache
+        infoList[0]=index;
+        infoList[1]=num;
+#endif
         file.close();
 #endif
 #ifdef cache
@@ -356,10 +392,8 @@ public:
             Anna.erase(tmp.joint->position);
             Elsa.erase(index);
         }
-        int a, num;
+        int a=infoList[0], num=infoList[1];
         file.open(file_name);
-        file.read(reinterpret_cast<char *>(&a), sizeof(int));
-        file.read(reinterpret_cast<char *>(&num), sizeof(int));
         ++num;
         file.seekg(index);
         file.write(reinterpret_cast<char *>(&a), sizeof(int));
