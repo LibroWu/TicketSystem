@@ -4,9 +4,8 @@
 
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
-
+//#define cache
 #include <fstream>
-
 using std::string;
 using std::fstream;
 using std::ifstream;
@@ -14,16 +13,97 @@ using std::ofstream;
 
 //the first info is for the head of empty node chain
 //the second info is for the number of empty node in the chain
-template<class T, int info_len = 2>
+template<class T, int info_len = 2, int poolSize = 100>
 class MemoryRiver {
 private:
     fstream file;
     string file_name;
     int sizeofT = sizeof(T);
+#ifdef cache
+    struct L_heap {
+        struct heapElement {
+            int frequency, position, offset;
+        } *p[poolSize];
+        int top;
+
+        void swap(heapElement *&a, heapElement *&b) {
+            heapElement *c = a;
+            a = b, b = c;
+            int cc = a->frequency;
+            a->frequency = b->frequency, b->frequency = cc;
+        }
+
+        void pop() {
+            if (top) {
+                delete p[1];
+                p[1] = p[top--];
+                p[1]->position = 1;
+                int pos = 1, nxt;
+                while ((pos << 1) <= top) {
+                    if (((pos << 1 | 1) > top) || p[pos << 1]->frequency < p[pos << 1 | 1]->frequency) nxt = pos << 1;
+                    else nxt = pos << 1 | 1;
+                    if (p[pos]->frequency > p[nxt]->frequency) {
+                        swap(p[pos], p[nxt]);
+                        pos = nxt;
+                    } else break;
+                }
+            }
+        }
+
+        void push(heapElement *ptr) {
+            p[++top] = ptr;
+            p[top]->position = top;
+            int pos = top;
+            while (pos) {
+                if (p[pos]->frequency < p[pos >> 1]->frequency) {
+                    swap(p[pos], p[pos >> 1]);
+                    pos >>= 1;
+                } else break;
+            }
+        }
+
+        void modify(heapElement *ptr) {
+            int pos=ptr->position,nxt;
+            ++ptr->frequency;
+            while ((pos << 1) <= top) {
+                if (((pos << 1 | 1) > top) || p[pos << 1]->frequency < p[pos << 1 | 1]->frequency) nxt = pos << 1;
+                else nxt = pos << 1 | 1;
+                if (p[pos]->frequency > p[nxt]->frequency) {
+                    swap(p[pos], p[nxt]);
+                    pos = nxt;
+                } else break;
+            }
+        }
+
+        L_heap() : top(0) {}
+
+        void clear() {
+            for (int i = 1; i <= top; ++i) delete p[i];
+            top = 0;
+        }
+
+        ~L_heap() {
+            for (int i = 1; i <= top; ++i) delete p[i];
+            top = 0;
+        }
+    };
+
+    struct poolElement{
+        typename L_heap::heapElement* joint;
+        T* t;
+        poolElement()=default;
+        poolElement(typename L_heap::heapElement* joint,const T & t):joint(joint),t(new T (t)) {}
+        ~poolElement() {
+            delete t;
+        }
+    };
+
+    LaMetropole::unordered_map<int,poolElement> Elsa;
+#endif
 public:
     MemoryRiver() = default;
 
-    MemoryRiver(const string& file_name) : file_name(file_name) {}
+    MemoryRiver(const string &file_name) : file_name(file_name) {}
 
     void initialise(string FN = "") {
         if (FN != "") file_name = FN;
@@ -41,9 +121,6 @@ public:
         file.open(file_name);
         file.seekg(sizeof(int) * (n - 1));
         file.read(reinterpret_cast<char *>(&tmp), sizeof(int));
-#ifdef debugs
-        cout<<"$#@!"<<n<<' '<<tmp<<'\n';
-#endif
         file.close();
     }
 
@@ -70,8 +147,7 @@ public:
             file.seekp(pos - sizeofT - sizeof(int));
             file.write(reinterpret_cast<char *>(&num), sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
-        }
-        else {
+        } else {
             --num;
             file.seekp(pos);
             file.read(reinterpret_cast<char *>(&pos), sizeof(int));
@@ -92,10 +168,14 @@ public:
     }
 
     void read(T &t, const int &index) {
+#ifndef cache
         file.open(file_name);
         file.seekg(index + sizeof(int));
         file.read(reinterpret_cast<char *>(&t), sizeofT);
         file.close();
+#endif
+#ifdef cache
+#endif
     }
 
     void Delete(int index) {
