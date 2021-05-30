@@ -131,7 +131,7 @@ namespace LaMetropole {
         }
         vector<pair<int, int>> same_vec(0);
         vector<orderRecord> result(0);
-        vector<sortStruct> resultSort(0);
+        vector<sortStruct> resultSort( 0);
         unordered_map<int, int> mapTable(selfHashInt);
         int len = start_vec->size();
         for (int i = 1; i < len; ++i) mapTable[start_vec->operator[](i).offset] = i;
