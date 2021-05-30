@@ -142,7 +142,7 @@ namespace LaMetropole {
 
         unordered_map() {}
 
-        unordered_map(long long ((*hashFunc)(const Key &)) = [](const Key& input)->Key{ return input;};) : Nebula(hashFunc) {}
+        unordered_map(long long ((*hashFunc)(const Key &)) = [](const Key& input)->Key{ return input;}) : Nebula(hashFunc) {}
 
         unordered_map(const unordered_map &other) = delete;
 
