@@ -47,6 +47,10 @@ namespace LaMetropole {
 
     void userManager::initialise(bool flag) {
         if (flag) {
+#ifdef cache
+            Sabine.initialize();
+            Mathilda.initialize();
+#endif
             has_user = !Mathilda.empty();
         } else {
             Sabine.initialise();
@@ -112,7 +116,7 @@ namespace LaMetropole {
                     char tmpPrivilege = toInt(cup->arg['g' - 'a']);
                     if (tmpPrivilege >= Leon[Hc].privilege) return false;
                     tmp.privilege = tmpPrivilege;
-                    if (Leon.count(Hu)) Leon[Hu].privilege=tmpPrivilege;
+                    if (Leon.count(Hu)) Leon[Hu].privilege = tmpPrivilege;
                 }
                 if (cup->arg['p' - 'a'] != nullptr) {
                     strcpy(tmp.password, cup->arg['p' - 'a']->c_str());

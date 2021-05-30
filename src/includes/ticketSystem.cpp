@@ -21,10 +21,15 @@ namespace LaMetropole {
             Nebula.initialise();
         } else {
             Libro.initialise(true);
-            //Nebula.initialise(true);
+            Nebula.initialise(true);
         }
         while (1) {
             LaMetropole::parser::PaperCup *cup = Apollo.listen();
+            if (cup->keyType==parser::EXIT) {
+                cout<<"bye\n";
+                delete cup;
+                return;
+            }
             (this->*commandMap[cup->keyType])(cup);
             delete cup;
         }

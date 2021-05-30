@@ -11,11 +11,21 @@ namespace LaMetropole {
     }
 
     void trainManager::initialise(bool flag) {
-        Jason.initialise();
-        Nancy.initialise();
-        Arya.initialise();
-        Yuki.initialise();
-        trainRecorder.initialise();
+        if (!flag) {
+            Jason.initialise();
+            Nancy.initialise();
+            Arya.initialise();
+            Yuki.initialise();
+            trainRecorder.initialise();
+        } else {
+#ifdef cache
+            Jason.initialize();
+            Nancy.initialize();
+            Arya.initialize();
+            Yuki.initialize();
+            trainRecorder.initialize();
+#endif
+        }
     }
 
     void trainManager::clear() {

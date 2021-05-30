@@ -3,7 +3,7 @@ project(TicketSystem)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_compile_options(-std=c++11 -O2)
+#add_compile_options(-std=c++11 -O2)
 
 add_executable(code src/main.cpp src/includes/L_time.cpp
         src/includes/parser.cpp src/includes/ticketSystem.cpp
