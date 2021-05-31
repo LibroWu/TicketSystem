@@ -53,6 +53,11 @@ namespace LaMetropole {
         return *this;
     }
 
+    bool L_time::less(const L_time &other) {
+        if (month==other.month) return day<other.day;
+        return month<other.month;
+    }
+
     bool L_time::operator<(const L_time &other) {
         if (month < other.month) return true;
         else if (month > other.month) return false;

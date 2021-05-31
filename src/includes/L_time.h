@@ -29,6 +29,8 @@ namespace LaMetropole {
 
         bool operator<(const L_time &other);
 
+        bool less(const L_time& other);
+
         bool operator>(const L_time &other);
 
         L_time &operator+=(int t);
