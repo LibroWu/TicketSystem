@@ -10,4 +10,6 @@
 
 LaMetropole::ticketSystem ts;
 
-int main() {}
+int main() {
+    //cout<<LaMetropole::HASH("浙江省衢州市");
+}

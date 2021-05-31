@@ -128,6 +128,10 @@ namespace LaMetropole {
     }
 
     bool trainManager::queryTicket(parser::PaperCup *cup) {
+#ifdef debugs
+        if (*cup->arg[3]=="07-28" && *cup->arg[15]=="cost" && *cup->arg[18]=="河北省鹿泉市" && *cup->arg[19]=="广东省化州市")
+            cout<<"-1";
+#endif
         long long HashStart = HASH(*cup->arg['s' - 'a']), HashEnd = HASH(*cup->arg['t' - 'a']);
         parser::tokenScanner tS(cup->arg['d' - 'a'], '-');
         char Month = toInt(tS.nextToken(), true), Day = toInt(tS.nextToken(), true);

@@ -90,5 +90,7 @@ namespace LaMetropole {
     char toInt(std::string *s, bool label = false);
 
     int toLong(std::string *s, bool label = false);
+
+    std::string toString(int x);
 }
 #endif //TICKETSYSTEM_ALGORITHM_H

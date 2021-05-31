@@ -5,7 +5,6 @@
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
 #define cache
-
 #include <fstream>
 
 using std::string;
@@ -15,7 +14,7 @@ using std::ofstream;
 
 //the first info is for the head of empty node chain
 //the second info is for the number of empty node in the chain
-template<class T, int info_len = 2, int poolSize = 4>
+template<class T, int info_len = 2, int poolSize = 8>
 class MemoryRiver {
 private:
     fstream file;
@@ -118,7 +117,6 @@ private:
         }
     };
 
-
     LaMetropole::unordered_map<int, poolElement> Elsa;
 
     typedef typename L_heap::heapElement HeapElement;
@@ -148,6 +146,9 @@ public:
             Elsa.erase(ptr->offset);
             Anna.pop();
         }
+        file.seekg(0);
+        for (int i = 0; i < info_len; ++i)
+            file.read(reinterpret_cast<char *>(&infoList[i]), sizeof(int));
         file.close();
     }
 
@@ -260,7 +261,7 @@ public:
 #endif
     }
 
-    void update(T &t, const int &index) {
+    void update(T &t, const int index) {
 #ifndef cache
         file.open(file_name);
         file.seekp(index + sizeof(int));
@@ -282,7 +283,7 @@ public:
 #endif
     }
 
-    void read(T &t, const int &index) {
+    void read(T &t, const int index) {
 #ifndef cache
         file.open(file_name);
         file.seekg(index + sizeof(int));

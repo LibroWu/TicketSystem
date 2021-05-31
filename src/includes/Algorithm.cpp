@@ -66,4 +66,17 @@ namespace LaMetropole {
         if (label) delete s;
         return tmp;
     }
+
+    std::string toString(int x){
+        std::string res;
+        if (x==0) return "0";
+        while (x) {
+            res+=char(x%10)+'0';
+            x/=10;
+        }
+        for (int i = 0; i < res.length()/2; ++i) {
+            Swap(res[i],res[res.length()-1-i]);
+        }
+        return res;
+    }
 }

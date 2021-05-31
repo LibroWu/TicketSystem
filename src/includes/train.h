@@ -51,6 +51,13 @@ namespace LaMetropole {
             bool operator==(const stationTrain &other) const {
                 return ((key == other.key && trainOffset == other.trainOffset));
             }
+
+#ifdef debugs
+            friend std::ostream & operator<<(std::ostream& out,const stationTrain& obj) {
+                out<<obj.key<<' '<<obj.trainOffset<<' ';
+                return out;
+            }
+#endif
         };
 
         struct offsetNum {
@@ -58,6 +65,13 @@ namespace LaMetropole {
             char num;
 
             offsetNum(int offset = 0, char num = 0) : offset(offset), num(num) {}
+#ifdef debugs
+            friend std::ostream & operator<<(std::ostream& out,const offsetNum& obj) {
+                out<<obj.offset<<' '<<int(obj.num)<<' ';
+                return out;
+            }
+#endif
+
         };
 
         BPT<stationTrain, offsetNum, 288, 288> Nancy;
@@ -69,6 +83,12 @@ namespace LaMetropole {
 
             offsetFlag(int offset = -1, bool flag = false, int pendingNum = 0) : offset(offset), flag(flag),
                                                                                  pendingNum(pendingNum) {}
+#ifdef debugs
+            friend std::ostream & operator<<(std::ostream& out,const offsetFlag& obj) {
+                out<<obj.offset<<' '<<obj.pendingNum<<' '<<obj.flag<<' ';
+                return out;
+            }
+#endif
         };
 
         BPT<long long, offsetFlag, 288, 288> Jason;

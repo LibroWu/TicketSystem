@@ -621,6 +621,7 @@ public:
                     cout << "\n";
                     indPos = ind.next;
                 }
+                break;
             }
             pos = tmp.child[0];
         }
