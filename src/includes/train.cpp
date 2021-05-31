@@ -286,8 +286,13 @@ namespace LaMetropole {
                                                       train_st.stopoverTimes[firstArvStation - 1]);
                         firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
                         L_time secondStTime(train_arv.beginMonth, train_arv.beginDay, train_arv.start_hour,
-                                            train_arv.start_minute), secondArvTime;
+                                            train_arv.start_minute), secondArvTime, secondEndTime(train_arv.endMonth,
+                                                                                                  train_arv.endMonth,
+                                                                                                  train_arv.start_hour,
+                                                                                                  train_arv.start_minute);
                         secondStTime += train_arv.leavingTime[k];
+                        secondEndTime += train_arv.leavingTime[k];
+                        if (firstArvTime > secondEndTime) continue;
                         if (!(firstArvTime < secondStTime)) {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
