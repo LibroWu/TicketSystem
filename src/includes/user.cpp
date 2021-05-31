@@ -114,7 +114,7 @@ namespace LaMetropole {
             if (tmp.privilege != -1 && (Leon[Hc].privilege > tmp.privilege || Hu == Hc)) {
                 if (cup->arg['g' - 'a'] != nullptr) {
                     char tmpPrivilege = toInt(cup->arg['g' - 'a']);
-                    if (tmpPrivilege >= Leon[Hc].privilege) return false;
+                    if (tmpPrivilege > Leon[Hc].privilege || Hc!=Hu && tmpPrivilege==Leon[Hc].privilege) return false;
                     tmp.privilege = tmpPrivilege;
                     if (Leon.count(Hu)) Leon[Hu].privilege = tmpPrivilege;
                 }

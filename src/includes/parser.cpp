@@ -56,7 +56,7 @@ namespace LaMetropole {
             return tmp;
         }
 #ifdef debugs
-        std::cout<<s<<'\n';
+        std::cout<<s<<std::endl;
         tmp->origin=s;
 #endif
         tokenScanner tS(&s);
