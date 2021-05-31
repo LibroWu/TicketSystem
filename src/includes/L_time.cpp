@@ -8,10 +8,10 @@ namespace LaMetropole {
 
     const int Month[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    L_time::L_time(char mm, char dd, char hour, char minute, bool flag) : month(mm), day(dd), hour(hour),
+    L_time::L_time(char mm, char dd, int hour, int minute, bool flag) : month(mm), day(dd), hour(hour),
                                                                           minute(minute), flag(flag) {}
 
-    //the base is 06-01
+    //the base is 05-01
     L_time::L_time(int t) {
         *this = (L_time() + t);
     }
@@ -55,6 +55,10 @@ namespace LaMetropole {
 
     bool L_time::less(const L_time &other) {
         if (month==other.month) return day<other.day;
+        return month<other.month;
+    }
+    bool L_time::lessEqual(const L_time &other) {
+        if (month==other.month) return day<=other.day;
         return month<other.month;
     }
 

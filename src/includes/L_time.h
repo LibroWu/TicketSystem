@@ -17,7 +17,7 @@ namespace LaMetropole {
         int month, day, hour, minute;
         bool flag;
     public:
-        L_time(char mm = 5, char dd = 1, char hour = 0, char minute = 0, bool flag = false);
+        L_time(char mm = 5, char dd = 1, int hour = 0, int minute = 0, bool flag = false);
 
         L_time(int t);
 
@@ -31,6 +31,7 @@ namespace LaMetropole {
 
         bool less(const L_time& other);
 
+        bool lessEqual(const L_time& other);
         bool operator>(const L_time &other);
 
         L_time &operator+=(int t);

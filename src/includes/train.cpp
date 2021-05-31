@@ -164,24 +164,25 @@ namespace LaMetropole {
             int keyTime = trainTmp.leavingTime[arvC] - trainTmp.stopoverTimes[arvC - 1] -
                           trainTmp.leavingTime[startC];
             sumPrice = trainTmp.pricePrefixSum[arvC] - trainTmp.pricePrefixSum[startC], seatNum = trainTmp.maxSeatNum;
-            L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_time;
-            timeTmp += trainTmp.leavingTime[startC];
-            timeTmp.month = Month, timeTmp.day = Day;
-            st_time = timeTmp - trainTmp.leavingTime[startC];
-            if (trainTmp.beginMonth < st_time.month ||
-                trainTmp.beginMonth == st_time.month && trainTmp.beginDay <= st_time.day)
-                if (trainTmp.endMonth > st_time.month ||
-                    trainTmp.endMonth == st_time.month && trainTmp.endDay >= st_time.day) {
-                    dayN = (st_time.month - 6) * 31 + st_time.day;
-                    seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(HASH(trainTmp.ID), dayN)));
-                    for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, seatArray.seat[j]);
-                    result.push_back(orderRecord(sumPrice, seatNum, -1, dayN, startC, arvC, trainTmp.ID,
-                                                 trainTmp.stations[startC], trainTmp.stations[arvC],
-                                                 timeTmp, timeTmp + keyTime));
-                    resultSort.push_back(
-                            sortStruct(sumPrice, keyTime, result.size() - 1, compareFlag,
-                                       trainTmp.ID));
-                }
+            L_time stTime(trainTmp.beginMonth, trainTmp.beginDay, trainTmp.start_hour, trainTmp.start_minute),
+                    endTime(trainTmp.endMonth, trainTmp.endDay, trainTmp.start_hour, trainTmp.start_minute),
+                    checkTime(Month, Day, trainTmp.start_hour, trainTmp.start_minute);
+            stTime += trainTmp.leavingTime[startC];
+            endTime += trainTmp.leavingTime[startC];
+            if (stTime.lessEqual(checkTime) && checkTime.lessEqual(endTime)) {
+                checkTime.hour=stTime.hour,checkTime.minute=stTime.minute;
+                checkTime -= trainTmp.leavingTime[startC];
+                dayN = (checkTime.month - 6) * 31 + checkTime.day;
+                checkTime += trainTmp.leavingTime[startC];
+                seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(HASH(trainTmp.ID), dayN)));
+                for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, seatArray.seat[j]);
+                result.push_back(orderRecord(sumPrice, seatNum, -1, dayN, startC, arvC, trainTmp.ID,
+                                             trainTmp.stations[startC], trainTmp.stations[arvC],
+                                             checkTime, checkTime + keyTime));
+                resultSort.push_back(
+                        sortStruct(sumPrice, keyTime, result.size() - 1, compareFlag,
+                                   trainTmp.ID));
+            }
         }
         sort(resultSort.begin(), resultSort.end());
         int Len = resultSort.size();
@@ -273,23 +274,25 @@ namespace LaMetropole {
                     if (mapTableOfStation.count(HASH(train_arv.stations[k]))) {
                         int firstDayN, secondDayN;
                         char firstArvStation = mapTableOfStation[HASH(train_arv.stations[k])];
-                        L_time firstStTime(6, 1, train_st.start_hour, train_st.start_minute), checkTime, firstArvTime;
-                        firstStTime += train_st.leavingTime[firstStartStation], firstStTime.month = Month, firstStTime.day = Day;
-                        checkTime = firstStTime - train_st.leavingTime[firstStartStation];
-                        if (train_st.beginMonth > checkTime.month ||
-                            train_st.beginMonth == checkTime.month && train_st.beginDay > checkTime.day ||
-                            train_st.endMonth < checkTime.month ||
-                            train_st.endMonth == checkTime.month && train_st.endDay < checkTime.day)
-                            continue;
-                        firstArvTime = firstStTime + (train_st.leavingTime[firstArvStation] -
+                        L_time firstStTime(train_st.beginMonth, train_st.beginDay, train_st.start_hour,
+                                           train_st.start_minute),
+                                firstCheckTime(Month, Day, train_st.start_hour, train_st.start_minute),
+                                firstEndTime(train_st.endMonth, train_st.endDay, train_st.start_hour,
+                                             train_st.start_minute),
+                                firstArvTime;
+                        firstStTime += train_st.leavingTime[firstStartStation];
+                        firstEndTime += train_st.leavingTime[firstStartStation];
+                        if (firstCheckTime.less(firstStTime) || firstEndTime.less(firstCheckTime)) continue;
+                        firstStTime.month = Month, firstStTime.day = Day;
+                        firstCheckTime = firstStTime;
+                        firstArvTime = firstCheckTime + (train_st.leavingTime[firstArvStation] -
                                                       train_st.leavingTime[firstStartStation] -
                                                       train_st.stopoverTimes[firstArvStation - 1]);
-                        firstDayN = (checkTime.month - 6) * 31 + checkTime.day;
-                        L_time secondStTime(train_arv.beginMonth, train_arv.beginDay, train_arv.start_hour,
-                                            train_arv.start_minute), secondArvTime, secondEndTime(train_arv.endMonth,
-                                                                                                  train_arv.endDay,
-                                                                                                  train_arv.start_hour,
-                                                                                                  train_arv.start_minute);
+                        firstCheckTime -= train_st.leavingTime[firstStartStation];
+                        firstDayN = (firstCheckTime.month - 6) * 31 + firstCheckTime.day;
+                        L_time secondStTime(train_arv.beginMonth, train_arv.beginDay, train_arv.start_hour,train_arv.start_minute),
+                        secondArvTime, secondEndTime(train_arv.endMonth,train_arv.endDay,train_arv.start_hour,train_arv.start_minute),
+                        secondCheckTime;
                         secondStTime += train_arv.leavingTime[k];
                         secondEndTime += train_arv.leavingTime[k];
                         if (firstArvTime > secondEndTime) continue;
@@ -297,19 +300,13 @@ namespace LaMetropole {
                             secondStTime.month = firstArvTime.month;
                             secondStTime.day = firstArvTime.day;
                             //wait whole day
-                            if (!(firstArvTime < secondStTime))
+                            if (secondStTime < firstArvTime )
                                 secondStTime += 1440;
                         }
-                        checkTime = secondStTime - train_arv.leavingTime[k];
-                        if (train_arv.beginMonth > checkTime.month ||
-                            train_arv.beginMonth == checkTime.month && train_arv.beginDay > checkTime.day ||
-                            train_arv.endMonth < checkTime.month ||
-                            train_arv.endMonth == checkTime.month && train_arv.endDay < checkTime.day)
-                            continue;
+                        secondCheckTime = secondStTime - train_arv.leavingTime[k];
                         secondArvTime = secondStTime + (train_arv.leavingTime[secondArvStation] -
-                                                        train_arv.leavingTime[k] -
-                                                        train_arv.stopoverTimes[secondArvStation - 1]);
-                        secondDayN = (checkTime.month - 6) * 31 + checkTime.day;
+                                                        train_arv.leavingTime[k] -train_arv.stopoverTimes[secondArvStation - 1]);
+                        secondDayN = (secondCheckTime.month - 6) * 31 + secondCheckTime.day;
                         int timeConsume = secondArvTime - firstStTime, firstTimeConsume = firstArvTime - firstStTime;
                         int firstPrice =
                                 train_st.pricePrefixSum[firstArvStation] - train_st.pricePrefixSum[firstStartStation];
