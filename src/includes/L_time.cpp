@@ -11,7 +11,7 @@ namespace LaMetropole {
     L_time::L_time(char mm, char dd, int hour, int minute, bool flag) : month(mm), day(dd), hour(hour),
                                                                           minute(minute), flag(flag) {}
 
-    //the base is 05-01
+    //the base is 01-01
     L_time::L_time(int t) {
         *this = (L_time() + t);
     }
