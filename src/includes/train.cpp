@@ -72,6 +72,7 @@ namespace LaMetropole {
         delete s_tmp;
         //stations and leavingTime and pricePrefixSum and stopoverTimes
         int seatNum = toLong(cup->arg['m' - 'a']);
+        if (seatNum == 0) return false;
         trainTmp.maxSeatNum = seatNum;
         trainTmp.pricePrefixSum[0] = 0;
         trainTmp.leavingTime[0] = 0;
@@ -466,7 +467,7 @@ namespace LaMetropole {
         trainRecorder.read(trainTmp, tmp.offset);
         //beyond the train's capacity
         int Need = toLong(cup->arg['n' - 'a']);
-        if (Need > trainTmp.maxSeatNum) return false;
+        if (Need > trainTmp.maxSeatNum || Need <= 0) return false;
         int dayN;
         user userTmp = Libro->Mathilda.Find(Hu);
         char st = -1;
