@@ -152,6 +152,7 @@ namespace LaMetropole {
 
         struct seatStruct {
             char num;
+            int maxSeatNum;
             int seat[100];
         };
 

@@ -394,10 +394,7 @@ namespace LaMetropole {
         if (orderTmp.status == 's') {
             orderTmp.status = 'r';
             long long hashTrainID = HASH(orderTmp.trainID);
-            offsetFlag offsetTmp = Jason.Find(hashTrainID);
             Libro->Sabine.modify(refundKey, orderTmp);
-            train trainTmp;
-            trainRecorder.read(trainTmp, offsetTmp.offset);
             seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(hashTrainID, orderTmp.dayN)));
             for (char i = orderTmp.st; i < orderTmp.arv; ++i)
                 seatArray.seat[i] += orderTmp.n;
@@ -405,7 +402,7 @@ namespace LaMetropole {
             if (vec_ptr) {
                 for (int i = 1; i < vec_ptr->size(); ++i) {
                     pendingRecord &pr = vec_ptr->operator[](i);
-                    int seatNum = trainTmp.maxSeatNum;
+                    int seatNum = seatArray.maxSeatNum;
                     if (pr.arv <= orderTmp.st || pr.st >= orderTmp.arv) continue;
                     for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, seatArray.seat[j]);
                     if (seatNum >= pr.n) {
@@ -441,6 +438,7 @@ namespace LaMetropole {
         seatStruct seatArray;
         seatArray.num = trainTmp.stationNum;
         for (char i = 0; i < seatArray.num - 1; ++i) seatArray.seat[i] = trainTmp.maxSeatNum;
+        seatArray.maxSeatNum=trainTmp.maxSeatNum;
         for (int i = beginN; i <= endN; ++i) {
             Yuki.insert(trainIDOrder::IdDay(HashID, i), seatArray);
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());

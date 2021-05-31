@@ -31,6 +31,7 @@ namespace LaMetropole {
     }
 
     user &user::operator=(const user &other) {
+        if (this == &other) return *this;
         privilege = other.privilege;
         orderNum = other.orderNum;
         strcpy(username, other.username);
@@ -97,8 +98,8 @@ namespace LaMetropole {
         if (Leon.count(Hu) == 0) {
             user tmp = Mathilda.Find(Hu);
             if (tmp.privilege != -1) {
-                tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
                 if (strcmp(tmp.password, cup->arg['p' - 'a']->c_str()) == 0) {
+                    tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0, tmp.password[0] = 0;
                     Leon[Hu] = tmp;
                     return true;
                 }
