@@ -167,6 +167,8 @@ public:
         infoList[0] = sizeof(int) * info_len;
         for (int i = 1; i < info_len; ++i)
             infoList[i] = 0;
+        Anna.clear();
+        Elsa.clear();
 #endif
     }
 
