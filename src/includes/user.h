@@ -19,7 +19,7 @@ namespace LaMetropole {
     class user {
     public:
         char username[21];
-        char password[31];
+        long long password;
         char privilege;
         char name[20];
         char mailAddr[31];
@@ -27,7 +27,7 @@ namespace LaMetropole {
 
         user();
 
-        user(const string &userName, const string &pswd, const string &Name, const string &mail, char privilege);
+        user(const string &userName, const long long &pswd, const string &Name, const string &mail, char privilege);
 
         user &operator=(const user &other);
     };

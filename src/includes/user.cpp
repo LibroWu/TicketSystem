@@ -15,17 +15,15 @@ namespace LaMetropole {
 
 #endif
 
-    user::user(const string &userName, const string &pswd, const string &Name, const string &mail, char privilege)
-            : privilege(privilege), orderNum(0) {
+    user::user(const string &userName, const long long &pswd, const string &Name, const string &mail, char privilege)
+            : privilege(privilege), orderNum(0), password(pswd) {
         strcpy(username, userName.c_str());
-        strcpy(password, pswd.c_str());
         strcpy(name, Name.c_str());
         strcpy(mailAddr, mail.c_str());
     }
 
     user::user() : privilege(-1), orderNum(0) {
         username[0] = '\0';
-        password[0] = '\0';
         name[0] = '\0';
         mailAddr[0] = '\0';
     }
@@ -35,7 +33,7 @@ namespace LaMetropole {
         privilege = other.privilege;
         orderNum = other.orderNum;
         strcpy(username, other.username);
-        strcpy(password, other.password);
+        password = other.password;
         strcpy(name, other.name);
         strcpy(mailAddr, other.mailAddr);
         return *this;
@@ -69,7 +67,7 @@ namespace LaMetropole {
 
     bool userManager::add_user(parser::PaperCup *cup) {
         if (!has_user) {
-            user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
+            user tmp(*cup->arg['u' - 'a'], HASH(*cup->arg['p' - 'a']), *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
                      10);
             Mathilda.insert(HASH(*cup->arg['u' - 'a']), tmp);
             return (has_user = true);
@@ -79,7 +77,8 @@ namespace LaMetropole {
             if (Leon.count(Hc))
                 if (Leon[Hc].privilege > level)
                     if (!Mathilda.count(Hu)) {
-                        user tmp(*cup->arg['u' - 'a'], *cup->arg['p' - 'a'], *cup->arg['n' - 'a'], *cup->arg['m' - 'a'],
+                        user tmp(*cup->arg['u' - 'a'], HASH(*cup->arg['p' - 'a']), *cup->arg['n' - 'a'],
+                                 *cup->arg['m' - 'a'],
                                  level);
                         Mathilda.insert(Hu, tmp);
                         return true;
@@ -98,8 +97,8 @@ namespace LaMetropole {
         if (Leon.count(Hu) == 0) {
             user tmp = Mathilda.Find(Hu);
             if (tmp.privilege != -1) {
-                if (strcmp(tmp.password, cup->arg['p' - 'a']->c_str()) == 0) {
-                    tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0, tmp.password[0] = 0;
+                if (tmp.password == HASH(*cup->arg['p' - 'a'])) {
+                    tmp.mailAddr[0] = 0, tmp.name[0] = 0, tmp.username[0] = 0;
                     Leon[Hu] = tmp;
                     return true;
                 }
@@ -120,7 +119,7 @@ namespace LaMetropole {
                     if (Leon.count(Hu)) Leon[Hu].privilege = tmpPrivilege;
                 }
                 if (cup->arg['p' - 'a'] != nullptr) {
-                    strcpy(tmp.password, cup->arg['p' - 'a']->c_str());
+                    tmp.password = HASH(*cup->arg['p' - 'a']);
                 }
                 if (cup->arg['n' - 'a'] != nullptr) {
                     strcpy(tmp.name, cup->arg['n' - 'a']->c_str());
