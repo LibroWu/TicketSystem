@@ -74,7 +74,7 @@ namespace LaMetropole {
 
         };
 
-        BPT<stationTrain, offsetNum, 288, 288> Nancy;
+        BPT<stationTrain, offsetNum, 400, 288> Nancy;
 
         //trainID -> offset & released or not of the train & pendingNum
         struct offsetFlag {
