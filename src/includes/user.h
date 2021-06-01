@@ -70,7 +70,7 @@ namespace LaMetropole {
             }
         };
 
-        BPT<userIdTime, orderRecord, 288, 288> Sabine;
+        BPT<userIdTime, orderRecord, 400, 288> Sabine;
 
         userManager();
 

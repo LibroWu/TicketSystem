@@ -90,7 +90,7 @@ namespace LaMetropole {
 #endif
         };
 
-        BPT<long long, offsetFlag, 288, 288> Jason;
+        BPT<long long, offsetFlag, 500, 288> Jason;
 
         //information of each train
         MemoryRiver<train,3> trainRecorder;
@@ -155,9 +155,9 @@ namespace LaMetropole {
             int seat[100];
         };
 
-        BPT<trainIDOrder::IdDay, seatStruct, 288, 288> Yuki;
+        BPT<trainIDOrder::IdDay, seatStruct, 500, 288> Yuki;
 
-        BPT<trainIDOrder, pendingRecord, 288, 288> Arya;
+        BPT<trainIDOrder, pendingRecord, 400, 288> Arya;
     public:
         trainManager(userManager *libro);
 
