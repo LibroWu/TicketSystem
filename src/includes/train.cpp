@@ -471,7 +471,8 @@ namespace LaMetropole {
         int dayN;
         user userTmp = Libro->Mathilda.Find(Hu);
         char st = -1;
-        int seatNum = trainTmp.maxSeatNum;
+        int seatNum = trainTmp.maxSeatNum,pendingNum;
+        trainRecorder.get_info(pendingNum, 3);
         L_time timeTmp(Month, Day, trainTmp.start_hour, trainTmp.start_minute), st_Time;
         for (char i = 0; i < trainTmp.stationNum; ++i) {
             if (st == -1 && strcmp(cup->arg['f' - 'a']->c_str(), trainTmp.stations[i]) == 0) st = i;
@@ -489,7 +490,7 @@ namespace LaMetropole {
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, seatArray.seat[j]);
                 if (seatNum < Need)
                     if (!cup->arg['q' - 'a'] || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
-                orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, tmp.pendingNum,
+                orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, pendingNum,
                                      dayN, st, i, trainTmp.ID, trainTmp.stations[st],
                                      trainTmp.stations[i], timeTmp,
                                      timeTmp + (trainTmp.leavingTime[i] - trainTmp.stopoverTimes[i - 1] -
@@ -497,13 +498,13 @@ namespace LaMetropole {
                 if (seatNum < Need) {
                     orderTmp.status = 'p';
                     Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
-                    Arya.insert(trainIDOrder(hashTrainId, dayN, tmp.pendingNum),
+                    Arya.insert(trainIDOrder(hashTrainId, dayN, pendingNum),
                                 pendingRecord(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need,
-                                              tmp.pendingNum, dayN, st, i, userTmp.orderNum, Hu));
+                                              pendingNum, dayN, st, i, userTmp.orderNum, Hu));
                     ++userTmp.orderNum;
                     Libro->Mathilda.modify(Hu, userTmp);
-                    ++tmp.pendingNum;
-                    Jason.modify(hashTrainId, tmp);
+                    ++pendingNum;
+                    trainRecorder.write_info(pendingNum,3);
                     return 'p';
                 }
                 orderTmp.status = 's';

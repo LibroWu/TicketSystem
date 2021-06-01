@@ -78,14 +78,13 @@ namespace LaMetropole {
 
         //trainID -> offset & released or not of the train & pendingNum
         struct offsetFlag {
-            int offset, pendingNum;
+            int offset;
             bool flag;
 
-            offsetFlag(int offset = -1, bool flag = false, int pendingNum = 0) : offset(offset), flag(flag),
-                                                                                 pendingNum(pendingNum) {}
+            offsetFlag(int offset = -1, bool flag = false) : offset(offset), flag(flag){}
 #ifdef debugs
             friend std::ostream & operator<<(std::ostream& out,const offsetFlag& obj) {
-                out<<obj.offset<<' '<<obj.pendingNum<<' '<<obj.flag<<' ';
+                out<<obj.offset<<' '<<obj.flag<<' ';
                 return out;
             }
 #endif
@@ -94,7 +93,7 @@ namespace LaMetropole {
         BPT<long long, offsetFlag, 288, 288> Jason;
 
         //information of each train
-        MemoryRiver<train> trainRecorder;
+        MemoryRiver<train,3> trainRecorder;
 
         //pending list of each train
         struct trainIDOrder {
