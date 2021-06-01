@@ -16,7 +16,7 @@ using std::sort;
 namespace LaMetropole {
     class train {
     public:
-        char ID[21], stationNum, stations[101][41];
+        char ID[21], stationNum, stations[101][35];
 
         int pricePrefixSum[100], start_hour, start_minute, maxSeatNum;
         int leavingTime[100], stopoverTimes[100];
@@ -90,7 +90,7 @@ namespace LaMetropole {
 #endif
         };
 
-        BPT<long long, offsetFlag, 500, 288> Jason;
+        BPT<long long, offsetFlag, 500, 200> Jason;
 
         //information of each train
         MemoryRiver<train,3> trainRecorder;
@@ -155,9 +155,9 @@ namespace LaMetropole {
             int seat[100];
         };
 
-        BPT<trainIDOrder::IdDay, seatStruct, 500, 288> Yuki;
+        BPT<trainIDOrder::IdDay, seatStruct, 500, 100> Yuki;
 
-        BPT<trainIDOrder, pendingRecord, 400, 288> Arya;
+        BPT<trainIDOrder, pendingRecord, 400, 200> Arya;
     public:
         trainManager(userManager *libro);
 
