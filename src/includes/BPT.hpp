@@ -19,7 +19,6 @@ using std::cout;
 using std::lower_bound;
 using std::upper_bound;
 using std::vector;
-
 //support duplicate key
 //by using some tricks
 template<class T, class U, int M, int L, class Compare=std::less<T>>

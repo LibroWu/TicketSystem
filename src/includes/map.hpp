@@ -8,7 +8,7 @@
 #include <functional>
 #include <cstddef>
 #include "utility.h"
-#include "exceptions.h"
+#include "exceptions.hpp"
 
 namespace LaMetropole {
 

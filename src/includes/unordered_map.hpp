@@ -7,7 +7,7 @@
 
 #include <cstring>
 #include "utility.h"
-#include "exceptions.h"
+#include "exceptions.hpp"
 #include <iostream>
 
 namespace LaMetropole {

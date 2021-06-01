@@ -140,9 +140,9 @@ namespace LaMetropole {
             delete start_vec;
             return false;
         }
-        vector<pair<int, int>> same_vec(0);
-        vector<orderRecord> result(0);
-        vector<sortStruct> resultSort(0);
+        vector<pair<int, int>> same_vec;
+        vector<orderRecord> result;
+        vector<sortStruct> resultSort;
         unordered_map<int, int> mapTable(selfHashInt);
         int len = start_vec->size();
         for (int i = 1; i < len; ++i) mapTable[start_vec->operator[](i).offset] = i;
