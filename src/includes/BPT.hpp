@@ -14,10 +14,11 @@ using std::cout;
 #include <cstring>
 #include <vector>
 #include <algorithm>
+#include "Algorithm.h"
 
 #define debugs
-using std::lower_bound;
-using std::upper_bound;
+using LaMetropole::lower_bound;
+using LaMetropole::upper_bound;
 using std::vector;
 //support duplicate key
 //by using some tricks
