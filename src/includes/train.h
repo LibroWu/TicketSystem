@@ -156,7 +156,9 @@ namespace LaMetropole {
             L_integer seat[100];
         };
 
-        BPT<trainIDOrder::IdDay, seatStruct, 200, 100> Yuki;
+        BPT<trainIDOrder::IdDay, int, 200, 100> Yuki;
+
+        MemoryRiver<seatStruct,2,4> Yoshikawa;
 
         BPT<trainIDOrder, pendingRecord, 200, 200> Arya;
     public:

@@ -17,6 +17,7 @@ namespace LaMetropole {
             Arya.initialise();
             Yuki.initialise();
             trainRecorder.initialise();
+            Yoshikawa.initialise();
         } else {
 #ifdef cache
             Jason.initialize();
@@ -24,6 +25,7 @@ namespace LaMetropole {
             Arya.initialize();
             Yuki.initialize();
             trainRecorder.initialize();
+            Yoshikawa.initialize();
 #endif
         }
     }
@@ -34,6 +36,7 @@ namespace LaMetropole {
         Arya.initialise();
         Yuki.initialise();
         trainRecorder.initialise();
+        Yoshikawa.initialise();
     }
 
     trainManager::~trainManager() {}
@@ -42,7 +45,8 @@ namespace LaMetropole {
                                                      Jason("ID_crystal.file", "ID_index.file"),
                                                      Nancy("stationID_crystal.file", "stationID_index.file"),
                                                      Arya("Arya_crystal.file", "Arya_index.file"),
-                                                     Yuki("Yuki_crystal.file", "Yuki_index.file") {}
+                                                     Yuki("Yuki_crystal.file", "Yuki_index.file"),
+                                                     Yoshikawa("seat.file"){}
 
     bool trainManager::addTrain(parser::PaperCup *cup) {
         long long HashID = HASH(*cup->arg['i' - 'a']);
@@ -175,7 +179,8 @@ namespace LaMetropole {
                 checkTime -= trainTmp.leavingTime[startC];
                 dayN = (checkTime.month - 6) * 31 + checkTime.day;
                 checkTime += trainTmp.leavingTime[startC];
-                seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(HASH(trainTmp.ID), dayN)));
+                seatStruct seatArray;
+                Yoshikawa.read(seatArray,Yuki.Find(trainIDOrder::IdDay(HASH(trainTmp.ID), dayN)));
                 for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, int(seatArray.seat[j]));
                 result.push_back(orderRecord(sumPrice, seatNum, -1, dayN, startC, arvC, trainTmp.ID,
                                              trainTmp.stations[startC], trainTmp.stations[arvC],
@@ -208,7 +213,9 @@ namespace LaMetropole {
         trainRecorder.read(trainTmp, tmp.offset);
         int dayN = (Month - 6) * 31 + Day;
         seatStruct seatArray;
-        if (tmp.flag) seatArray = Yuki.Find(trainIDOrder::IdDay(HashID, dayN));
+        if (tmp.flag) {
+            Yoshikawa.read(seatArray,Yuki.Find(trainIDOrder::IdDay(HashID, dayN)));
+        }
         if (trainTmp.beginMonth < Month || trainTmp.beginMonth == Month && trainTmp.beginDay <= Day)
             if (trainTmp.endMonth > Month || trainTmp.endMonth == Month && trainTmp.endDay >= Day) {
                 cout << trainTmp.ID << ' ' << trainTmp.Type << '\n';
@@ -313,8 +320,9 @@ namespace LaMetropole {
                                 train_st.pricePrefixSum[firstArvStation] - train_st.pricePrefixSum[firstStartStation];
                         int secondPrice = train_arv.pricePrefixSum[secondArvStation] - train_arv.pricePrefixSum[k];
                         int firstSeatNum = train_st.maxSeatNum, secondSeatNum = train_arv.maxSeatNum;
-                        seatStruct stArray(Yuki.Find(trainIDOrder::IdDay(HASH(train_st.ID), firstDayN))),
-                                arvArray(Yuki.Find(trainIDOrder::IdDay(HASH(train_arv.ID), secondDayN)));
+                        seatStruct stArray,arvArray;
+                        Yoshikawa.read(stArray,Yuki.Find(trainIDOrder::IdDay(HASH(train_st.ID), firstDayN)));
+                        Yoshikawa.read(arvArray,Yuki.Find(trainIDOrder::IdDay(HASH(train_arv.ID), secondDayN)));
                         for (char l = firstStartStation; l < firstArvStation; ++l)
                             firstSeatNum = min(firstSeatNum, int(stArray.seat[l]));
                         for (char l = k; l < secondArvStation; ++l)
@@ -391,7 +399,9 @@ namespace LaMetropole {
             orderTmp.status = 'r';
             long long hashTrainID = HASH(orderTmp.trainID);
             Libro->Sabine.modify(refundKey, orderTmp);
-            seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(hashTrainID, orderTmp.dayN)));
+            seatStruct seatArray;
+            int seatOffset=(Yuki.Find(trainIDOrder::IdDay(hashTrainID, orderTmp.dayN)));
+            Yoshikawa.read(seatArray,seatOffset);
             for (char i = orderTmp.st; i < orderTmp.arv; ++i)
                 seatArray.seat[i] += orderTmp.n;
             vector<pendingRecord> *vec_ptr = Arya.multipleFind(trainIDOrder(hashTrainID, orderTmp.dayN));
@@ -412,7 +422,7 @@ namespace LaMetropole {
                 }
                 delete vec_ptr;
             }
-            Yuki.modify(trainIDOrder::IdDay(hashTrainID, orderTmp.dayN), seatArray);
+            Yoshikawa.update(seatArray,seatOffset);
         }
         return true;
     }
@@ -436,7 +446,7 @@ namespace LaMetropole {
         for (char i = 0; i < seatArray.num - 1; ++i) seatArray.seat[i] = trainTmp.maxSeatNum;
         seatArray.maxSeatNum = trainTmp.maxSeatNum;
         for (int i = beginN; i <= endN; ++i) {
-            Yuki.insert(trainIDOrder::IdDay(HashID, i), seatArray);
+            Yuki.insert(trainIDOrder::IdDay(HashID, i), Yoshikawa.write(seatArray));
             Arya.insert(trainIDOrder(HashID, i), pendingRecord());
         }
         return true;
@@ -486,7 +496,9 @@ namespace LaMetropole {
                      trainTmp.endMonth == st_Time.month && trainTmp.endDay < st_Time.day))
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
-                seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(hashTrainId, dayN)));
+                seatStruct seatArray;
+                int seatOffset=Yuki.Find(trainIDOrder::IdDay(hashTrainId, dayN));
+                Yoshikawa.read(seatArray,seatOffset);
                 for (char j = st; j < i; ++j) seatNum = min(seatNum, int(seatArray.seat[j]));
                 if (seatNum < Need)
                     if (!cup->arg['q' - 'a'] || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
@@ -510,7 +522,7 @@ namespace LaMetropole {
                 orderTmp.status = 's';
                 Libro->Sabine.insert(userManager::userIdTime(Hu, userTmp.orderNum), orderTmp);
                 for (char j = st; j < i; ++j) seatArray.seat[j] -= Need;
-                Yuki.modify(trainIDOrder::IdDay(hashTrainId, dayN), seatArray);
+                Yoshikawa.update(seatArray,seatOffset);
                 ++userTmp.orderNum;
                 Libro->Mathilda.modify(Hu, userTmp);
                 cout << (long long) (orderTmp.price) * orderTmp.n << '\n';
