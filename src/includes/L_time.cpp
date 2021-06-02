@@ -9,7 +9,7 @@ namespace LaMetropole {
     const int Month[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     L_time::L_time(char mm, char dd, int hour, int minute, bool flag) : month(mm), day(dd), hour(hour),
-                                                                          minute(minute), flag(flag) {}
+                                                                        minute(minute), flag(flag) {}
 
     //the base is 01-01
     L_time::L_time(int t) {
@@ -54,12 +54,13 @@ namespace LaMetropole {
     }
 
     bool L_time::less(const L_time &other) {
-        if (month==other.month) return day<other.day;
-        return month<other.month;
+        if (month == other.month) return day < other.day;
+        return month < other.month;
     }
+
     bool L_time::lessEqual(const L_time &other) {
-        if (month==other.month) return day<=other.day;
-        return month<other.month;
+        if (month == other.month) return day <= other.day;
+        return month < other.month;
     }
 
     bool L_time::operator<(const L_time &other) {
@@ -143,4 +144,34 @@ namespace LaMetropole {
             : price(price), n(n),
               pendingNum(pendingNum), st(st),
               arv(arv), orderNum(orderNum), hashUserId(hashUserId), dayN(dayN) {}
+
+    L_integer::operator int() const {
+        int res=a;
+        res*=10000;
+        res+=b;
+        return res;
+    }
+
+    L_integer::L_integer(int other) {
+        a=other/10000;
+        b=other%10000;
+    }
+
+    L_integer::L_integer(const L_integer &other):a(other.a),b(other.b) {}
+
+    L_integer & L_integer::operator-=(const L_integer &other) {
+        if (this!=&other) {
+            int res = int(*this) - int(other);
+            *this=L_integer(res);
+        }
+        return *this;
+    }
+
+    L_integer & L_integer::operator+=(const L_integer &other) {
+        if (this!=&other) {
+            int res = int(*this) + int(other);
+            *this=L_integer(res);
+        }
+        return *this;
+    }
 }

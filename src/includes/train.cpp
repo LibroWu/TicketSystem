@@ -176,7 +176,7 @@ namespace LaMetropole {
                 dayN = (checkTime.month - 6) * 31 + checkTime.day;
                 checkTime += trainTmp.leavingTime[startC];
                 seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(HASH(trainTmp.ID), dayN)));
-                for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, seatArray.seat[j]);
+                for (char j = startC; j < arvC; ++j) seatNum = min(seatNum, int(seatArray.seat[j]));
                 result.push_back(orderRecord(sumPrice, seatNum, -1, dayN, startC, arvC, trainTmp.ID,
                                              trainTmp.stations[startC], trainTmp.stations[arvC],
                                              checkTime, checkTime + keyTime));
@@ -214,14 +214,14 @@ namespace LaMetropole {
                 cout << trainTmp.ID << ' ' << trainTmp.Type << '\n';
                 L_time Lt(Month, Day, trainTmp.start_hour, trainTmp.start_minute);
                 cout << trainTmp.stations[0] << " xx-xx xx:xx -> " << Lt << " 0 "
-                     << ((tmp.flag) ? seatArray.seat[0] : trainTmp.maxSeatNum) << '\n';
+                     << ((tmp.flag) ? int(seatArray.seat[0]) : trainTmp.maxSeatNum) << '\n';
                 int i;
                 for (i = 1; i < trainTmp.stationNum - 1; ++i) {
                     cout << trainTmp.stations[i] << ' '
                          << Lt + (trainTmp.leavingTime[i] - trainTmp.stopoverTimes[i - 1]) << " -> ";
                     cout << Lt + trainTmp.leavingTime[i] << ' '
                          << trainTmp.pricePrefixSum[i] << ' '
-                         << ((tmp.flag) ? seatArray.seat[i] : trainTmp.maxSeatNum) << '\n';
+                         << ((tmp.flag) ? int(seatArray.seat[i]) : trainTmp.maxSeatNum) << '\n';
                 }
                 cout << trainTmp.stations[i] << ' ' << Lt + trainTmp.leavingTime[i] << " -> xx-xx xx:xx "
                      << trainTmp.pricePrefixSum[i]
@@ -316,9 +316,9 @@ namespace LaMetropole {
                         seatStruct stArray(Yuki.Find(trainIDOrder::IdDay(HASH(train_st.ID), firstDayN))),
                                 arvArray(Yuki.Find(trainIDOrder::IdDay(HASH(train_arv.ID), secondDayN)));
                         for (char l = firstStartStation; l < firstArvStation; ++l)
-                            firstSeatNum = min(firstSeatNum, stArray.seat[l]);
+                            firstSeatNum = min(firstSeatNum, int(stArray.seat[l]));
                         for (char l = k; l < secondArvStation; ++l)
-                            secondSeatNum = min(secondSeatNum, arvArray.seat[l]);
+                            secondSeatNum = min(secondSeatNum, int(arvArray.seat[l]));
                         if (startResult.status == 'e') {
                             startResult.status = 'a';
                             startResult.set(firstPrice, firstSeatNum, 0, firstDayN, firstStartStation, firstArvStation,
@@ -398,9 +398,9 @@ namespace LaMetropole {
             if (vec_ptr) {
                 for (int i = 1; i < vec_ptr->size(); ++i) {
                     pendingRecord &pr = vec_ptr->operator[](i);
-                    int seatNum = seatArray.maxSeatNum;
+                    int seatNum = int(seatArray.maxSeatNum);
                     if (pr.arv <= orderTmp.st || pr.st >= orderTmp.arv) continue;
-                    for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, seatArray.seat[j]);
+                    for (char j = pr.st; j < pr.arv; ++j) seatNum = min(seatNum, int(seatArray.seat[j]));
                     if (seatNum >= pr.n) {
                         Arya.Delete(trainIDOrder(hashTrainID, pr.dayN, pr.pendingNum));
                         for (char j = pr.st; j < pr.arv; ++j) seatArray.seat[j] -= pr.n;
@@ -487,7 +487,7 @@ namespace LaMetropole {
                     return 'f';
                 dayN = (st_Time.month - 6) * 31 + st_Time.day;
                 seatStruct seatArray(Yuki.Find(trainIDOrder::IdDay(hashTrainId, dayN)));
-                for (char j = st; j < i; ++j) seatNum = min(seatNum, seatArray.seat[j]);
+                for (char j = st; j < i; ++j) seatNum = min(seatNum, int(seatArray.seat[j]));
                 if (seatNum < Need)
                     if (!cup->arg['q' - 'a'] || cup->arg['q' - 'a']->operator[](0) == 'f') return 'f';
                 orderRecord orderTmp(trainTmp.pricePrefixSum[i] - trainTmp.pricePrefixSum[st], Need, pendingNum,
@@ -525,7 +525,7 @@ namespace LaMetropole {
     std::ostream &operator<<(std::ostream &out, const trainManager::seatStruct &obj) {
         out << int(obj.num) << '\n';
         for (char i = 0; i < obj.num; ++i) {
-            cout << obj.seat[i];
+            cout << int(obj.seat[i]);
         }
         return out;
     }

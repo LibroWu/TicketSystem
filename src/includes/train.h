@@ -151,8 +151,8 @@ namespace LaMetropole {
 
         struct seatStruct {
             char num;
-            int maxSeatNum;
-            int seat[100];
+            L_integer maxSeatNum;
+            L_integer seat[100];
         };
 
         BPT<trainIDOrder::IdDay, seatStruct, 200, 100> Yuki;

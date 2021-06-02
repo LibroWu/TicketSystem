@@ -10,6 +10,20 @@
 
 namespace LaMetropole {
 
+    class L_integer{
+    private:
+        unsigned char a;
+        unsigned short b;
+    public:
+        L_integer()=default;
+        L_integer(const L_integer & other);
+        L_integer(int other);
+        explicit operator int() const;
+        L_integer& operator+=(const L_integer& other);
+        L_integer& operator-=(const L_integer& other);
+    };
+
+
     class L_time {
         friend std::ostream &operator<<(std::ostream &out, const L_time &obj);
 
