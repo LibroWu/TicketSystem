@@ -100,11 +100,11 @@ namespace LaMetropole {
             //todo trainId + day
             struct IdDay {
                 long long Id;
-                int day;
+                unsigned char day;
 
                 IdDay() = default;
 
-                IdDay(long long Id, int day) : Id(Id), day(day) {}
+                IdDay(long long Id, unsigned char day) : Id(Id), day(day) {}
 
                 bool operator<(const IdDay &other) const {
                     if (Id < other.Id) return true;

@@ -15,7 +15,7 @@ namespace LaMetropole {
     };
 
     ticketSystem::ticketSystem() : Nebula(&Libro) {
-        //freopen("data/basic_6/4.in", "r", stdin);
+        //reopen("data/basic_6/3.in", "r", stdin);
         //freopen("output.out", "w", stdout);
         std::fstream file("user_crystal.file", std::fstream::in);
         if (!file.is_open()) {
