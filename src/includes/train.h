@@ -33,9 +33,10 @@ namespace LaMetropole {
 
         //station+trainOffset -> offset of the train and the number of the station within the train
         struct stationTrain {
-            long long key, trainOffset;
+            long long key;
+            int trainOffset;
 
-            stationTrain(long long stationHash = 0, long long trainOffset = -1) : key(stationHash),
+            stationTrain(long long stationHash = 0, int trainOffset = -1) : key(stationHash),
                                                                                   trainOffset(trainOffset) {}
 
             bool operator<(const stationTrain &other) const {

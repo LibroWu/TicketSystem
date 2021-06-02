@@ -23,7 +23,7 @@ namespace LaMetropole {
         char privilege;
         char name[20];
         char mailAddr[31];
-        int orderNum;
+        unsigned short orderNum;
 
         user();
 
@@ -50,9 +50,9 @@ namespace LaMetropole {
         //userId + Time -> offset
         struct userIdTime {
             long long key;
-            int orderNum;
+            unsigned short orderNum;
 
-            userIdTime(long long userIdHash = 0, long long orderNum = 0) : key(userIdHash),
+            userIdTime(long long userIdHash = 0, unsigned short orderNum = 0) : key(userIdHash),
                                                                             orderNum(orderNum) {}
 
             bool operator<(const userIdTime &other) const {
@@ -70,7 +70,7 @@ namespace LaMetropole {
             }
         };
 
-        BPT<userIdTime, orderRecord, 400, 288> Sabine;
+        BPT<userIdTime, orderRecord, 300, 200> Sabine;
 
         userManager();
 
