@@ -19,7 +19,7 @@ namespace LaMetropole {
         char ID[21], stationNum, stations[101][35];
 
         int pricePrefixSum[100], start_hour, start_minute, maxSeatNum;
-        int leavingTime[100], stopoverTimes[100];
+        unsigned short leavingTime[100], stopoverTimes[100];
         char beginDay, beginMonth, endDay, endMonth, Type;
 
         train(std::string Id, char station_num, char type);
