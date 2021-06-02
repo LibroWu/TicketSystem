@@ -43,7 +43,7 @@ namespace LaMetropole {
         bool has_user;
 
     public:
-        BPT<long long, user, 300, 200> Mathilda;
+        BPT<long long, user, 200, 200> Mathilda;
         unordered_map<long long, user> Leon;
 
         //pending list of each user
