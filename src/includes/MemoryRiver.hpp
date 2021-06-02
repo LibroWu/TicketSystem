@@ -4,7 +4,7 @@
 
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
-#define cache
+//#define cache
 #include <fstream>
 
 using std::string;
