@@ -158,7 +158,7 @@ namespace LaMetropole {
 
         BPT<trainIDOrder::IdDay, int, 200, 100> Yuki;
 
-        MemoryRiver<seatStruct,2,4> Yoshikawa;
+        MemoryRiver<seatStruct,2,1> Yoshikawa;
 
         BPT<trainIDOrder, pendingRecord, 200, 200> Arya;
     public:
