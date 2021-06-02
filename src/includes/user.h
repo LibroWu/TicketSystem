@@ -8,7 +8,6 @@
 #include <cstring>
 #include <string>
 #include "Algorithm.h"
-#include "L_time.h"
 #include "unordered_map.hpp"
 #include "BPT.hpp"
 #include "parser.h"

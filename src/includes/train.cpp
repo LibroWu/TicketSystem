@@ -190,8 +190,8 @@ namespace LaMetropole {
                                    trainTmp.ID));
             }
         }
-        sort(resultSort.begin(), resultSort.end());
         int Len = resultSort.size();
+        if (Len) sort(resultSort.frontPtr(), resultSort.frontPtr()+Len-1);
         cout << Len << '\n';
         for (int i = 0; i < Len; ++i) {
             orderRecord &R = result[resultSort[i].num];
@@ -259,7 +259,7 @@ namespace LaMetropole {
             delete end_vec;
             return false;
         }
-        vector<pair<int, int>> same_vec(0);
+        vector<pair<int, int>> same_vec;
         unordered_map<long long, char> mapTableOfStation(selfHash);
         int l1 = start_vec->size(), l2 = end_vec->size();
         train train_st, train_arv;

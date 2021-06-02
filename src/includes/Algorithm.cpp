@@ -6,17 +6,21 @@
 #include <iostream>
 
 namespace LaMetropole {
-
-
-    int forSort::getLog2(int x) {
-        int tmp = -1;
-        while (x) {
-            ++tmp;
-            x >>= 1;
+    void sort(sortStruct **l, sortStruct **r) {
+        if (l >= r) return;
+        sortStruct mid = *l[(r - l) / 2];
+        int x=0,y=(r-l);
+        while (x<=y) {
+            while (*l[x] <mid) ++x;
+            while (mid<*l[y]) --y;
+            if (x<=y) {
+                Swap(l[x],l[y]);
+                ++x,--y;
+            }
         }
-        return tmp;
+        sort(l+x,r);
+        sort(l,l+y);
     }
-
     long long selfHashInt(const int &input) { return input; }
 
     long long selfHash(const long long &input) { return input; }

@@ -11,7 +11,7 @@
 
 //#define debugs1
 
-using std::sort;
+using LaMetropole::sort;
 
 namespace LaMetropole {
     class train {

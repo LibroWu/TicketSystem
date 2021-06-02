@@ -118,6 +118,16 @@ namespace LaMetropole {
                 return (keyTime < other.keyTime);
             }
         }
+
+        bool operator>(const sortStruct &other) {
+            if (flag) {
+                if (keyPrice == other.keyPrice) return (strcmp(trainID, other.trainID) > 0);
+                return (keyPrice > other.keyPrice);
+            } else {
+                if (keyTime == other.keyTime) return (strcmp(trainID, other.trainID) > 0);
+                return (keyTime > other.keyTime);
+            }
+        }
     };
 }
 

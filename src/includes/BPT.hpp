@@ -12,14 +12,13 @@ using std::cout;
 
 #include "MemoryRiver.hpp"
 #include <cstring>
-#include <vector>
-#include <algorithm>
+#include "vector.hpp"
 #include "Algorithm.h"
 
 #define debugs
 using LaMetropole::lower_bound;
 using LaMetropole::upper_bound;
-using std::vector;
+using LaMetropole::vector;
 //support duplicate key
 //by using some tricks
 template<class T, class U, int M, int L, class Compare=std::less<T>>

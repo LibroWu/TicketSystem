@@ -6,7 +6,8 @@
 #define TICKETSYSTEM_ALGORITHM_H
 
 #include <string>
-#include <algorithm>
+#include "L_time.h"
+
 namespace LaMetropole {
 
     template<class T>
@@ -47,39 +48,7 @@ namespace LaMetropole {
         return l;
     }
 
-    namespace forSort {
-        int getLog2(int x);
-
-        template<class T, class Compare=std::less<T>>
-        void heapSort(T *l, T *r) {
-
-        }
-
-        template<class T, class Compare=std::less<T>>
-        void insertSort(T *l, T *r) {
-
-        }
-
-        template<class T, class Compare=std::less<T>>
-        void quicksort(T *l, T *r, int t) {
-            T* mid;
-
-            if (t == 0) forSort::heapSort(l,r);
-            else {
-                quicksort(l,mid,t-1);
-                quicksort(mid,r,t-1);
-            }
-        }
-
-
-    }
-
-    template<class T, class Compare=std::less<T>>
-    void sort(T *l, T *r) {
-        if (l >= r) return;
-        if (r - l <= 10) forSort::insertSort(l, r);
-        else forSort::quicksort(l, r, forSort::getLog2(r - l));
-    }
+    void sort(sortStruct **l, sortStruct **r);
 
     long long selfHash(const long long &input);
 

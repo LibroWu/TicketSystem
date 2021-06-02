@@ -482,6 +482,10 @@ namespace LaMetropole {
             delete data[--num];
             if (real_size > init_size && num < real_size >> 2) shrinkSpace();
         }
+
+        T** frontPtr(){
+            return data;
+        }
     };
 
 
