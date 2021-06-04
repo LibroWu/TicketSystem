@@ -15,7 +15,7 @@ using std::ofstream;
 
 //the first info is for the head of empty node chain
 //the second info is for the number of empty node in the chain
-template<class T, int info_len = 2, int poolSize = 32>
+template<class T, int info_len = 2, int poolSize = 64>
 class MemoryRiver {
 private:
     fstream file;
