@@ -37,7 +37,7 @@ namespace LaMetropole {
             int trainOffset;
 
             stationTrain(long long stationHash = 0, int trainOffset = -1) : key(stationHash),
-                                                                                  trainOffset(trainOffset) {}
+                                                                            trainOffset(trainOffset) {}
 
             bool operator<(const stationTrain &other) const {
                 if (key < other.key) return true;
@@ -54,10 +54,12 @@ namespace LaMetropole {
             }
 
 #ifdef debugs
-            friend std::ostream & operator<<(std::ostream& out,const stationTrain& obj) {
-                out<<obj.key<<' '<<obj.trainOffset<<' ';
+
+            friend std::ostream &operator<<(std::ostream &out, const stationTrain &obj) {
+                out << obj.key << ' ' << obj.trainOffset << ' ';
                 return out;
             }
+
 #endif
         };
 
@@ -66,11 +68,14 @@ namespace LaMetropole {
             char num;
 
             offsetNum(int offset = 0, char num = 0) : offset(offset), num(num) {}
+
 #ifdef debugs
-            friend std::ostream & operator<<(std::ostream& out,const offsetNum& obj) {
-                out<<obj.offset<<' '<<int(obj.num)<<' ';
+
+            friend std::ostream &operator<<(std::ostream &out, const offsetNum &obj) {
+                out << obj.offset << ' ' << int(obj.num) << ' ';
                 return out;
             }
+
 #endif
 
         };
@@ -82,19 +87,22 @@ namespace LaMetropole {
             int offset;
             bool flag;
 
-            offsetFlag(int offset = -1, bool flag = false) : offset(offset), flag(flag){}
+            offsetFlag(int offset = -1, bool flag = false) : offset(offset), flag(flag) {}
+
 #ifdef debugs
-            friend std::ostream & operator<<(std::ostream& out,const offsetFlag& obj) {
-                out<<obj.offset<<' '<<obj.flag<<' ';
+
+            friend std::ostream &operator<<(std::ostream &out, const offsetFlag &obj) {
+                out << obj.offset << ' ' << obj.flag << ' ';
                 return out;
             }
+
 #endif
         };
 
         BPT<long long, offsetFlag, 200, 200> Jason;
 
         //information of each train
-        MemoryRiver<train,3> trainRecorder;
+        MemoryRiver<train, 3> trainRecorder;
 
         //pending list of each train
         struct trainIDOrder {
@@ -158,7 +166,7 @@ namespace LaMetropole {
 
         BPT<trainIDOrder::IdDay, int, 200, 400> Yuki;
 
-        MemoryRiver<seatStruct,2,1> Yoshikawa;
+        MemoryRiver<seatStruct, 2, 0> Yoshikawa;
 
         BPT<trainIDOrder, pendingRecord, 200, 200> Arya;
     public:

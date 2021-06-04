@@ -5,6 +5,7 @@
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
 #define cache
+
 #include <fstream>
 
 using std::string;
@@ -271,13 +272,12 @@ public:
         file.close();
 #endif
 #ifdef cache
-        if (poolSize==0) {
+        if (poolSize == 0) {
             file.open(file_name);
-            file.seekp(index + sizeof(int));
+            file.seekp(index + 2 * sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
             file.close();
-        }
-        else if (Elsa.count(index)) {
+        } else if (Elsa.count(index)) {
             poolElement tmp = Elsa[index];
             tmp.temporary = true;
             *tmp.t = t;
@@ -299,13 +299,12 @@ public:
         file.close();
 #endif
 #ifdef cache
-        if (poolSize==0) {
+        if (poolSize == 0) {
             file.open(file_name);
-            file.seekg(index + sizeof(int));
+            file.seekg(index + 2 * sizeof(int));
             file.read(reinterpret_cast<char *>(&t), sizeofT);
             file.close();
-        }
-        else if (Elsa.count(index)) {
+        } else if (Elsa.count(index)) {
             poolElement tmp = Elsa[index];
             tmp.temporary = true;
             t = *tmp.t;
