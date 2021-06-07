@@ -236,7 +236,7 @@ namespace LaMetropole {
         file.seekg(sizeof(int) * (a + 1));
         file.read(reinterpret_cast<char *>(&c), sizeof(int));
         file.close();
-        if (b >= c) return;//todo
+        if (b > c) return;//todo
         Libro.Mathilda.rollBack(a, b);
         Libro.Sabine.rollBack(a, b);
         Nebula.Yoshikawa.rollBack(a, b);

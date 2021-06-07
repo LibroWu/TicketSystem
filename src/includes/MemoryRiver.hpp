@@ -479,10 +479,6 @@ public:
         inc = Inc;
     }
 
-    void rebuild() {
-
-    }
-
     void backup(int op) {
         //tot
         if (op == 0) {
@@ -533,7 +529,7 @@ public:
     void rollBack(int tot, int inc) {
         string sysCom = "rm " + file_name;
         system(sysCom.c_str());
-        sysCom = "cp environment/totalBackup" + toString(tot) + "/" + file_name + " " + file_name;
+        sysCom = "cp environment/totalBackup" + toString(tot) + "/base/" + file_name + " " + file_name;
         system(sysCom.c_str());
         if (inc != -1) {
             string road2 =
