@@ -47,22 +47,18 @@ namespace LaMetropole {
     }
 
     parser::PaperCup *parser::listen() {
-        string s, *sKey, *sArg;
+        string  *sKey, *sArg;
         PaperCup *tmp = new PaperCup;
         bool flag = false;
-        if (getline(std::cin, s)) flag = true;
+        if (getline(std::cin, tmp->origin)) flag = true;
         if (!flag) {
             tmp->keyType = EXIT;
             return tmp;
         }
-#ifdef debugs
-        std::cout<<s<<std::endl;
-        tmp->origin=s;
-#endif
-        tokenScanner tS(&s);
+        tokenScanner tS(&tmp->origin);
         sKey = tS.nextToken();
         int i;
-        for (i = 0; i < 16; ++i) if (commandSet[i] == *sKey) break;
+        for (i = 0; i < 22; ++i) if (commandSet[i] == *sKey) break;
         tmp->keyType = setToType[i];
         delete sKey;
         while (tS.hasNextToken()) {
@@ -76,11 +72,6 @@ namespace LaMetropole {
             tmp->push_back(sKey->operator[](1), sArg);
             delete sKey;
         }
-#ifdef debugs
-//        std::cout<<++commandNumber<<std::endl;
-//        ++commandNumber;
-#endif
-        std::cout.flush();
         return tmp;
     }
 }

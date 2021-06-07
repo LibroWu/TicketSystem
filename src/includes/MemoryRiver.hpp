@@ -4,8 +4,10 @@
 
 #ifndef BPT_MEMORYRIVER_HPP
 #define BPT_MEMORYRIVER_HPP
-#define cache
+//#define cache
+#define back_up
 
+#include "unordered_map.hpp"
 #include <fstream>
 
 using std::string;
@@ -21,6 +23,10 @@ private:
     fstream file;
     string file_name;
     int sizeofT = sizeof(T);
+#ifdef back_up
+    int tot, inc;
+#endif
+
 #ifdef cache
 
     struct L_heap {
@@ -125,6 +131,24 @@ private:
     int infoList[info_len];
 #endif
 
+#ifdef back_up
+
+    std::string toString(int x) {
+        std::string res;
+        if (x == 0) return "0";
+        while (x) {
+            res += char(x % 10) + '0';
+            x /= 10;
+        }
+        for (int i = 0; i < res.length() / 2; ++i) {
+            char c = res[i];
+            res[i] = res[res.length() - 1 - i];
+            res[res.length() - 1 - i] = c;
+        }
+        return res;
+    }
+
+#endif
 public:
 
     MemoryRiver() = default;
@@ -147,9 +171,6 @@ public:
             Elsa.erase(ptr->offset);
             Anna.pop();
         }
-        file.seekg(0);
-        for (int i = 0; i < info_len; ++i)
-            file.read(reinterpret_cast<char *>(&infoList[i]), sizeof(int));
         file.close();
     }
 
@@ -164,6 +185,9 @@ public:
         for (int i = 1; i < info_len; ++i)
             file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
         file.close();
+#ifdef back_up
+        tot = -1;
+#endif
 #ifdef cache
         infoList[0] = sizeof(int) * info_len;
         for (int i = 1; i < info_len; ++i)
@@ -221,6 +245,17 @@ public:
         //no empty node exists
         if (!num) {
             file.seekp(0);
+#ifdef back_up
+            if (tot != -1) {
+                string road = "environment/totalBackup" + toString(tot) + "/" + file_name + "Vec";
+                fstream vecFile(road);
+                int Num;
+                vecFile.read(reinterpret_cast<char *>(&Num), sizeof(int));
+                vecFile.seekp(sizeof(int) * (Num + 1));
+                vecFile.write(reinterpret_cast<char *>(&pos), sizeof(int));
+                vecFile.close();
+            }
+#endif
             pos += sizeofT + sizeof(int);
             file.write(reinterpret_cast<char *>(&pos), sizeof(int));
             file.seekp(pos - sizeofT - sizeof(int));
@@ -228,6 +263,17 @@ public:
             file.write(reinterpret_cast<char *>(&t), sizeofT);
         } else {
             --num;
+#ifdef back_up
+            if (tot != -1) {
+                string road = "environment/totalBackup" + toString(tot) + "/" + file_name + "Vec";
+                fstream vecFile(road);
+                int Num;
+                vecFile.read(reinterpret_cast<char *>(&Num), sizeof(int));
+                vecFile.seekp(sizeof(int) * (Num + 1));
+                vecFile.write(reinterpret_cast<char *>(&pos), sizeof(int));
+                vecFile.close();
+            }
+#endif
             file.seekp(pos);
             file.read(reinterpret_cast<char *>(&pos), sizeof(int));
             file.write(reinterpret_cast<char *>(&t), sizeofT);
@@ -266,6 +312,17 @@ public:
 
     void update(T &t, const int index) {
 #ifndef cache
+#ifdef back_up
+        if (tot != -1) {
+            string road = "environment/totalBackup" + toString(tot) + "/" + file_name + "Vec";
+            fstream vecFile(road);
+            int Num;
+            vecFile.read(reinterpret_cast<char *>(&Num), sizeof(int));
+            vecFile.seekp(sizeof(int) * (Num + 1));
+            vecFile.write(reinterpret_cast<const char *>(&index), sizeof(int));
+            vecFile.close();
+        }
+#endif
         file.open(file_name);
         file.seekp(index + sizeof(int));
         file.write(reinterpret_cast<char *>(&t), sizeofT);
@@ -351,6 +408,17 @@ public:
 
     void Delete(int index) {
 #ifndef cache
+#ifdef back_up
+        if (tot != -1) {
+            string road = "environment/totalBackup" + toString(tot) + "/" + file_name + "Vec";
+            fstream vecFile(road);
+            int Num;
+            vecFile.read(reinterpret_cast<char *>(&Num), sizeof(int));
+            vecFile.seekp(sizeof(int) * (Num + 1));
+            vecFile.write(reinterpret_cast<char *>(&index), sizeof(int));
+            vecFile.close();
+        }
+#endif
         int a, num;
         file.open(file_name);
         file.read(reinterpret_cast<char *>(&a), sizeof(int));
@@ -380,6 +448,121 @@ public:
         file.close();
 #endif
     }
+
+#ifdef cache
+
+    void clearCache() {
+        file.open(file_name);
+        for (int i = 0; i < info_len; ++i)
+            file.write(reinterpret_cast<char *>(&infoList[i]), sizeof(int));
+        while (Anna.top) {
+            typename L_heap::heapElement *ptr = Anna.p[1];
+            poolElement tmp = Elsa[ptr->offset];
+            tmp.temporary = true;
+            file.seekp(ptr->offset + sizeof(int));
+            file.write(reinterpret_cast<char *>(&ptr->frequency), sizeof(int));
+            file.write(reinterpret_cast<char *>(tmp.t), sizeofT);
+            Elsa.erase(ptr->offset);
+            Anna.pop();
+        }
+        Anna.clear();
+        Elsa.clear();
+        file.close();
+    }
+
+#endif
+
+#ifdef back_up
+
+    void setVersion(int Tot, int Inc) {
+        tot = Tot;
+        inc = Inc;
+    }
+
+    void rebuild() {
+
+    }
+
+    void backup(int op) {
+        //tot
+        if (op == 0) {
+            string road = "environment/totalBackup" + toString(tot) + "/" + file_name + "Vec";
+            string sysCom = "cp " + file_name + " environment/totalBackup" + toString(tot) + "/base/" + file_name;
+            file.open(road, std::ios::out);
+            file.write(reinterpret_cast<char *>(&op), sizeof(int));
+            file.close();
+            system(sysCom.c_str());
+        } //inc
+        else if (op == 1) {
+            LaMetropole::unordered_map<int, bool> tmpHashTable;
+            string road = "environment/totalBackup" + toString(tot) + "/" + file_name + "Vec";
+            string road2 =
+                    "environment/totalBackup" + toString(tot) + "/Inc" + toString(inc) + "/" + file_name + "Inc";
+            fstream vecFile(road), originFile(file_name);
+            file.open(road2, std::ios::out);
+            int Num, v, cnt = 0;
+            file.write(reinterpret_cast<char *>(&cnt), sizeof(int));
+            for (int i = 0; i < info_len; ++i) {
+                originFile.read(reinterpret_cast<char *>(&v), sizeof(int));
+                file.write(reinterpret_cast<char *>(&v), sizeof(int));
+            }
+            T tmp;
+            int pos;
+            vecFile.read(reinterpret_cast<char *>(&Num), sizeof(int));
+            for (int i = 0; i < Num; ++i) {
+                vecFile.read(reinterpret_cast<char *>(&v), sizeof(int));
+                if (!tmpHashTable.count(v)) {
+                    tmpHashTable[v] = true;
+                    originFile.seekg(v);
+                    originFile.read(reinterpret_cast<char *>(&v), sizeof(int));
+                    originFile.read(reinterpret_cast<char *>(&pos), sizeof(int));
+                    originFile.read(reinterpret_cast<char *>(&tmp), sizeofT);
+                    file.write(reinterpret_cast<char *>(&pos), sizeof(int));
+                    file.write(reinterpret_cast<char *>(&tmp), sizeofT);
+                    ++cnt;
+                }
+            }
+            file.seekp(0);
+            file.write(reinterpret_cast<char *>(&cnt), sizeof(int));
+            file.close();
+            originFile.close();
+            vecFile.close();
+        }
+    }
+
+    void rollBack(int tot, int inc) {
+        string sysCom = "rm " + file_name;
+        system(sysCom.c_str());
+        sysCom = "cp environment/totalBackup" + toString(tot) + "/" + file_name + " " + file_name;
+        system(sysCom.c_str());
+        if (inc != -1) {
+            string road2 =
+                    "environment/totalBackup" + toString(tot) + "/Inc" + toString(inc) + "/" + file_name + "Inc";
+            system(sysCom.c_str());
+            file.open(file_name);
+            fstream incFile(road2);
+            int cnt, v;
+            incFile.read(reinterpret_cast<char *>(&cnt), sizeof(int));
+            for (int i = 0; i < info_len; ++i) {
+                incFile.read(reinterpret_cast<char *>(&v), sizeof(int));
+                file.write(reinterpret_cast<char *>(&v), sizeof(int));
+            }
+            T tmp;
+            int pos;
+            for (int i = 0; i < cnt; ++i) {
+                incFile.read(reinterpret_cast<char *>(&v), sizeof(int));
+                incFile.read(reinterpret_cast<char *>(&pos), sizeof(int));
+                incFile.read(reinterpret_cast<char *>(&tmp), sizeofT);
+                file.seekp(v);
+                file.write(reinterpret_cast<char *>(&pos), sizeof(int));
+                file.write(reinterpret_cast<char *>(&tmp), sizeofT);
+            }
+            file.close();
+            incFile.close();
+        }
+    }
+
+#endif
 
 };
 

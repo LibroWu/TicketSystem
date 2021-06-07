@@ -575,6 +575,28 @@ public:
         indexMemory.initialise();
     }
 
+#ifdef back_up
+
+    void setVersion(int Tot, int Inc) {
+        crystalMemory.setVersion(Tot,Inc);
+        indexMemory.setVersion(Tot,Inc);
+    }
+
+    void rebuild(){
+
+    }
+
+    void backup(int flag){
+        crystalMemory.backup(flag);
+        indexMemory.backup(flag);
+    }
+
+    void rollBack(int Tot, int Inc){
+        crystalMemory.rollBack(Tot,Inc);
+        indexMemory.rollBack(Tot,Inc);
+    }
+#endif
+
 #ifdef debugs
 
     void print() {

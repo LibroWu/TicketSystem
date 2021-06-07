@@ -8,6 +8,7 @@
 #include "parser.h"
 #include "user.h"
 #include "train.h"
+#include "commandManager.h"
 
 namespace LaMetropole {
 
@@ -17,7 +18,7 @@ namespace LaMetropole {
         parser Apollo;
         userManager Libro;
         trainManager Nebula;
-
+        commandManager cRer;
         ticketSystem();
 
         void addUser(parser::PaperCup *cup);
@@ -54,6 +55,15 @@ namespace LaMetropole {
 
         void None(parser::PaperCup *cup);
 
+        void Backup(parser::PaperCup *cup);
+
+        void Rebuild(parser::PaperCup *cup);
+
+        void Status(parser::PaperCup *cup);
+
+        void CommandList(parser::PaperCup *cup);
+
+        void Rollback(parser::PaperCup *cup);
     };
 
 }
